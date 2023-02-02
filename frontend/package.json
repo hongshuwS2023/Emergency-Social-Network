@@ -1,0 +1,16 @@
+{
+  "name": "esn-frontend",
+  "version": "0.0.1",
+  "description": "fse esn frontend",
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "^10.4.13",
+    "parcel": "^2.0.0",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.4"
+  },
+  "scripts": {
+    "dev": "parcel src/pages/*.html",
+    "build": "parcel build src/pages/*.html"
+  }
+}

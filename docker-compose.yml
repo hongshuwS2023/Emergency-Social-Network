@@ -1,0 +1,39 @@
+version: '3.9'
+services:
+  db:
+    container_name: esn-db
+    image: esn-database
+    build:
+      context: ./backend
+      dockerfile: Dockerfile-sql
+    restart: always
+    networks:
+      - esn
+  api:
+    container_name: esn-api
+    image: esn-api
+    build:
+      context: ./backend
+      dockerfile: Dockerfile-api
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - esn
+  web:
+    container_name: esn-web
+    image: esn-web
+    build:
+      context: ./frontend
+      dockerfile: DOckerfile-frontend
+    restart: always
+    networks:
+      - esn
+    depends_on:
+      - db
+      - api
+networks:
+  esn:
+    driver: bridge
