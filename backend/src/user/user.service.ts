@@ -1,4 +1,5 @@
 import { Repository } from "typeorm";
+import { ApiResourceNotFoundException } from "../utils/api-exception";
 import ESNDataSource from "../utils/data-source";
 import { CreateUserDto } from "./dto/createuser.dto";
 import { UpdateUserDto } from "./dto/updateuser.dto";
@@ -28,7 +29,7 @@ export default class UserService {
             return user;
         }
         catch (error: any) {
-            throw new Error(error.message);
+            throw new ApiResourceNotFoundException(error.message);
         }
     }
 

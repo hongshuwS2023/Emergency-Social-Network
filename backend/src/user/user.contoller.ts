@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import MyResponse from "../utils/response";
 import { CreateUserDto } from "./dto/createuser.dto";
 import UserService from "./user.service";
 
@@ -10,10 +11,13 @@ export default class UserController {
     }
 
     async createUser(req: Request, res: Response): Promise<void> {
+        console.log(req.body);
+        
         const createUserDto: CreateUserDto = req.body;
         const user = await this.userService.createUser(createUserDto);
-
-        res.send(user);
+        
+        const response = new MyResponse(JSON.parse("null")).build();
+        res.send(response);
     }
 }
 
