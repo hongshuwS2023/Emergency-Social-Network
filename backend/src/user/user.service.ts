@@ -1,24 +1,13 @@
 import {Repository} from 'typeorm';
-import {CreateUserInput} from '../requests/createuser.input';
 import {UpdateUserInput} from '../requests/updateuser.input';
-import ESNDataSource from '../utils/data-source';
-import {User, Role, Status} from './user.entity';
+import ESNDataSource from '../utils/datasource';
+import {User} from './user.entity';
 
 export default class UserService {
   userRepository: Repository<User>;
 
   constructor() {
     this.userRepository = ESNDataSource.getRepository(User);
-  }
-
-  async createUser(createUserInput: CreateUserInput): Promise<User> {
-    const newUser = new User();
-    newUser.username = createUserInput.username;
-    newUser.password = createUserInput.password;
-    newUser.role = Role.CITIZEN;
-    newUser.status = Status.Undefined;
-
-    return this.userRepository.save(newUser);
   }
 
   async getUser(userid: number): Promise<User> {
