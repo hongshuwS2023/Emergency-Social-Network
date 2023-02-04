@@ -1,13 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity()
 export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @Column()
-    username: string;
+  @Column()
+  username!: string;
 
-    @Column()
-    password: string;
+  @Column()
+  password!: string;
 }
