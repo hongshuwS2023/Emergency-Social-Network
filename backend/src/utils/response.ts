@@ -1,22 +1,11 @@
-export default class MyResponse{
-    data: JSON;
-    status_code:Number = 200;
-    msg: String = "Operation Successful.";
-    // err_code: String = '';
+export default class ResponseEntity{
+    data: Object;
+    status_code: number;
 
-    constructor(data:JSON){
+    constructor(data: Object){
         this.data = data;
-        // this.status_code = status_code;
-        // this.msg = msg;
-        // this.err_code = err_code;
+        this.status_code = 200;
     }
     
-    build(this:MyResponse){
-        return {
-            "msg": this.msg,
-            "data": this.data,
-            "status_code": this.status_code
-        }
-    }
 
 }

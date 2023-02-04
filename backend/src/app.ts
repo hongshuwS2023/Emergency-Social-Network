@@ -1,10 +1,9 @@
 import express from 'express';
-import { createServer } from 'http';
+import {createServer} from 'http';
 import 'reflect-metadata';
-import { User } from './user/user.entity';
+import {User} from './user/user.entity';
 import UserRoute from './user/user.route';
 import ESNDataSource from './utils/data-source';
-
 
 export default class App {
   private app: express.Application;
@@ -29,15 +28,17 @@ export default class App {
     this.app.use('/api/users', new UserRoute().getRouter());
   }
   private async startServer() {
-    ESNDataSource.initialize().then(() => {
-      console.log('database started');
-      this.httpServer.listen(this.port, () => {
-        console.log(`server started at http://localhost:${this.port}`);
+    ESNDataSource.initialize()
+      .then(() => {
+        console.log('database started');
+        this.httpServer.listen(this.port, () => {
+          console.log(`server started at http://localhost:${this.port}`);
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        console.log('cannot connect to database');
       });
-    }).catch((err) => {
-      console.log(err);
-      console.log('cannot connect to database');
-    })
   }
   static start() {
     const appServer = new App();
@@ -46,5 +47,3 @@ export default class App {
     appServer.startServer();
   }
 }
-
-

@@ -1,57 +1,60 @@
-import { Repository } from "typeorm";
-import { ApiResourceNotFoundException } from "../utils/api-exception";
-import ESNDataSource from "../utils/data-source";
-import { CreateUserDto } from "./dto/createuser.dto";
-import { UpdateUserDto } from "./dto/updateuser.dto";
-import { Role, Status, User } from "./user.entity";
+import {Repository} from 'typeorm';
+import {ApiResourceNotFoundException} from '../utils/api-exception';
+import ESNDataSource from '../utils/data-source';
+import {CreateUserInput} from '../requests/createuser.input';
+import {UpdateUserInput} from '../requests/updateuser.input';
+import {Role, Status, User} from './user.entity';
 
 export default class UserService {
-    userRepository: Repository<User>;
+  userRepository: Repository<User>;
 
-    constructor() {
-        this.userRepository = ESNDataSource.getRepository(User);
+  constructor() {
+    this.userRepository = ESNDataSource.getRepository(User);
+  }
+
+  async createUser(createUserInput: CreateUserInput): Promise<User> {
+    const newUser = new User();
+    newUser.username = createUserInput.username;
+    newUser.password = createUserInput.password;
+    newUser.role = Role.CITIZEN;
+    newUser.status = Status.Undefined;
+
+    return this.userRepository.save(newUser);
+  }
+
+  async getUser(userid: number): Promise<User> {
+    try {
+      const user = await this.userRepository.findOneByOrFail({id: userid});
+      return user;
+    } catch (error: any) {
+      throw new Error(error.message);
     }
+  }
 
-    async createUser(createUserDto: CreateUserDto): Promise<User> {
-        console.log(createUserDto);
-        const newUser = new User();
-        newUser.username = createUserDto.username;
-        newUser.password = createUserDto.password;
-        newUser.role = Role.CITIZEN;
-        newUser.status = Status.Undefined;
+  async updateUser(updateUserInput: UpdateUserInput): Promise<User> {
+    try {
+      console.log(updateUserInput);
+      const user = await this.getUser(updateUserInput.id);
 
-        return this.userRepository.save(newUser);
+      user.username = updateUserInput.username
+        ? updateUserInput.username
+        : user.username;
+      user.password = updateUserInput.password
+        ? updateUserInput.password
+        : user.password;
+      user.role = updateUserInput.role ? updateUserInput.role : user.role;
+      user.status = updateUserInput.status
+        ? updateUserInput.status
+        : user.status;
+
+      return await this.userRepository.save(user);
+    } catch (error: any) {
+      throw new Error(error.message);
     }
+  }
 
-    async getUser(userid: number): Promise<User> {
-        try {
-            const user = await this.userRepository.findOneByOrFail({ id: userid });
-            return user;
-        }
-        catch (error: any) {
-            throw new ApiResourceNotFoundException(error.message);
-        }
-    }
-
-    async updateUser(updateUserDto: UpdateUserDto): Promise<User> {
-        try {
-            const user = await this.getUser(updateUserDto.id);
-
-            user.username = updateUserDto.username ? updateUserDto.username : user.username;
-            user.password = updateUserDto.password ? updateUserDto.password : user.password;
-            user.role = updateUserDto.role ? updateUserDto.role : user.role;
-            user.status = updateUserDto.status ? updateUserDto.status : user.status;
-
-            return this.userRepository.save(user);
-        }
-        catch (error: any) {
-            throw new Error(error.message);
-        }
-    }
-
-    async deleteUser(userId: number): Promise<boolean> {
-        const res = await this.userRepository.delete({id: userId});
-        return true;
-    }
-
+  async deleteUser(userId: number): Promise<boolean> {
+    await this.userRepository.delete({id: userId});
+    return true;
+  }
 }
