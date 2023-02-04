@@ -13,10 +13,6 @@ export default class UserRoute {
   }
 
   private setRoute(): void {
-    this.router.post('/', (req, res) => {
-      this.userController.createUser(req, res);
-    });
-
     this.router.get('/:userId', (req, res) => {
       this.userController.getUser(req, res);
     });

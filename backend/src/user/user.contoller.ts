@@ -1,5 +1,4 @@
 import {Request, Response} from 'express';
-import {CreateUserInput} from '../requests/createuser.input';
 import UserService from './user.service';
 import {UpdateUserInput} from '../requests/updateuser.input';
 
@@ -8,13 +7,6 @@ export default class UserController {
 
   constructor() {
     this.userService = new UserService();
-  }
-
-  async createUser(req: Request, res: Response): Promise<void> {
-    const createUserInput: CreateUserInput = req.body;
-    const user = await this.userService.createUser(createUserInput);
-
-    res.send(user);
   }
 
   async updateUser(req: Request, res: Response): Promise<void> {

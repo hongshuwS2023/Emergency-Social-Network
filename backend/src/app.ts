@@ -1,9 +1,11 @@
 import express from 'express';
 import {createServer} from 'http';
 import 'reflect-metadata';
+import AuthRoute from './auth/auth.route';
+import {restVerifyToken} from './middleware/auth.middleware';
 import {User} from './user/user.entity';
 import UserRoute from './user/user.route';
-import ESNDataSource from './utils/data-source';
+import ESNDataSource from './utils/datasource';
 
 export default class App {
   private app: express.Application;
@@ -18,6 +20,8 @@ export default class App {
 
   private configMiddleware() {
     this.app.use(express.json());
+    this.app.use(express.urlencoded({extended: true}));
+    this.app.use(restVerifyToken);
   }
   private registerRoutes() {
     this.app.get('/', async (_: any, res: any) => {
@@ -26,6 +30,7 @@ export default class App {
     });
 
     this.app.use('/api/users', new UserRoute().getRouter());
+    this.app.use('/api/auth', new AuthRoute().getRouter());
   }
   private async startServer() {
     ESNDataSource.initialize()
