@@ -9,6 +9,8 @@ services:
     restart: always
     networks:
       - esn
+    ports:
+      - 3306:3306
   api:
     container_name: esn-api
     image: esn-api
@@ -27,7 +29,7 @@ services:
     image: esn-web
     build:
       context: ./frontend
-      dockerfile: DOckerfile-frontend
+      dockerfile: Dockerfile-frontend
     restart: always
     networks:
       - esn
