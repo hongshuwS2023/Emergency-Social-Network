@@ -6,6 +6,7 @@ import {restVerifyToken} from './middleware/auth.middleware';
 import {User} from './user/user.entity';
 import UserRoute from './user/user.route';
 import ESNDataSource from './utils/datasource';
+import {errorHandler} from './middleware/error.middleware';
 
 export default class App {
   private app: express.Application;
@@ -22,7 +23,9 @@ export default class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({extended: true}));
     this.app.use(restVerifyToken);
+    this.app.use(errorHandler);
   }
+
   private registerRoutes() {
     this.app.get('/', async (_: any, res: any) => {
       const number = await ESNDataSource.getRepository(User).count();
@@ -32,6 +35,7 @@ export default class App {
     this.app.use('/api/users', new UserRoute().getRouter());
     this.app.use('/api/auth', new AuthRoute().getRouter());
   }
+
   private async startServer() {
     ESNDataSource.initialize()
       .then(() => {

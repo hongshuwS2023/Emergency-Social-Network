@@ -5,11 +5,15 @@ enum StatusCode {
   NOTFOUND = 404,
 }
 
-abstract class ApiException extends Error {
+export abstract class ApiException extends Error {
   status_code: StatusCode;
   constructor(message: string, status_code: StatusCode) {
     super(message);
     this.status_code = status_code;
+  }
+
+  toJson() {
+    return {status_code: this.status_code, message: this.message};
   }
 }
 

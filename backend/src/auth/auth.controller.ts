@@ -11,17 +11,13 @@ export default class AuthController {
 
   async registerUser(req: Request, res: Response): Promise<void> {
     const authUserInput: AuthUserInput = req.body;
-
     const token = await this.authService.registerUser(authUserInput);
-
     res.send(token);
   }
 
   async loginUser(req: Request, res: Response) {
     const authUserInput: AuthUserInput = req.body;
-
     const token = await this.authService.loginUser(authUserInput);
-
     res.send(token);
   }
 }
