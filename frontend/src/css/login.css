@@ -1,0 +1,143 @@
+@import "./index.css";
+
+.screen-page {
+    box-sizing: border-box;
+
+    position: relative;
+    width: 430px;
+    height: 932px;
+
+    background: #DCDCDC;
+    border: 1px solid #000000;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.title {
+
+    position: absolute;
+    width: 342px;
+    height: 176px;
+    left: 44px;
+    top: 132px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: 58px;
+    display: flex;
+    align-items: center;
+}
+
+.color-red {
+    color: red;
+}
+
+.color-black {
+    color: black;
+}
+
+.color-white {
+    color: white;
+}
+
+.leftbot-triangle {
+    position: absolute;
+    left: 0px;
+    top: 640px;
+    transform: rotate(-180deg);
+    border-top: 296px solid #C90000;
+    border-left: 250px solid transparent;
+}
+
+.topright-triangle {
+    position: absolute;
+    left: 180px;
+    top: 0px;
+    border-top: 296px solid #C90000;
+    border-left: 250px solid transparent;
+}
+
+.login-username {
+    position: absolute;
+    width: 342px;
+    height: 66px;
+    margin-left: 44px;
+    margin-top: 370px;
+}
+
+.login-password {
+    position: absolute;
+    width: 342px;
+    height: 66px;
+    left: 44px;
+    top: 459px;
+}
+
+.login-text {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 29px;
+
+    color: #000000;
+}
+
+.input-box {
+    width: 342px;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    border: 1px solid #000000;
+    backdrop-filter: blur(2px);
+    border-radius: 10px;
+
+}
+
+.login-button {
+    box-sizing: border-box;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    gap: 10px;
+
+    position: absolute;
+    width: 200px;
+    height: 38px;
+    left: 110px;
+    top: 562px;
+
+    background: #C30000;
+    border: 1px solid #C30000;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+}
+
+.login-register {
+    position: absolute;
+    width: 335px;
+    height: 44px;
+    left: 88px;
+    top: 623px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    color: #000000;
+}
+
+.register-link {
+    text-decoration: underline;
+    color: blue;
+
+}
