@@ -1,6 +1,7 @@
 import express from 'express';
 import {createServer} from 'http';
 import 'reflect-metadata';
+import cors from 'cors';
 import AuthRoute from './auth/auth.route';
 import {restVerifyToken} from './middleware/auth.middleware';
 import {User} from './user/user.entity';
@@ -20,6 +21,7 @@ export default class App {
   }
 
   private configMiddleware() {
+    this.app.use(cors());
     this.app.use(express.json());
     this.app.use(express.urlencoded({extended: true}));
     this.app.use(restVerifyToken);
