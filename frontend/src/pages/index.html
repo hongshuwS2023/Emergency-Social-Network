@@ -2,46 +2,84 @@
 <html lang="en">
 
 <head>
-  <title>FSE ESN</title>
+  <title>FSE Emergency Social Network</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <link href="../css/index.css" rel="stylesheet" />
+  <script src="../utils/index.ts" type="module"></script>
 </head>
 
 <body>
-  <div class="flex flex-col w-screen h-screen bg-[#DBDBDB] dark:bg-black/[.90]">
-    <div class="absolute w-3/6 h-2/6 bg-cover right-0 top-0">
-      <img src="../../public/assets/png/triangle.png" class="w-full h-full"> 
-    </div>
-    <div class="grid w-screen w-screen h-1/12 mt-[14.16vh] justify-items-center">
-      <div class="w-9/12 h-9/12 text-4xl text-bold text-[#C30000] leading-tight">
-        <p>FSE</p>
-        <p class="inline">E<p class="inline text-black dark:text-white">mergency</p></p>
-        <p class="inline">S<p class="inline text-black dark:text-white">ocial</p>
-        <p class="inline">N<p class="inline text-black dark:text-white">etwork</p></p>
-      </div>
-    </div>
-    <div class="grid w-screen w-screen h-1/12 mt-6 justify-items-center">
-      <div class="w-9/12">
-        <label class="text-2xl text-black dark:text-white">Username</label>
-        <input class="text-2xl w-full rounded-lg"/>
-      </div>
-    </div>
-    <div class="grid w-screen w-screen h-1/12 mt-3 justify-items-center">
-      <div class="w-9/12">
-        <label class="text-2xl text-black dark:text-white">Password</label>
-        <input type="password" class="text-2xl w-full rounded-lg"/>
-      </div>
-    </div>
-    <div class="grid w-screen h-1/12 mt-10 justify-items-center">
-      <div class="grid w-6/12 h-1/12 justify-items-center bg-[#C30000] rounded-lg">
-      <label class="text-2xl dark:text-white">Join</label>
-    </div>
-    </div>
-    <div class="absolute w-3/6 h-2/6 bg-cover bottom-0 left-0 rotate-180">
-      <img src="../../public/assets/png/triangle.png" class="w-full h-full"> 
-    </div>
+
+  <div class="absolute w-screen h-screen bg-cover right-0 top-0">
+    <img src="../../public/assets/png/FSE_ESN_triangles_stroke.png" class="w-full h-screen">
   </div>
+
+  <div class="w-screen h-screen bg-[#DBDBDB] dark:bg-gray-900">
+
+    <div class="flex flex-col justify-center w-screen h-screen">
+
+      <div class="grid w-screen h-1/12 justify-items-center">
+        <div class="w-9/12 h-9/12 text-4xl text-bold text-esn-red leading-tight">
+          <p class="text-3xl font-extrabold">FSE</p>
+          <p class="inline font-extrabold">E
+          <p class="inline text-black dark:text-white">mergency</p>
+          </p>
+          <p class="inline font-extrabold">S
+          <p class="inline text-black dark:text-white">ocial</p>
+          <p class="inline font-extrabold">N
+          <p class="inline text-black dark:text-white">etwork</p>
+          </p>
+        </div>
+      </div>
+      <div class="mt-4">
+        <div class="grid w-screen h-1/12 mt-8 justify-items-center">
+          <div class="w-9/12">
+            <label class="text-2xl text-black dark:text-white">Username</label>
+            <input class="text-2xl w-full rounded-lg dark: bg-gray-300" />
+          </div>
+        </div>
+
+        <div class="grid w-screen h-1/12 mt-3 justify-items-center">
+          <div class="w-9/12">
+            <label class="text-2xl text-black dark:text-white">Password</label>
+            <input type="password" class="text-2xl w-full rounded-lg dark:bg-gray-300" />
+          </div>
+        </div>
+
+        <div class="grid w-screen h-10 mt-8 justify-items-center">
+          <div class="grid w-4/12 h-2/12 justify-items-center bg-esn-red rounded-lg">
+            <button class="align-middle justify-center text-2xl dark:text-white" id="button">Join</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <div class="grid w-screen h-1/12 mt-8 justify-items-center">
+          <div class="w-9/12">
+            <label class="text-2xl text-black dark:text-white">Username</label>
+            <input class="text-2xl w-full rounded-lg dark: bg-gray-300"/>
+          </div>
+        </div>
+      
+        <div class="grid w-screen h-1/12 mt-3 justify-items-center">
+          <div class="w-9/12">
+            <label class="text-2xl text-black dark:text-white">Password</label>
+            <input type="password" class="text-2xl w-full rounded-lg dark:bg-gray-300"/>
+          </div>
+        </div>
+
+        <div class="grid w-screen h-10 mt-8 justify-items-center">
+          <div class="grid w-4/12 h-2/12 justify-items-center bg-esn-red rounded-lg">
+            <label class="align-middle justify-center text-2xl dark:text-white">Join</label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
 </body>
 
 </html>
