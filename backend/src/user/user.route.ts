@@ -13,16 +13,16 @@ export default class UserRoute {
   }
 
   private setRoute(): void {
-    this.router.get('/:userId', (req, res) => {
-      this.userController.getUser(req, res);
+    this.router.get('/:userId', (req, res, next) => {
+      this.userController.getUser(req, res, next);
     });
 
-    this.router.put('/', (req, res) => {
-      this.userController.updateUser(req, res);
+    this.router.put('/', (req, res, next) => {
+      this.userController.updateUser(req, res, next);
     });
 
-    this.router.delete('/:userId', (req, res) => {
-      this.userController.deleteUser(req, res);
+    this.router.delete('/:userId', (req, res, next) => {
+      this.userController.deleteUser(req, res, next);
     });
   }
 

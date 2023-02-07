@@ -4,7 +4,7 @@ import {Role, Status, User} from '../user/user.entity';
 import ESNDataSource from '../utils/datasource';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import {BadRequestException} from '../exceptions/api.exception';
+import {BadRequestException, ErrorMessage} from '../exceptions/api.exception';
 import {RESERVED_USERNAME} from './reserved-username';
 import AuthResponse from '../responses/auth.response';
 
@@ -27,11 +27,11 @@ export default class AuthService {
       username.length < 3 ||
       RESERVED_USERNAME.indexOf(username.toLowerCase()) !== -1
     ) {
-      throw new BadRequestException('Please provide a different username');
+      throw new BadRequestException(ErrorMessage.BADUSERNAMEREQ);
     }
 
     if (password.length < 4) {
-      throw new BadRequestException('Please provide a different password');
+      throw new BadRequestException(ErrorMessage.BADPASSWORDREQ);
     }
     const user = new User();
     user.username = authUserInput.username;
@@ -60,11 +60,11 @@ export default class AuthService {
     });
 
     if (user === null) {
-      throw new BadRequestException('Please check your username');
+      throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
     }
 
     if (this.encodePassword(authUserInput.password) !== user.password) {
-      throw new BadRequestException('Please check your password');
+      throw new BadRequestException(ErrorMessage.WRONGUPASSWORD);
     }
 
     const token = jwt.sign(

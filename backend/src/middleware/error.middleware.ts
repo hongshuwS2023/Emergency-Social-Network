@@ -7,10 +7,6 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  if (res.headersSent) {
-    return next(err);
-  }
-  console.log(err);
   res.status(200);
   res.send((err as ApiException).toJson());
 };

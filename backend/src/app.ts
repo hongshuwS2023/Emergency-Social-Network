@@ -20,12 +20,11 @@ export default class App {
     this.port = 3000;
   }
 
-  private configMiddleware() {
+  private registerConfigs() {
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(express.urlencoded({extended: true}));
     this.app.use(restVerifyToken);
-    this.app.use(errorHandler);
   }
 
   private registerRoutes() {
@@ -36,6 +35,10 @@ export default class App {
 
     this.app.use('/api/users', new UserRoute().getRouter());
     this.app.use('/api/auth', new AuthRoute().getRouter());
+  }
+
+  private registerMiddlewares() {
+    this.app.use(errorHandler);
   }
 
   private async startServer() {
@@ -53,8 +56,9 @@ export default class App {
   }
   static start() {
     const appServer = new App();
-    appServer.configMiddleware();
+    appServer.registerConfigs();
     appServer.registerRoutes();
+    appServer.registerMiddlewares();
     appServer.startServer();
   }
 }
