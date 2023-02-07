@@ -2,15 +2,18 @@ import { CreateUserInput } from '../../../backend/src/requests/createuser.input'
 
 const button = document.getElementById('button');
 
-button?.addEventListener('click', function handleClick(event) {
+button?.addEventListener('click', async function handleClick(event) {
     const createUserRequest: CreateUserInput = {
         username: (document.getElementById('username') as HTMLInputElement).value || '',
         password: (document.getElementById('password') as HTMLInputElement).value || ''
     }
 
-    fetch('http://localhost:3000/api/auth/register', {
+    await fetch('http://localhost:3001/api/auth/register', {
         method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify(createUserRequest)
-    }).then(response => console.log(JSON.stringify(response)));
+    }).then(response => response.json()).then(res => console.log(res));
     console.log(createUserRequest);
 });

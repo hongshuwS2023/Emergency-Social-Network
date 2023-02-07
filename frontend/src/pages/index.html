@@ -5,22 +5,30 @@
   <title>FSE Emergency Social Network</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <script src="../utils/index.ts" type="module"></script>
   <link href="../css/index.css" rel="stylesheet" />
 </head>
 
 <body>
-
+<!-- 
   <div class="absolute w-screen h-screen bg-cover right-0 top-0">
     <img src="../../public/assets/png/FSE_ESN_triangles_stroke.png" class="w-full h-screen">
-  </div>
+  </div> -->
 
   <div class="w-screen h-screen bg-[#DBDBDB] dark:bg-gray-900">
+    <div class="absolute w-screen h-1/5 bg-cover right-0 top-0">
+      <img src="../../public/assets/png/FSE_ESN_triangles.png" class="w-full h-full"> 
+    </div>
+
+    <div class="absolute w-screen h-1/5 bg-cover bottom-0 left-0 rotate-180">
+      <img src="../../public/assets/png/FSE_ESN_triangles.png" class="w-full h-full"> 
+    </div>
 
     <div class="flex flex-col justify-center w-screen h-screen">
 
       <div class="grid w-screen h-1/12 justify-items-center">
         <div class="w-9/12 h-9/12 text-4xl text-bold text-esn-red leading-tight">
-          <p class="text-3xl font-extrabold">FSE</p>
+          <p class="font-extrabold">FSE</p>
           <p class="inline font-extrabold">E<p class="inline text-black dark:text-white">mergency</p></p>
           <p class="inline font-extrabold">S<p class="inline text-black dark:text-white">ocial</p>
           <p class="inline font-extrabold">N<p class="inline text-black dark:text-white">etwork</p></p>
@@ -31,25 +39,55 @@
         <div class="grid w-screen h-1/12 mt-8 justify-items-center">
           <div class="w-9/12">
             <label class="text-2xl text-black dark:text-white">Username</label>
-            <input class="text-2xl w-full rounded-lg dark: bg-gray-300"/>
+            <input class="text-2xl w-full rounded-lg dark: bg-gray-300" id="username"/>
           </div>
         </div>
       
         <div class="grid w-screen h-1/12 mt-3 justify-items-center">
           <div class="w-9/12">
             <label class="text-2xl text-black dark:text-white">Password</label>
-            <input type="password" class="text-2xl w-full rounded-lg dark:bg-gray-300"/>
+            <input type="password" class="text-2xl w-full rounded-lg dark:bg-gray-300" id="password"/>
           </div>
         </div>
 
         <div class="grid w-screen h-10 mt-8 justify-items-center">
-          <div class="grid w-4/12 h-2/12 justify-items-center bg-esn-red rounded-lg">
-            <label class="align-middle justify-center text-2xl dark:text-white">Join</label>
+          <button class="w-4/12 bg-[#C41230] rounded-lg text-2xl dark:text-white" id="button" data-modal-target="defaultModal" data-bs-toggle="defaultModal">Join Community</button>
+        </div>
+        <!-- <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+          <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+        </div> -->
+
+        <div aria-hidden="true" id="defaultModel" class="fixed bottom-0 inset-x-0 px-4 pb-4 sm:inset-0 sm:flex sm:items-center sm:justify-center" >
+          <!-- Modal Background -->
+          <div class="fixed inset-0 transition-opacity">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+          </div>
+          
+          <!-- Modal Content -->
+          <div class="bg-white rounded-lg px-4 pt-5 pb-4 overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900">
+              Modal Title
+            </h3>
+            <div class="mt-2">
+              <p class="text-sm leading-5 text-gray-500">
+                Modal body text goes here.
+              </p>
+            </div>
+            <div class="mt-5 sm:mt-3 sm:flex sm:flex-row-reverse">
+              <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                <button type="button" class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                  Save Changes
+                </button>
+              </span>
+              <span class="mt-3 w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                <button type="button" class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                  Cancel
+                </button>
+              </span>
+            </div>
           </div>
         </div>
       </div>
-
-    </div>
 
   </div>
 
