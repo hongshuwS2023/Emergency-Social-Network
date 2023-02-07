@@ -1,5 +1,5 @@
 import {Repository} from 'typeorm';
-import {NotFoundException} from '../exceptions/api.exception';
+import {NotFoundException, ErrorMessage} from '../exceptions/api.exception';
 import {UpdateUserInput} from '../requests/updateuser.input';
 import ESNDataSource from '../utils/datasource';
 import {User} from './user.entity';
@@ -15,7 +15,7 @@ export default class UserService {
     const user = await this.userRepository.findOneBy({id: userid});
 
     if (user === null) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(ErrorMessage.USERNOTFOUND);
     }
     return user;
   }

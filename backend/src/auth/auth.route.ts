@@ -13,12 +13,12 @@ export default class AuthRoute {
   }
 
   private setRoute(): void {
-    this.router.post('/register', (req, res) => {
-      this.authController.registerUser(req, res);
+    this.router.post('/register', (req, res, next) => {
+      this.authController.registerUser(req, res, next);
     });
 
-    this.router.post('/login', (req, res) => {
-      this.authController.loginUser(req, res);
+    this.router.post('/login', (req, res, next) => {
+      this.authController.loginUser(req, res, next);
     });
   }
 
