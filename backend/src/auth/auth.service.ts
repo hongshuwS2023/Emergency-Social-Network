@@ -4,11 +4,7 @@ import {Role, Status, User} from '../user/user.entity';
 import ESNDataSource from '../utils/datasource';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import {
-  BadRequestException,
-  ErrorMessage,
-  DuplicateResourceException,
-} from '../exceptions/api.exception';
+import {BadRequestException, ErrorMessage} from '../exceptions/api.exception';
 import {RESERVED_USERNAME} from './reserved-username';
 import AuthResponse from '../responses/auth.response';
 
@@ -26,7 +22,6 @@ export default class AuthService {
 
   async registerUser(authUserInput: AuthUserInput): Promise<AuthResponse> {
     const {username, password} = authUserInput;
-
     if (
       username.length < 3 ||
       RESERVED_USERNAME.indexOf(username.toLowerCase()) !== -1
@@ -39,12 +34,6 @@ export default class AuthService {
     }
     const user = new User();
     user.username = authUserInput.username.toLowerCase();
-    const existingUser = await this.authRepository.findOneBy({
-      username: user.username,
-    });
-    if (existingUser) {
-      throw new DuplicateResourceException(ErrorMessage.DUPLICATEUSER);
-    }
     user.password = this.encodePassword(authUserInput.password);
     user.role = Role.CITIZEN;
     user.status = Status.Undefined;
@@ -65,6 +54,17 @@ export default class AuthService {
   }
 
   async loginUser(authUserInput: AuthUserInput): Promise<AuthResponse> {
+    const {username, password} = authUserInput;
+    if (
+      username.length < 3 ||
+      RESERVED_USERNAME.indexOf(username.toLowerCase()) !== -1
+    ) {
+      throw new BadRequestException(ErrorMessage.BADUSERNAMEREQ);
+    }
+
+    if (password.length < 4) {
+      throw new BadRequestException(ErrorMessage.BADPASSWORDREQ);
+    }
     const user = await this.authRepository.findOneBy({
       username: authUserInput.username.toLowerCase(),
     });
