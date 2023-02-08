@@ -1,12 +1,13 @@
-import {Repository} from 'typeorm';
-import {AuthUserInput} from '../requests/authuser.input';
-import {Role, Status, User} from '../user/user.entity';
+import { Repository } from 'typeorm';
+import { AuthUserInput } from '../requests/authuser.input';
+import { Role, Status, User } from '../user/user.entity';
 import ESNDataSource from '../utils/datasource';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import {BadRequestException, ErrorMessage} from '../exceptions/api.exception';
-import {RESERVED_USERNAME} from './reserved-username';
+import { BadRequestException, DuplicateResourceException, ErrorMessage } from '../exceptions/api.exception';
+import { RESERVED_USERNAME } from './reserved-username';
 import AuthResponse from '../responses/auth.response';
+import e from 'express';
 
 export default class AuthService {
   authRepository: Repository<User>;
@@ -21,7 +22,7 @@ export default class AuthService {
   }
 
   async registerUser(authUserInput: AuthUserInput): Promise<AuthResponse> {
-    const {username, password} = authUserInput;
+    const { username, password } = authUserInput;
     if (
       username.length < 3 ||
       RESERVED_USERNAME.indexOf(username.toLowerCase()) !== -1
@@ -32,6 +33,12 @@ export default class AuthService {
     if (password.length < 4) {
       throw new BadRequestException(ErrorMessage.BADPASSWORDREQ);
     }
+
+    const existingUser = await this.authRepository.findOneBy({ username: username.toLowerCase() });
+    if (existingUser) {
+      throw new DuplicateResourceException(ErrorMessage.DUPLICATEUSER);
+    }
+
     const user = new User();
     user.username = authUserInput.username.toLowerCase();
     user.password = this.encodePassword(authUserInput.password);
@@ -54,7 +61,7 @@ export default class AuthService {
   }
 
   async loginUser(authUserInput: AuthUserInput): Promise<AuthResponse> {
-    const {username, password} = authUserInput;
+    const { username, password } = authUserInput;
     if (
       username.length < 3 ||
       RESERVED_USERNAME.indexOf(username.toLowerCase()) !== -1
@@ -74,7 +81,7 @@ export default class AuthService {
     }
 
     if (this.encodePassword(authUserInput.password) !== user.password) {
-      throw new BadRequestException(ErrorMessage.WRONGUPASSWORD);
+      throw new BadRequestException(ErrorMessage.WRONGPASSWORD);
     }
 
     const token = jwt.sign(
