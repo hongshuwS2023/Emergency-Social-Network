@@ -10,9 +10,9 @@
 
 <body>
 
-  <div class="absolute w-screen h-screen bg-cover right-0 top-0">
+  <!-- <div class="absolute w-screen h-screen bg-cover right-0 top-0">
     <img src="../../public/assets/png/FSE_ESN_triangles_stroke.png" class="w-full h-screen">
-  </div>
+  </div> -->
 
   <div class="w-screen h-screen bg-[#DBDBDB] dark:bg-gray-900">
 
@@ -46,12 +46,53 @@
           <div class="grid w-4/12 h-2/12 justify-items-center bg-esn-red rounded-lg">
             <label class="align-middle justify-center text-2xl dark:text-white">Join</label>
           </div>
+          <button id="modalButton" class="bg-white">Modal</button> <!-- DELETE -->
         </div>
       </div>
 
     </div>
 
   </div>
+
+
+  <div id="welcomeModal" class="modal hidden fixed p-0 left-[10%] top-[10%] w-4/5 h-4/5 overflow-auto rounded-lg bg-gray-300 border-2">
+    <div class="modal-content pl-7 pr-3 flex flex-col justify-between h-full">
+      <div class="mt-8">
+        <p>Welcome to the</p><p class="font-extrabold">FSE Emergency Social Network</p>
+      </div>
+      
+      <div class="my-5">
+        <p class="font-bold mb-1">Users may share their status:</p>
+        <ul class="mx-1 list-disc">
+          <li><p class="inline font-extrabold text-green-700">OK:</p> "I do not need help."</li>
+          <li><p class="inline font-extrabold text-yellow-500">Help:</p> "I need help, but this is not a life threatening emergency"</li>
+          <li><p class="inline font-extrabold text-red-600">Emergency:</p> "I need help now! This is a life threatening emergency!"</li>
+        </ul>
+  
+        <p class="mt-4">Your current status is visible to everyone in the user directory.</p>
+        <p class="mt-2">All messages you post will include your status at the time of posting.</p>
+      </div>
+
+      <div class="mt-4 mb-8">
+        <p>Please confirm you understand the above information.</p>
+        <button id="ackButton" class="text-esn-red text-2xl font-bold">Acknowledge</button>
+      </div>
+    </div>
+  </div>
+
+  <script> // MOVE TO FRONTEND JAVASCRIPT FILE
+    const modal = document.getElementById("welcomeModal");
+    const btn = document.getElementById("modalButton");
+    const ack = document.getElementById("ackButton");
+
+    btn.onclick = function() {
+      modal.style.display = "block"; // Open the modal
+    }
+    ack.onclick = function() {
+      modal.style.display = "none"; // Close the modal
+    }
+
+    </script>
 
 </body>
 
