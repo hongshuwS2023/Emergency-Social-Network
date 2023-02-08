@@ -45,11 +45,13 @@
             <input type="password" class="text-2xl w-full rounded-lg dark:bg-gray-300" id="password"/>
           </div>
         </div>
-
-        <div class="grid w-screen h-10 mt-8 justify-items-center">
-          <button class="w-4/12 bg-[#C41230] rounded-lg text-2xl dark:text-white" id="button">Join</button>
-          <button id="modalButton" class="bg-white">Modal</button> <!-- DELETE -->
+        <div class="grid w-screen h-10 mt-8 justify-items-center" id="button-class">
+          <button class="w-4/12 h-8 bg-[#C41230] rounded-lg text-2xl dark:text-white" id="button">Join</button>
+          <button class="w-4/12 h-8 bg-[#C41230] rounded-lg text-2xl dark:text-white invisible" id="confirm-button">Confirm</button>
         </div>
+
+        <div class="grid w-screen h-1/12 mt-3 justify-items-center" id="error-message"></div>
+
       </div>
 
   </div>
@@ -79,20 +81,6 @@
       </div>
     </div>
   </div>
-
-  <script> // MOVE TO FRONTEND JAVASCRIPT FILE
-    const modal = document.getElementById("welcomeModal");
-    const btn = document.getElementById("modalButton");
-    const ack = document.getElementById("ackButton");
-
-    btn.onclick = function() {
-      modal.style.display = "block"; // Open the modal
-    }
-    ack.onclick = function() {
-      modal.style.display = "none"; // Close the modal
-    }
-
-    </script>
 
 </body>
 
