@@ -133,3 +133,6 @@ dist
 # local
 .env.dev
 .env.prod
+
+# backend
+.src/app.ts

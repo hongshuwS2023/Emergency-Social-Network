@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "repository": "https://github.com/cmusv-fse/s23-ESN-SB1.git",
   "author": "SB1",
+  "license": "MIT",
   "devDependencies": {
     "@types/express": "^4.17.16",
     "@types/jsonwebtoken": "^9.0.1",

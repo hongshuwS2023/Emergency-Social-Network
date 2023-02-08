@@ -1,4 +1,5 @@
 import { CreateUserInput } from '../../../backend/src/requests/createuser.input';
+import { ErrorMessage } from '../../../backend/src/exceptions/api.exception'
 
 const join = document.getElementById('button');
 
@@ -15,7 +16,10 @@ join?.addEventListener('click', async function handleClick(event) {
         },
         body: JSON.stringify(createUserRequest)
     }).then(response => response.json()).then(async (res) => {
-        if (res.token) { console.log('login success'); } else {
+        if (res.token) { console.log('login success'); } else if (res.message == '') {
+
+        }
+        else {
             await fetch('http://localhost:3001/api/auth/register', {
                 method: 'POST',
                 headers: {

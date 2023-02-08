@@ -15,7 +15,7 @@ export default class UserService {
     const user = await this.userRepository.findOneBy({id: userid});
 
     if (user === null) {
-      throw new NotFoundException(ErrorMessage.USERNOTFOUND);
+      throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
     }
     return user;
   }
