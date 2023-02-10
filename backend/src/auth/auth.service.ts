@@ -7,7 +7,6 @@ import crypto from 'crypto';
 import { BadRequestException, DuplicateResourceException, ErrorMessage } from '../exceptions/api.exception';
 import { RESERVED_USERNAME } from './reserved-username';
 import AuthResponse from '../responses/auth.response';
-import e from 'express';
 
 export default class AuthService {
   authRepository: Repository<User>;
