@@ -2,8 +2,8 @@ import { ErrorMessage, parseError } from '../../response/exception.response';
 
 const join = document.getElementById('button') || new HTMLDivElement();
 const confirm = document.getElementById('confirm-button') || new HTMLDivElement();
-const modal = document.getElementById("welcomeModal") || new HTMLDivElement();
-const ack = document.getElementById("ackButton") || new HTMLDivElement();
+const modal = document.getElementById("welcome-modal") || new HTMLDivElement();
+const ack = document.getElementById("ack-button") || new HTMLDivElement();
 const buttonClass = document.querySelector('#button-class');
 
 join?.addEventListener('click', async function handleClick(event) {
@@ -23,6 +23,7 @@ join?.addEventListener('click', async function handleClick(event) {
     }).then(response => { return response.json() })
     if (res.token) {
         console.log('login success');
+        localStorage.setItem('id', res.id);
     }
     else if (res.message != ErrorMessage.WRONGUSERNAME) {
         console.log(res);

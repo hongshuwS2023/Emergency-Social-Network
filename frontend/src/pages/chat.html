@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>FSE Emergency Social Network</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <script src="../utils/chat.ts" type="module"></script>
+    <link href="../css/index.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="w-screen h-screen bg-[#DBDBDB] dark:bg-gray-900">
+        <div class="absolute w-screen h-1/5 bg-cover right-0 top-0">
+            <img src="../../public/assets/png/FSE_ESN_triangles.png" class="w-full h-full relative">
+        </div>
+
+        <div class="absolute top-5 right-5 z-50">
+            <button class="text-white" id="menu-button">Menu</button>
+        </div>
+
+        <div class="flex flex-col justify-center w-screen h-screen pt-6">
+
+            <div class="grid w-screen h-4/6 mt-20 justify-items-center">
+                <div class="w-9/12">
+                    <div class="flex flex-col bg-white h-full w-full rounded-lg dark:bg-grey-100 overflow-y"
+                        id="history">
+                        <div class="grid bg-gray-300 rounded-lg dark:bg-grey-100 w-4/5 h-auto ml-auto mr-auto mt-4">
+                            <p>
+                                <span class="text-xs float-left ml-1 mt-1">username &nbsp;<span
+                                        class="text-xs">status</span></span>
+                                <span class="text-xs float-right mr-1 mt-1">time</span>
+                            </p>
+                            <p class="text-xs ml-1 mb-1">message</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="grid mt-5 w-screen h-2/12 justify-items-center">
+                <div class="w-9/12">
+                    <input class="text-2xl w-full h-full rounded-lg dark:bg-grey-100" id="input" />
+                </div>
+            </div>
+            <div class="grid mt-5 justify-items-center">
+                <div class="w-7/12 h-1/12">
+                    <button class="w-full h-full bg-[#C41230] rounded-lg text-2xl dark:text-white"
+                        id="send-button">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="menu-modal" class="absolute modal hidden fixed">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
+            <div class="p-0 ml-[30%] mt-[40%] w-2/5 h-2/5 overflow-auto rounded-lg bg-white bg-opacity-100 border-2">
+                <div class="modal-content flex flex-col justify-center h-full">
+                    <div class="mt-8 text-center text-2xl">
+                        ESN Main page
+                    </div>
+                    <div class="mt-8 text-center text-2xl">
+                        Logout
+                    </div>
+
+                    <div class="mt-4 mb-8 text-center">
+                        <button id="back-button" class="text-esn-red text-2xl font-bold">Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
