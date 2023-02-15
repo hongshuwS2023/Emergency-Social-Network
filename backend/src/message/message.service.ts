@@ -4,6 +4,7 @@ import { PostMessageInput } from '../requests/postmessage.input';
 import ESNDataSource from '../utils/datasource';
 import {Message} from './message.entity';
 import { User } from '../user/user.entity';
+import { getFormattedDate } from '../utils/date';
 
 export default class MessageService {
   messageRepository: Repository<Message>;
@@ -36,7 +37,7 @@ export default class MessageService {
     message.content = publicMessageInput.content;
     message.room = publicMessageInput.room || 0;
     message.user = user;
-    message.time = Date.now().toLocaleString();
+    message.time = getFormattedDate();
     return await this.messageRepository.save(message);
   }
 
