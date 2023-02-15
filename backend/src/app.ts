@@ -8,6 +8,7 @@ import {User} from './user/user.entity';
 import UserRoute from './user/user.route';
 import ESNDataSource from './utils/datasource';
 import {errorHandler} from './middleware/error.middleware';
+import MessageRoute from './message/message.route';
 
 export default class App {
   private app: express.Application;
@@ -35,6 +36,7 @@ export default class App {
 
     this.app.use('/api/users', new UserRoute().getRouter());
     this.app.use('/api/auth', new AuthRoute().getRouter());
+    this.app.use('/api/messages',new MessageRoute().getRouter());
   }
 
   private registerMiddlewares() {
