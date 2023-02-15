@@ -28,7 +28,6 @@
   "scripts": {
     "dev": "yarn nodemon index.ts --mode dev",
     "build": "yarn tsc",
-    "start": "yarn node dist/index.js --mode prod",
     "lint": "yarn gts lint",
     "clean": "yarn gts clean",
     "compile": "yarn tsc",

@@ -1,14 +1,19 @@
 FROM node:18 AS build-stage
 WORKDIR /app
 COPY . ./
-RUN npm install -f
-RUN npm run build
+RUN yarn
+RUN yarn build
 
-FROM gcr.io/distroless/nodejs18-debian11
+FROM node:18-slim
 WORKDIR /app
-COPY --from=build-stage /app/node_modules ./node_modules
 COPY --from=build-stage /app/dist ./dist
-COPY --from=build-stage /app/.env.prod .
+COPY --from=build-stage /app/.env.prod ./
+COPY --from=build-stage /app/.pnp.cjs ./
+COPY --from=build-stage /app/.yarn/cache/ .yarn/cache/
+COPY --from=build-stage /app/.yarn/releases/ .yarn/releases/
+COPY --from=build-stage /app/.yarn/unplugged/ .yarn/unplugged/
+
 EXPOSE 3000
-CMD ["dist/index.js", "--mode", "prod"]
+
+CMD ["node", "-r", "./.pnp.cjs", "./dist/index.js", "--mode", "prod"]
 

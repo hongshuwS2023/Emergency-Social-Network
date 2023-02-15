@@ -10,19 +10,23 @@ let userStatus = '';
 let time = '';
 
 send.addEventListener('click', async function handleClick(event) {
+    let token = "Bearer " + localStorage.getItem('token') as string;
+    console.log(token);
     const messageBody = {
         userId: localStorage.getItem('id'),
         content: (document.getElementById('input') as HTMLInputElement).value || '',
     }
-    const res = await fetch('http://localhost:3000/api/message', {
+    const res = await fetch('http://localhost:3000/api/messages', {
         method: 'POST',
         headers: {
-            "Content-Type": "application/json"
+            "authorization": token
         },
         body: JSON.stringify(messageBody)
     }).then(response => {
+        console.log(messageBody.userId);
         return response.json();
     })
+    console.log(res);
     username = res.user.username;
     userStatus = res.user.status;
     message = res.content;
