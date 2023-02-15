@@ -9,16 +9,19 @@ import UserRoute from './user/user.route';
 import ESNDataSource from './utils/datasource';
 import {errorHandler} from './middleware/error.middleware';
 import MessageRoute from './message/message.route';
+import { SocketServer } from './utils/socketServer';
 
 export default class App {
   private app: express.Application;
   private port: number;
   private httpServer: any;
+  private socketServer: SocketServer
 
   private constructor() {
     this.app = express();
     this.httpServer = createServer(this.app);
     this.port = 3000;
+    this.socketServer = new SocketServer(this.httpServer);
   }
 
   private registerConfigs() {
