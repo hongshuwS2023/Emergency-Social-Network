@@ -5,7 +5,9 @@ import ESNDataSource from '../utils/datasource';
 import { Message } from './message.entity';
 import { User } from '../user/user.entity';
 import { getFormattedDate } from '../utils/date';
+import { Body, Get, Post, Route } from 'tsoa';
 
+@Route('/api/messages')
 export default class MessageService {
   messageRepository: Repository<Message>;
   userRepository: Repository<User>;
@@ -15,20 +17,12 @@ export default class MessageService {
     this.userRepository = ESNDataSource.getRepository(User);
   }
 
+  /**
+   * Retrieve all messages in the database
+   * @returns Message[]
+   */
+  @Get()
   async getPublicMessages(): Promise<Message[]> {
-
-    // const messages = await this.messageRepository.find({
-    //   relations: [
-    //     "user"
-    //   ],
-    //   select: [
-    //     "content", "time", "user.username", "user.status"
-    //   ],
-    //     where:{
-    //         room:0
-    //     },
-    // });
-
     const messages = await this.messageRepository.createQueryBuilder('message').leftJoinAndSelect('message.user', 'user').select(['message.content', 'message.time', 'user.username', 'user.status']).getMany();
 
     if (messages === null) {
@@ -37,7 +31,13 @@ export default class MessageService {
     return messages;
   }
 
-  async postMessage(publicMessageInput: PostMessageInput): Promise<Message> {
+  /**
+   * Post a new message to the target room
+   * @param publicMessageInput 
+   * @returns Message
+   */
+  @Post()
+  async postMessage(@Body()publicMessageInput: PostMessageInput): Promise<Message> {
     const user = await this.userRepository.findOneBy({ id: publicMessageInput.userId });
     if (user === null) {
       throw new NotFoundException(ErrorMessage.WRONGUSERNAME);

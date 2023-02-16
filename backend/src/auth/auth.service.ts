@@ -7,7 +7,9 @@ import crypto from 'crypto';
 import { BadRequestException, DuplicateResourceException, ErrorMessage } from '../exceptions/api.exception';
 import { RESERVED_USERNAME } from './reserved-username';
 import AuthResponse from '../responses/auth.response';
+import { Body, Post, Route } from 'tsoa';
 
+@Route('api/auth')
 export default class AuthService {
   authRepository: Repository<User>;
   jwtSecret: string;
@@ -20,7 +22,13 @@ export default class AuthService {
     this.salt = process.env.SALT as string;
   }
 
-  async registerUser(authUserInput: AuthUserInput): Promise<AuthResponse> {
+  /**
+   * Registers user based on provided username and password
+   * @param authUserInput 
+   * @returns AuthResponse
+   */
+  @Post('/register')
+  async registerUser(@Body()authUserInput: AuthUserInput): Promise<AuthResponse> {
     const { username, password } = authUserInput;
     if (
       username.length < 3 ||
@@ -59,7 +67,13 @@ export default class AuthService {
     return new AuthResponse(newUesr.id, token);
   }
 
-  async loginUser(authUserInput: AuthUserInput): Promise<AuthResponse> {
+    /**
+   * login user based on provided username and password
+   * @param authUserInput 
+   * @returns AuthResponse
+   */
+  @Post('/login')
+  async loginUser(@Body()authUserInput: AuthUserInput): Promise<AuthResponse> {
     const { username, password } = authUserInput;
     if (
       username.length < 3 ||

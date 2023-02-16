@@ -7,9 +7,10 @@ import {restVerifyToken} from './middleware/auth.middleware';
 import UserRoute from './user/user.route';
 import ESNDataSource from './utils/datasource';
 import {errorHandler} from './middleware/error.middleware';
+import * as swaggerDocument from '../public/swagger.json';
 import MessageRoute from './message/message.route';
 import { SocketServer } from './utils/socketServer';
-import swaggerUi from "swagger-ui-express"
+import swaggerUi from "swagger-ui-express";
 
 export default class App {
   private app: express.Application;
@@ -32,12 +33,7 @@ export default class App {
   }
 
   private registerRoutes() {
-    this.app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(undefined, {
-      swaggerOptions: {
-        url: "/swagger.json",
-      },
-    }));
-
+    this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     this.app.use('/api/users', new UserRoute().getRouter());
     this.app.use('/api/auth', new AuthRoute().getRouter());
     this.app.use('/api/messages',new MessageRoute().getRouter());

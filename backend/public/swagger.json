@@ -6,6 +6,44 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"AuthResponse": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"token": {
+						"type": "string"
+					},
+					"expiresIn": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id",
+					"token",
+					"expiresIn"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AuthUserInput": {
+				"properties": {
+					"username": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"username",
+					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"Role": {
 				"enum": [
 					0,
@@ -113,6 +151,27 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"PostMessageInput": {
+				"properties": {
+					"userId": {
+						"type": "number",
+						"format": "double"
+					},
+					"content": {
+						"type": "string"
+					},
+					"room": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"userId",
+					"content"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -129,12 +188,72 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
+		"/api/auth/register": {
+			"post": {
+				"operationId": "RegisterUser",
+				"responses": {
+					"200": {
+						"description": "AuthResponse",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AuthResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Registers user based on provided username and password",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AuthUserInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/auth/login": {
+			"post": {
+				"operationId": "LoginUser",
+				"responses": {
+					"200": {
+						"description": "AuthResponse",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AuthResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "login user based on provided username and password",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AuthUserInput"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/api/users/{userId}": {
 			"get": {
 				"operationId": "GetUser",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "user entity",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -144,6 +263,7 @@
 						}
 					}
 				},
+				"description": "Get a user based on userId provided",
 				"security": [],
 				"parameters": [
 					{
@@ -161,7 +281,7 @@
 				"operationId": "DeleteUser",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "true",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -171,6 +291,7 @@
 						}
 					}
 				},
+				"description": "Delete an user from the system",
 				"security": [],
 				"parameters": [
 					{
@@ -190,7 +311,7 @@
 				"operationId": "UpdateUser",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "user entity",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -200,6 +321,7 @@
 						}
 					}
 				},
+				"description": "Update the states of an user based on state provieded",
 				"security": [],
 				"parameters": [],
 				"requestBody": {
@@ -208,6 +330,57 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/UpdateUserInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/messages": {
+			"get": {
+				"operationId": "GetPublicMessages",
+				"responses": {
+					"200": {
+						"description": "Message[]",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Message"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieve all messages in the database",
+				"security": [],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "PostMessage",
+				"responses": {
+					"200": {
+						"description": "Message",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Message"
+								}
+							}
+						}
+					}
+				},
+				"description": "Post a new message to the target room",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PostMessageInput"
 							}
 						}
 					}
