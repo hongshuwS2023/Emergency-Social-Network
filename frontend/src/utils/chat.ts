@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
-import { Message } from '../../../backend/src/message/message.entity';
-import { Status } from '../../../backend/src/user/user.entity';
+import MessageResponse from '../../response/chat.response'
+import { Status } from '../../response/chat.response';
 
 
 const socket: Socket = io('http://localhost:3000', { transports: ['websocket'] });
@@ -9,18 +9,20 @@ const send = document.getElementById('send-button') || new HTMLDivElement();
 const menu = document.getElementById('menu-button') || new HTMLDivElement();
 const modal = document.getElementById("menu-modal") || new HTMLDivElement();
 const back = document.getElementById("back-button") || new HTMLDivElement();
+const token = "Bearer " + localStorage.getItem('token') as string;
 
 send.addEventListener('click', async function handleClick(event) {
-    let token = "Bearer " + localStorage.getItem('token') as string;
-    console.log(token);
     const messageBody = {
-        userId: localStorage.getItem('id'),
-        content: (document.getElementById('input') as HTMLInputElement).value || '',
+        userId: Number(localStorage.getItem('id')),
+        content: (document.getElementById('input') as HTMLInputElement).value,
     }
+    console.log(messageBody);
+
     const res = await fetch('http://localhost:3000/api/messages', {
         method: 'POST',
         headers: {
-            "authorization": token
+            "authorization": token,
+            "Content-type": "application/json"
         },
         body: JSON.stringify(messageBody)
     }).then(response => {
@@ -35,13 +37,12 @@ menu.addEventListener('click', async function handleClick(event) {
     back.onclick = function () {
         modal.style.display = "none";
     };
-
 });
 
 socket.on('connect', () => {
-    socket.on('public message', (msg: Message) => {
+    socket.on('public message', (msg: MessageResponse) => {
         console.log('message from server:', msg);
-        displayMessage(msg.user.username, msg.user.status, msg.content, msg.time);
+        displayMessage(msg.username, msg.status, msg.content, msg.time);
     });
 
 });
@@ -61,5 +62,23 @@ function displayMessage(username: string, status: Status, message: string, time:
         <span ${messageTimeClass}>${time}</span>
     </p>
     <p ${messageContentClass}>${message}</p> </div>`;
-    document.querySelector(".history")?.appendChild(div);
+    document.querySelector('#history')?.appendChild(div);
 }
+
+async function getHistory() {
+    const res = await fetch('http://localhost:3000/api/messages', {
+        method: 'GET',
+        headers: {
+            "authorization": token,
+            "Content-type": "application/json"
+        },
+    }).then(response => {
+        return response.json();
+    })
+    res.forEach(msg => {
+       displayMessage(msg.user.username, msg.user.status, msg.content, msg.time);
+        console.log(msg);
+    });
+}
+
+getHistory();

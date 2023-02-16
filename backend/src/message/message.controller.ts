@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from 'express';
 import MessageService from './message.service';
 import { PostMessageInput } from '../requests/postmessage.input';
 import { SocketServer } from '../utils/socketServer';
+import MessageResponse from '../responses/api.response';
 
 export default class MessageController {
   messageService: MessageService;
@@ -29,10 +30,11 @@ export default class MessageController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const postMessageInput:PostMessageInput = req.body;
+      const postMessageInput: PostMessageInput = req.body;
       const message = await this.messageService.postMessage(postMessageInput);
-      SocketServer.io.emit("public message", message);
-      res.send(message);
+      const responseMessage = new MessageResponse(message.user.username, message.content, message.time, message.user.status);
+      SocketServer.io.emit("public message", responseMessage);
+      res.send(responseMessage);
     } catch (error) {
       next(error);
     }

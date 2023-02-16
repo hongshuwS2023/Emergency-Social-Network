@@ -1,4 +1,9 @@
-import { Status } from "../user/user.entity";
+export enum Status {
+    OK,
+    HELP,
+    Emergency,
+    Undefined,
+}
 
 export default class MessageResponse {
     username: string;
@@ -12,3 +17,4 @@ export default class MessageResponse {
         this.status = status;
       }
   }
+

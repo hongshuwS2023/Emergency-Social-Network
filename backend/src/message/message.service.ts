@@ -1,8 +1,8 @@
-import {Repository} from 'typeorm';
-import {ErrorMessage, NotFoundException} from '../exceptions/api.exception';
+import { Repository } from 'typeorm';
+import { ErrorMessage, NotFoundException } from '../exceptions/api.exception';
 import { PostMessageInput } from '../requests/postmessage.input';
 import ESNDataSource from '../utils/datasource';
-import {Message} from './message.entity';
+import { Message } from './message.entity';
 import { User } from '../user/user.entity';
 import { getFormattedDate } from '../utils/date';
 
@@ -16,11 +16,20 @@ export default class MessageService {
   }
 
   async getPublicMessages(): Promise<Message[]> {
-    const messages = await this.messageRepository.find({
-        where:{
-            room:0
-        },
-    });
+
+    // const messages = await this.messageRepository.find({
+    //   relations: [
+    //     "user"
+    //   ],
+    //   select: [
+    //     "content", "time", "user.username", "user.status"
+    //   ],
+    //     where:{
+    //         room:0
+    //     },
+    // });
+
+    const messages = await this.messageRepository.createQueryBuilder('message').leftJoinAndSelect('message.user', 'user').select(['message.content', 'message.time', 'user.username', 'user.status']).getMany();
 
     if (messages === null) {
       return [];
@@ -29,7 +38,7 @@ export default class MessageService {
   }
 
   async postMessage(publicMessageInput: PostMessageInput): Promise<Message> {
-    const user = await this.userRepository.findOneBy({id: publicMessageInput.userId});
+    const user = await this.userRepository.findOneBy({ id: publicMessageInput.userId });
     if (user === null) {
       throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
     }
