@@ -135,4 +135,4 @@ dist
 .env.prod
 
 # backend
-.src/app.ts
+public/
