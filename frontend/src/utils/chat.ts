@@ -14,13 +14,16 @@ send.addEventListener('click', async function handleClick(event) {
     let token = "Bearer " + localStorage.getItem('token') as string;
     console.log(token);
     const messageBody = {
-        userId: localStorage.getItem('id'),
-        content: (document.getElementById('input') as HTMLInputElement).value || '',
+        userId: Number(localStorage.getItem('id')),
+        content: (document.getElementById('input') as HTMLInputElement).value,
     }
+    console.log(messageBody);
+
     const res = await fetch('http://localhost:3000/api/messages', {
         method: 'POST',
         headers: {
-            "authorization": token
+            "authorization": token,
+            "Content-type": "application/json"
         },
         body: JSON.stringify(messageBody)
     }).then(response => {
