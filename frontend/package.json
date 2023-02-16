@@ -12,5 +12,8 @@
   "scripts": {
     "dev": "parcel src/pages/*.html",
     "build": "parcel build src/pages/*.html"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.6.0"
   }
 }
