@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { ErrorMessage, NotFoundException } from '../exceptions/api.exception';
+import { BadRequestException, ErrorMessage, NotFoundException } from '../exceptions/api.exception';
 import { PostMessageInput } from '../requests/postmessage.input';
 import ESNDataSource from '../utils/datasource';
 import { Message } from './message.entity';
@@ -44,6 +44,9 @@ export default class MessageService {
     }
     const message = new Message()
     message.content = publicMessageInput.content;
+    if (publicMessageInput.content.trim().length<=0){
+      throw new BadRequestException(ErrorMessage.EMPTYMESSAGE);
+    }
     message.room = publicMessageInput.room || 0;
     message.user = user;
     message.time = getFormattedDate();
