@@ -51,7 +51,7 @@ socket.on('connect', () => {
 
 const messageBackgroundClass = 'class="grid bg-gray-300 rounded-lg dark:bg-grey-100 w-4/5 h-auto ml-auto mr-auto mt-4 text-xs"';
 const messageUsernameClass = 'class="float-left ml-1 mt-1"';
-const messageTimeClass = 'class="float-right mr-1 mt-1"';
+const messageTimeClass = 'class="float-right ml-1 mt-1 mr-1"';
 const messageContentClass = 'class="ml-1 mb-1"';
 
 function displayMessage(username: string, status: Status, message: string, time: string) {
@@ -78,7 +78,6 @@ async function getHistory() {
     })
     res.forEach(msg => {
        displayMessage(msg.user.username, msg.user.status, msg.content, msg.time);
-        console.log(msg);
     });
 }
 
