@@ -1,6 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 import MessageResponse from '../../response/chat.response'
 import { Status } from '../../response/chat.response';
+import { parseStatus } from '../../response/chat.response';
 
 
 const socket: Socket = io('http://localhost:3000', { transports: ['websocket'] });
@@ -57,8 +58,8 @@ function displayMessage(username: string, status: Status, message: string, time:
     const div = document.createElement("div");
     div.innerHTML = `<div ${messageBackgroundClass}>
     <p>
-        <span ${messageUsernameClass}>${username} &nbsp;
-        <span>${status}</span></span>
+        <span ${messageUsernameClass}>${username}
+        <span>${parseStatus(status)}</span></span>
         <span ${messageTimeClass}>${time}</span>
     </p>
     <p ${messageContentClass}>${message}</p> </div>`;

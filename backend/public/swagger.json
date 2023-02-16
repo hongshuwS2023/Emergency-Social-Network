@@ -40,6 +40,12 @@
 					},
 					"status": {
 						"$ref": "#/components/schemas/Status"
+					},
+					"messages": {
+						"items": {
+							"$ref": "#/components/schemas/Message"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
@@ -47,7 +53,38 @@
 					"username",
 					"password",
 					"role",
-					"status"
+					"status",
+					"messages"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Message": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"user": {
+						"$ref": "#/components/schemas/User"
+					},
+					"content": {
+						"type": "string"
+					},
+					"time": {
+						"type": "string"
+					},
+					"room": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id",
+					"user",
+					"content",
+					"time",
+					"room"
 				],
 				"type": "object",
 				"additionalProperties": false
