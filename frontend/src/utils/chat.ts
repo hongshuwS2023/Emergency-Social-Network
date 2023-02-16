@@ -3,7 +3,7 @@ import { Message } from '../../../backend/src/message/message.entity';
 import { Status } from '../../../backend/src/user/user.entity';
 
 
-const socket: Socket = io('http://localhost:3000',  { transports : ['websocket'] });
+const socket: Socket = io('http://localhost:3000', { transports: ['websocket'] });
 
 const send = document.getElementById('send-button') || new HTMLDivElement();
 const menu = document.getElementById('menu-button') || new HTMLDivElement();
@@ -60,7 +60,6 @@ function displayMessage(username: string, status: Status, message: string, time:
         <span>${status}</span></span>
         <span ${messageTimeClass}>${time}</span>
     </p>
-    <p ${messageContentClass}>${message}</p>
-</div>`;
+    <p ${messageContentClass}>${message}</p> </div>`;
     document.querySelector(".history")?.appendChild(div);
 }
