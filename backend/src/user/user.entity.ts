@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import { Message } from '../message/message.entity';
 
 export enum Role {
   ADMIN,
@@ -29,4 +30,7 @@ export class User {
 
   @Column()
   status!: Status;
+
+  @OneToMany(() => Message, (message) => message.user)
+  messages!: Message[];
 }

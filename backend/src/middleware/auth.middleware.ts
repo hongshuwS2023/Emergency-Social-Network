@@ -11,7 +11,7 @@ export const restVerifyToken = (
   _: Response,
   next: NextFunction
 ) => {
-  if (req.originalUrl.match('/api/auth/*')) {
+  if (req.originalUrl.match('/api/auth/*') || req.originalUrl.match('/api/docs')) {
     next();
     return;
   }
