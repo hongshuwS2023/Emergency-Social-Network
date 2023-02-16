@@ -3,8 +3,7 @@ import {NotFoundException, ErrorMessage} from '../exceptions/api.exception';
 import {UpdateUserInput} from '../requests/updateuser.input';
 import ESNDataSource from '../utils/datasource';
 import {User} from './user.entity';
-import {Body, Delete, Get, Path, Put, Route} from 'tsoa';
-@Route("api/users")
+
 export default class UserService {
   userRepository: Repository<User>;
 
@@ -12,8 +11,7 @@ export default class UserService {
     this.userRepository = ESNDataSource.getRepository(User);
   }
 
-  @Get("{userId}")
-  async getUser(@Path() userId: number): Promise<User> {
+  async getUser(userId: number): Promise<User> {
     const user = await this.userRepository.findOneBy({id: userId});
 
     if (user === null) {
@@ -22,8 +20,7 @@ export default class UserService {
     return user;
   }
 
-  @Put()
-  async updateUser(@Body()updateUserInput: UpdateUserInput): Promise<User> {
+  async updateUser(updateUserInput: UpdateUserInput): Promise<User> {
     const user = await this.getUser(updateUserInput.id);
 
     user.username = updateUserInput.username
@@ -38,8 +35,7 @@ export default class UserService {
     return await this.userRepository.save(user);
   }
 
-  @Delete("{userId}")
-  async deleteUser(@Path()userId: number): Promise<boolean> {
+  async deleteUser(userId: number): Promise<boolean> {
     const user = await this.getUser(userId);
 
     await this.userRepository.delete({id: user.id});

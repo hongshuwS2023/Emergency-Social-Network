@@ -10,8 +10,6 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^18.11.18",
     "@types/socket.io": "^3.0.2",
-    "@types/swagger-ui-express": "^4.1.3",
-    "concurrently": "^7.6.0",
     "gts": "^3.1.1",
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",
@@ -25,12 +23,10 @@
     "mysql2": "^3.1.0",
     "reflect-metadata": "^0.1.13",
     "socket.io": "^4.6.0",
-    "swagger-ui-express": "^4.6.0",
-    "tsoa": "^5.1.1",
     "typeorm": "^0.3.11"
   },
   "scripts": {
-    "dev": "concurrently \"yarn nodemon index.ts --mode dev --watch src \" \"yarn nodemon --watch src -x tsoa spec\"",
+    "dev": "yarn nodemon index.ts --mode dev",
     "build": "yarn tsc",
     "lint": "yarn gts lint",
     "clean": "yarn gts clean",
@@ -38,10 +34,7 @@
     "fix": "yarn gts fix",
     "prepare": "yarn run compile",
     "pretest": "yarn run compile",
-    "posttest": "yarn run lint",
-    "swagger": "yarn tsoa spec",
-    "predev": "yarn run swagger",
-    "prebuild": "yarn run swagger"
+    "posttest": "yarn run lint"
   },
   "packageManager": "yarn@3.4.1"
 }

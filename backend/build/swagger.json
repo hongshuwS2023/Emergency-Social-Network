@@ -1,0 +1,176 @@
+{
+	"basePath": "/",
+	"consumes": [
+		"application/json"
+	],
+	"definitions": {
+		"Role": {
+			"enum": [
+				0,
+				1,
+				2
+			],
+			"type": "number"
+		},
+		"Status": {
+			"enum": [
+				0,
+				1,
+				2,
+				3
+			],
+			"type": "number"
+		},
+		"User": {
+			"properties": {
+				"id": {
+					"type": "number",
+					"format": "double"
+				},
+				"username": {
+					"type": "string"
+				},
+				"password": {
+					"type": "string"
+				},
+				"role": {
+					"$ref": "#/definitions/Role"
+				},
+				"status": {
+					"$ref": "#/definitions/Status"
+				}
+			},
+			"required": [
+				"id",
+				"username",
+				"password",
+				"role",
+				"status"
+			],
+			"type": "object",
+			"additionalProperties": false
+		},
+		"UpdateUserInput": {
+			"properties": {
+				"id": {
+					"type": "number",
+					"format": "double"
+				},
+				"username": {
+					"type": "string"
+				},
+				"password": {
+					"type": "string"
+				},
+				"role": {
+					"$ref": "#/definitions/Role"
+				},
+				"status": {
+					"$ref": "#/definitions/Status"
+				}
+			},
+			"required": [
+				"id"
+			],
+			"type": "object",
+			"additionalProperties": false
+		}
+	},
+	"info": {
+		"title": "s23-ESN-SB1",
+		"version": "0.0.1",
+		"license": {
+			"name": "MIT"
+		},
+		"contact": {
+			"name": "SB1"
+		}
+	},
+	"paths": {
+		"/api/users/{userId}": {
+			"get": {
+				"operationId": "GetUser",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"$ref": "#/definitions/User"
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"format": "double",
+						"type": "number"
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteUser",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "boolean"
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"format": "double",
+						"type": "number"
+					}
+				]
+			}
+		},
+		"/api/users": {
+			"put": {
+				"operationId": "UpdateUser",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"$ref": "#/definitions/User"
+						}
+					}
+				},
+				"consumes": [
+					"application/json"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "updateUserInput",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/UpdateUserInput"
+						}
+					}
+				]
+			}
+		}
+	},
+	"produces": [
+		"application/json"
+	],
+	"swagger": "2.0",
+	"securityDefinitions": {}
+}
