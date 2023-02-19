@@ -11,6 +11,7 @@ const menu = document.getElementById('menu-button') || new HTMLDivElement();
 const modal = document.getElementById("menu-modal") || new HTMLDivElement();
 const back = document.getElementById("back-button") || new HTMLDivElement();
 const token = "Bearer " + localStorage.getItem('token') as string;
+const logout = document.getElementById("logout-button") || new HTMLDivElement();
 
 send.addEventListener('click', async function handleClick(event) {
     const messageBody = {
@@ -39,6 +40,12 @@ menu.addEventListener('click', async function handleClick(event) {
         modal.style.display = "none";
     };
 });
+
+logout.addEventListener('click', () => {
+    localStorage.removeItem('id');
+    localStorage.removeItem('token');
+    window.location.href = "index.html";
+})
 
 socket.on('connect', () => {
     socket.on('public message', (msg: MessageResponse) => {
