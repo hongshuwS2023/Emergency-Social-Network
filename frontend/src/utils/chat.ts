@@ -3,15 +3,13 @@ import MessageResponse from '../../response/chat.response'
 import { Status } from '../../response/chat.response';
 import { parseStatus } from '../../response/chat.response';
 
+if(!localStorage.getItem('token') || !localStorage.getItem('id')){
+    window.location.href='index.html';
+}
 
 const socket: Socket = io('http://localhost:3000', { transports: ['websocket'] });
-
 const send = document.getElementById('send-button') || new HTMLDivElement();
-const menu = document.getElementById('menu-button') || new HTMLDivElement();
-const modal = document.getElementById("menu-modal") || new HTMLDivElement();
-const back = document.getElementById("back-button") || new HTMLDivElement();
 const token = "Bearer " + localStorage.getItem('token') as string;
-const logout = document.getElementById("logout-button") || new HTMLDivElement();
 
 send.addEventListener('click', async function handleClick(event) {
     const messageBody = {
@@ -34,19 +32,6 @@ send.addEventListener('click', async function handleClick(event) {
     console.log(res);
 });
 
-menu.addEventListener('click', async function handleClick(event) {
-    modal.style.display = "block"
-    back.onclick = function () {
-        modal.style.display = "none";
-    };
-});
-
-logout.addEventListener('click', () => {
-    localStorage.removeItem('id');
-    localStorage.removeItem('token');
-    window.location.href = "index.html";
-})
-
 socket.on('connect', () => {
     socket.on('public message', (msg: MessageResponse) => {
         console.log('message from server:', msg);
@@ -54,7 +39,6 @@ socket.on('connect', () => {
     });
 
 });
-
 
 const messageBackgroundClass = 'class="grid bg-gray-300 rounded-lg dark:bg-grey-100 w-4/5 h-auto ml-auto mr-auto mt-4 text-xs"';
 const messageUsernameClass = 'class="float-left ml-1 mt-1"';
