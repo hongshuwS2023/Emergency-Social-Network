@@ -16,7 +16,6 @@ send.addEventListener('click', async function handleClick(event) {
         userId: Number(localStorage.getItem('id')),
         content: (document.getElementById('input') as HTMLInputElement).value,
     }
-    console.log(messageBody);
 
     const res = await fetch('http://localhost:3000/api/messages', {
         method: 'POST',
@@ -26,21 +25,19 @@ send.addEventListener('click', async function handleClick(event) {
         },
         body: JSON.stringify(messageBody)
     }).then(response => {
-        console.log(messageBody.userId);
         return response.json();
-    })
-    console.log(res);
+    });
+    (document.getElementById('input') as HTMLInputElement).value = '';
 });
 
 socket.on('connect', () => {
     socket.on('public message', (msg: MessageResponse) => {
-        console.log('message from server:', msg);
         displayMessage(msg.username, msg.status, msg.content, msg.time);
     });
 
 });
 
-const messageBackgroundClass = 'class="grid bg-gray-300 rounded-lg dark:bg-grey-100 w-4/5 h-auto ml-auto mr-auto mt-4 text-xs"';
+const messageBackgroundClass = 'class="grid bg-gray-300 rounded-lg dark:bg-grey-100 w-4/5 h-auto ml-auto mr-auto mb-4 text-xs mb-auto"';
 const messageUsernameClass = 'class="float-left ml-1 mt-1"';
 const messageTimeClass = 'class="float-right ml-1 mt-1 mr-1"';
 const messageContentClass = 'class="ml-1 mb-1"';
@@ -55,6 +52,8 @@ function displayMessage(username: string, status: Status, message: string, time:
     </p>
     <p ${messageContentClass}>${message}</p> </div>`;
     document.querySelector('#history')?.appendChild(div);
+    const scroll = document.getElementById('history') || new HTMLDivElement();
+    scroll.scrollTop = scroll.scrollHeight || 0;
 }
 
 async function getHistory() {
