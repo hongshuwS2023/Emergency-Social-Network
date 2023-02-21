@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import { Message } from '../message/message.entity';
+import { Exclude } from 'class-transformer';
 
 export enum Role {
   ADMIN,
@@ -21,7 +22,8 @@ export class User {
 
   @Column()
   username!: string;
-
+  
+  @Exclude()
   @Column()
   password!: string;
 

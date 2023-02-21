@@ -19,18 +19,21 @@ export const restVerifyToken = (
   const header = req.headers['authorization'] as string;
 
   if (!header) {
-    throw new BadRequestException(ErrorMessage.AUTHNOHEADER);
+    const error = new BadRequestException(ErrorMessage.AUTHNOHEADER);
+    next(error);
   }
 
   const token = header.split(' ')[1];
 
   if (!header) {
-    throw new BadRequestException(ErrorMessage.AUTHWRONGHEADER);
+    const error = new BadRequestException(ErrorMessage.AUTHWRONGHEADER);
+    next(error);
   }
 
   jwt.verify(token, process.env.JWT_SECRET as string, async (err, data) => {
     if (err || !data) {
-      throw new UnauthorizedException(ErrorMessage.AUTHUNAUTHORIZED);
+       const error = new UnauthorizedException(ErrorMessage.AUTHUNAUTHORIZED);
+       next(error)
     }
 
     next();
