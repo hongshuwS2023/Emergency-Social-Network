@@ -61,6 +61,11 @@
 				],
 				"type": "number"
 			},
+			"Boolean": {
+				"properties": {},
+				"type": "object",
+				"additionalProperties": false
+			},
 			"User": {
 				"properties": {
 					"id": {
@@ -79,9 +84,18 @@
 					"status": {
 						"$ref": "#/components/schemas/Status"
 					},
+					"onlineStatus": {
+						"$ref": "#/components/schemas/Boolean"
+					},
 					"messages": {
 						"items": {
 							"$ref": "#/components/schemas/Message"
+						},
+						"type": "array"
+					},
+					"rooms": {
+						"items": {
+							"$ref": "#/components/schemas/Room"
 						},
 						"type": "array"
 					}
@@ -92,7 +106,9 @@
 					"password",
 					"role",
 					"status",
-					"messages"
+					"onlineStatus",
+					"messages",
+					"rooms"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -113,8 +129,7 @@
 						"type": "string"
 					},
 					"room": {
-						"type": "number",
-						"format": "double"
+						"$ref": "#/components/schemas/Room"
 					}
 				},
 				"required": [
@@ -123,6 +138,32 @@
 					"content",
 					"time",
 					"room"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Room": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"users": {
+						"items": {
+							"$ref": "#/components/schemas/User"
+						},
+						"type": "array"
+					},
+					"messages": {
+						"items": {
+							"$ref": "#/components/schemas/Message"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"users",
+					"messages"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -161,14 +202,14 @@
 					"content": {
 						"type": "string"
 					},
-					"room": {
-						"type": "number",
-						"format": "double"
+					"roomId": {
+						"type": "string"
 					}
 				},
 				"required": [
 					"userId",
-					"content"
+					"content",
+					"roomId"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -242,6 +283,36 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/AuthUserInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/auth/logout": {
+			"post": {
+				"operationId": "LogoutUser",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "number",
+								"format": "double"
 							}
 						}
 					}

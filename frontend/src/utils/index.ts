@@ -25,7 +25,7 @@ join?.addEventListener('click', async function handleClick(event) {
         console.log('login success');
         localStorage.setItem('id', res.id);
         localStorage.setItem('token', res.token);
-        window.location.href = "chat.html";
+        window.location.href = "directory.html";
     }
     else if (res.message != ErrorMessage.WRONGUSERNAME) {
         console.log(res);

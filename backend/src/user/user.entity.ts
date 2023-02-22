@@ -36,7 +36,7 @@ export class User {
   @Column()
   status!: Status;
 
-  @Column()
+  @Column({default:false})
   onlineStatus!: Boolean;
 
   @OneToMany(() => Message, (message) => message.user)

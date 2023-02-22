@@ -3,8 +3,8 @@ import MessageResponse from '../../response/chat.response'
 import { Status } from '../../response/chat.response';
 import { parseStatus } from '../../response/chat.response';
 
-if(!localStorage.getItem('token') || !localStorage.getItem('id')){
-    window.location.href='index.html';
+if (!localStorage.getItem('token') || !localStorage.getItem('id')) {
+    window.location.href = 'index.html';
 }
 
 const socket: Socket = io('http://localhost:3000', { transports: ['websocket'] });
@@ -17,16 +17,18 @@ send.addEventListener('click', async function handleClick(event) {
         content: (document.getElementById('input') as HTMLInputElement).value,
     }
 
-    const res = await fetch('http://localhost:3000/api/messages', {
-        method: 'POST',
-        headers: {
-            "authorization": token,
-            "Content-type": "application/json"
-        },
-        body: JSON.stringify(messageBody)
-    }).then(response => {
-        return response.json();
-    });
+    if (messageBody.content.trim().length) {
+        const res = await fetch('http://localhost:3000/api/messages', {
+            method: 'POST',
+            headers: {
+                "authorization": token,
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify(messageBody)
+        }).then(response => {
+            return response.json();
+        });
+    }
     (document.getElementById('input') as HTMLInputElement).value = '';
 });
 
@@ -67,7 +69,7 @@ async function getHistory() {
         return response.json();
     })
     res.forEach(msg => {
-       displayMessage(msg.user.username, msg.user.status, msg.content, msg.time);
+        displayMessage(msg.user.username, msg.user.status, msg.content, msg.time);
     });
 }
 
