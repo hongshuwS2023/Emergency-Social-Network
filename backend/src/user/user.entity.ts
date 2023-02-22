@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import { Message } from '../message/message.entity';
 import { Exclude } from 'class-transformer';
+import { Room } from '../room/room.entity';
 
 export enum Role {
   ADMIN,
@@ -15,6 +16,8 @@ export enum Status {
   Emergency,
   Undefined,
 }
+
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -33,6 +36,12 @@ export class User {
   @Column()
   status!: Status;
 
+  @Column()
+  onlineStatus!: Boolean;
+
   @OneToMany(() => Message, (message) => message.user)
   messages!: Message[];
+
+  @ManyToMany(() => Room)
+  rooms!: Room[];
 }
