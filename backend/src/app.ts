@@ -9,14 +9,14 @@ import ESNDataSource from './utils/datasource';
 import {errorHandler} from './middleware/error.middleware';
 import * as swaggerDocument from '../public/swagger.json';
 import MessageRoute from './message/message.route';
-import { SocketServer } from './utils/socketServer';
-import swaggerUi from "swagger-ui-express";
+import {SocketServer} from './utils/socketServer';
+import swaggerUi from 'swagger-ui-express';
 
 export default class App {
   private app: express.Application;
   private port: number;
-  private httpServer: any;
-  private socketServer: SocketServer
+  private httpServer;
+  private socketServer: SocketServer;
 
   private constructor() {
     this.app = express();
@@ -33,10 +33,14 @@ export default class App {
   }
 
   private registerRoutes() {
-    this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    this.app.use(
+      '/api/docs',
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerDocument)
+    );
     this.app.use('/api/users', new UserRoute().getRouter());
     this.app.use('/api/auth', new AuthRoute().getRouter());
-    this.app.use('/api/messages',new MessageRoute().getRouter());
+    this.app.use('/api/messages', new MessageRoute().getRouter());
   }
 
   private registerMiddlewares() {

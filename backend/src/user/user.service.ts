@@ -14,7 +14,7 @@ export default class UserService {
 
   /**
    * Get a user based on userId provided
-   * @param userId 
+   * @param userId
    * @returns user entity
    */
   @Get('{userId}')
@@ -29,11 +29,11 @@ export default class UserService {
 
   /**
    * Update the states of an user based on state provieded
-   * @param updateUserInput 
+   * @param updateUserInput
    * @returns user entity
    */
   @Put()
-  async updateUser(@Body()updateUserInput: UpdateUserInput): Promise<User> {
+  async updateUser(@Body() updateUserInput: UpdateUserInput): Promise<User> {
     const user = await this.getUser(updateUserInput.id);
 
     user.username = updateUserInput.username
@@ -50,7 +50,7 @@ export default class UserService {
 
   /**
    * Delete an user from the system
-   * @param userId 
+   * @param userId
    * @returns true
    */
   @Delete('{userId}')
