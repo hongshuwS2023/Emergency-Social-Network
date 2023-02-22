@@ -12,15 +12,18 @@ import {
 import {RESERVED_USERNAME} from './reserved-username';
 import AuthResponse from '../responses/auth.response';
 import {Body, Post, Route} from 'tsoa';
+import {Room} from '../room/room.entity';
 
 @Route('api/auth')
 export default class AuthService {
   authRepository: Repository<User>;
+  roomRepository: Repository<Room>;
   jwtSecret: string;
   expiresIn: string;
   salt: string;
   constructor() {
     this.authRepository = ESNDataSource.getRepository(User);
+    this.roomRepository = ESNDataSource.getRepository(Room);
     this.jwtSecret = process.env.JWT_SECRET as string;
     this.expiresIn = process.env.EXPIRES_IN as string;
     this.salt = process.env.SALT as string;
@@ -60,19 +63,34 @@ export default class AuthService {
     user.role = Role.CITIZEN;
     user.status = Status.Undefined;
 
-    const newUesr = await this.authRepository.save(user);
+    const room = await this.roomRepository.findOneBy({name: 'public'});
+    if (room === null) {
+      const newRoom = new Room();
+      newRoom.name = 'public';
+      user.rooms = [newRoom];
+      await this.roomRepository.save(newRoom);
+    } else {
+      user.rooms = [room];
+    }
+    const newUser = await this.authRepository.save(user);
+
     const token = jwt.sign(
       {
-        id: newUesr.id,
-        role: newUesr.role,
-        status: newUesr.status,
+        id: newUser.id,
+        role: newUser.role,
+        status: newUser.status,
       },
       this.jwtSecret,
       {
         expiresIn: this.expiresIn,
       }
     );
-    return new AuthResponse(newUesr.id, token);
+    return new AuthResponse(
+      newUser.id,
+      newUser.username,
+      newUser.status,
+      token
+    );
   }
 
   /**
@@ -105,6 +123,9 @@ export default class AuthService {
       throw new BadRequestException(ErrorMessage.WRONGPASSWORD);
     }
 
+    user.onlineStatus = true;
+    await this.authRepository.save(user);
+
     const token = jwt.sign(
       {
         id: user.id,
@@ -116,7 +137,17 @@ export default class AuthService {
         expiresIn: this.expiresIn,
       }
     );
-    return new AuthResponse(user.id, token);
+    return new AuthResponse(user.id, user.username, user.status, token);
+  }
+
+  @Post('/logout')
+  async logoutUser(@Body() userId: number): Promise<User> {
+    const user = await this.authRepository.findOneBy({id: userId});
+    if (user === null) {
+      throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
+    }
+    user.onlineStatus = false;
+    return await this.authRepository.save(user);
   }
 
   encodePassword(password: string): string {

@@ -11,6 +11,7 @@ import * as swaggerDocument from '../public/swagger.json';
 import MessageRoute from './message/message.route';
 import {SocketServer} from './utils/socketServer';
 import swaggerUi from 'swagger-ui-express';
+import RoomRoute from './room/room.route';
 
 export default class App {
   private app: express.Application;
@@ -41,6 +42,7 @@ export default class App {
     this.app.use('/api/users', new UserRoute().getRouter());
     this.app.use('/api/auth', new AuthRoute().getRouter());
     this.app.use('/api/messages', new MessageRoute().getRouter());
+    this.app.use('/api/rooms', new RoomRoute().getRouter());
   }
 
   private registerMiddlewares() {

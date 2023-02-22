@@ -38,6 +38,7 @@
   },
   "scripts": {
     "prebuild": "yarn tsoa spec",
+    "lint": "yarn eslint .",
     "fix": "yarn eslint --fix .",
     "dev": "yarn fix && concurrently \"yarn nodemon index.ts --mode dev --watch src \" \"nodemon -x tsoa spec --watch src -e ts \"",
     "build": "yarn prebuild && yarn tsc",

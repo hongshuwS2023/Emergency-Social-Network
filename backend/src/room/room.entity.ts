@@ -1,15 +1,26 @@
-import {Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
-import {Message} from '../message/message.entity';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  Entity,
+  OneToMany,
+  ManyToMany,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+  Column,
+} from 'typeorm';
 import {User} from '../user/user.entity';
+import {Message} from '../message/message.entity';
 
 @Entity()
 export class Room {
   @PrimaryGeneratedColumn()
-  roomId!: number;
+  id!: number;
 
-  @ManyToMany(() => User, user => user.rooms)
-  users!: User[];
+  @Column()
+  name!: string;
 
   @OneToMany(() => Message, message => message.room)
   messages!: Message[];
+
+  @ManyToMany(() => User)
+  users!: User[];
 }

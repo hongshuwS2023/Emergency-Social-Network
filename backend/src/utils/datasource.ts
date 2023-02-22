@@ -2,6 +2,7 @@ import {DataSource} from 'typeorm';
 import dotenv from 'dotenv';
 import {User} from '../user/user.entity';
 import {Message} from '../message/message.entity';
+import {Room} from '../room/room.entity';
 
 const args = process.argv;
 const mode = args[3];
@@ -15,7 +16,7 @@ const ESNDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: [User, Message],
+  entities: [User, Message, Room],
   dropSchema: process.env.NODE_ENV === 'prod' ? false : true,
   logging: process.env.NODE_ENV === 'prod' ? false : true,
   synchronize: true,
