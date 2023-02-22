@@ -50,7 +50,7 @@ export default class MessageService {
     if (postMessageInput.content.trim().length<=0){
       throw new BadRequestException(ErrorMessage.EMPTYMESSAGE);
     }
-    const room = await this.roomRepository.findOneBy({id: postMessageInput.roomId});
+    const room = await this.roomRepository.findOneBy({name: postMessageInput.roomName});
     if(room === null){
       throw new BadRequestException(ErrorMessage.ROOMIDNOTFOUND);
     }

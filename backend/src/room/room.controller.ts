@@ -1,7 +1,5 @@
 import {NextFunction, Request, Response} from 'express';
 import { JoinRoomInput } from '../requests/joinroom.input';
-import { PostMessageInput } from '../requests/postmessage.input';
-import { SocketServer } from '../utils/socketServer';
 import RoomService from './room.service';
 
 export default class RoomController {

@@ -1,9 +1,7 @@
 import { Repository } from 'typeorm';
-import { BadRequestException, ErrorMessage, NotFoundException } from '../exceptions/api.exception';
-import { PostMessageInput } from '../requests/postmessage.input';
+import {ErrorMessage, NotFoundException } from '../exceptions/api.exception';
 import ESNDataSource from '../utils/datasource';
 import { User } from '../user/user.entity';
-import { getFormattedDate } from '../utils/date';
 import { Body, Get, Post, Route } from 'tsoa';
 import { Room } from './room.entity';
 import { JoinRoomInput } from '../requests/joinroom.input';
@@ -25,7 +23,7 @@ export default class RoomService {
    */
   @Post()
   async joinRoom(@Body()joinRoomInput: JoinRoomInput): Promise<Room> {
-    let room = await this.roomRepository.findOneBy({id: joinRoomInput.roomId});
+    let room = await this.roomRepository.findOneBy({name: joinRoomInput.name});
     if (room === null) {
         room = new Room();
     }

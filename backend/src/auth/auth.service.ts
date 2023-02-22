@@ -56,14 +56,16 @@ export default class AuthService {
     user.role = Role.CITIZEN;
     user.status = Status.Undefined;
 
-    // const room = await this.roomRepository.findOneBy({id:'public'});
-    // if(!room){
-    //   const newRoom = new Room();
-    //   newRoom.id = 'public';
-    //   user.rooms = [newRoom];
-    // }
+    const room = await this.roomRepository.findOneBy({name:'public'});
+    if(room === null){
+      const newRoom = new Room();
+      newRoom.name = 'public';
+      user.rooms = [newRoom];
+    }else{
+      user.rooms.push(room);
+    }
     const newUesr = await this.authRepository.save(user);
-    //const newRoom = await this.roomRepository.save(room);
+    // const newRoom = await this.roomRepository.save(room);
 
 
     const token = jwt.sign(
