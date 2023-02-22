@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import MessageService from './message.service';
-import { PostMessageInput } from '../requests/postmessage.input';
-import { SocketServer } from '../utils/socketServer';
+import {PostMessageInput} from '../requests/postmessage.input';
+import {SocketServer} from '../utils/socketServer';
 import MessageResponse from '../responses/api.response';
 
 export default class MessageController {
@@ -32,8 +32,13 @@ export default class MessageController {
     try {
       const postMessageInput: PostMessageInput = req.body;
       const message = await this.messageService.postMessage(postMessageInput);
-      const responseMessage = new MessageResponse(message.user.username, message.content, message.time, message.user.status);
-      SocketServer.io.emit("public message", responseMessage);
+      const responseMessage = new MessageResponse(
+        message.user.username,
+        message.content,
+        message.time,
+        message.user.status
+      );
+      SocketServer.io.emit('public message', responseMessage);
       res.send(responseMessage);
     } catch (error) {
       next(error);

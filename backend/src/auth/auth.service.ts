@@ -1,13 +1,17 @@
-import { Repository } from 'typeorm';
-import { AuthUserInput } from '../requests/authuser.input';
-import { Role, Status, User } from '../user/user.entity';
+import {Repository} from 'typeorm';
+import {AuthUserInput} from '../requests/authuser.input';
+import {Role, Status, User} from '../user/user.entity';
 import ESNDataSource from '../utils/datasource';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { BadRequestException, DuplicateResourceException, ErrorMessage } from '../exceptions/api.exception';
-import { RESERVED_USERNAME } from './reserved-username';
+import {
+  BadRequestException,
+  DuplicateResourceException,
+  ErrorMessage,
+} from '../exceptions/api.exception';
+import {RESERVED_USERNAME} from './reserved-username';
 import AuthResponse from '../responses/auth.response';
-import { Body, Post, Route } from 'tsoa';
+import {Body, Post, Route} from 'tsoa';
 
 @Route('api/auth')
 export default class AuthService {
@@ -24,12 +28,14 @@ export default class AuthService {
 
   /**
    * Registers user based on provided username and password
-   * @param authUserInput 
+   * @param authUserInput
    * @returns AuthResponse
    */
   @Post('/register')
-  async registerUser(@Body()authUserInput: AuthUserInput): Promise<AuthResponse> {
-    const { username, password } = authUserInput;
+  async registerUser(
+    @Body() authUserInput: AuthUserInput
+  ): Promise<AuthResponse> {
+    const {username, password} = authUserInput;
     if (
       username.length < 3 ||
       RESERVED_USERNAME.indexOf(username.toLowerCase()) !== -1
@@ -41,7 +47,9 @@ export default class AuthService {
       throw new BadRequestException(ErrorMessage.BADPASSWORDREQ);
     }
 
-    const existingUser = await this.authRepository.findOneBy({ username: username.toLowerCase() });
+    const existingUser = await this.authRepository.findOneBy({
+      username: username.toLowerCase(),
+    });
     if (existingUser) {
       throw new DuplicateResourceException(ErrorMessage.DUPLICATEUSER);
     }
@@ -67,14 +75,14 @@ export default class AuthService {
     return new AuthResponse(newUesr.id, token);
   }
 
-    /**
+  /**
    * login user based on provided username and password
-   * @param authUserInput 
+   * @param authUserInput
    * @returns AuthResponse
    */
   @Post('/login')
-  async loginUser(@Body()authUserInput: AuthUserInput): Promise<AuthResponse> {
-    const { username, password } = authUserInput;
+  async loginUser(@Body() authUserInput: AuthUserInput): Promise<AuthResponse> {
+    const {username, password} = authUserInput;
     if (
       username.length < 3 ||
       RESERVED_USERNAME.indexOf(username.toLowerCase()) !== -1
