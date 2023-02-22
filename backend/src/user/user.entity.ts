@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import { Message } from '../message/message.entity';
 import { Exclude } from 'class-transformer';
 import { Room } from '../room/room.entity';
@@ -36,7 +36,7 @@ export class User {
   @Column()
   status!: Status;
 
-  @Column()
+  @Column({default:false})
   onlineStatus!: Boolean;
 
   @OneToMany(() => Message, (message) => message.user)

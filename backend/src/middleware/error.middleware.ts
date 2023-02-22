@@ -8,5 +8,9 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   res.status(200);
-  res.send((err as ApiException).toJson());
+  if(err instanceof(ApiException)){
+      res.send((err as ApiException).toJson());
+  }else{
+      res.send(err.message);
+  }
 };

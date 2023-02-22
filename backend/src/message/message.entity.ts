@@ -19,6 +19,6 @@ export class Message {
   time!: string;
 
   @ManyToOne(() => Room, (room) => room.messages)
-  room!: Room;
+    room!: Room;
 }
 
