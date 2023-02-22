@@ -145,25 +145,30 @@
 			"Room": {
 				"properties": {
 					"id": {
-						"type": "string"
+						"type": "number",
+						"format": "double"
 					},
-					"users": {
-						"items": {
-							"$ref": "#/components/schemas/User"
-						},
-						"type": "array"
+					"name": {
+						"type": "string"
 					},
 					"messages": {
 						"items": {
 							"$ref": "#/components/schemas/Message"
 						},
 						"type": "array"
+					},
+					"users": {
+						"items": {
+							"$ref": "#/components/schemas/User"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
 					"id",
-					"users",
-					"messages"
+					"name",
+					"messages",
+					"users"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -202,14 +207,14 @@
 					"content": {
 						"type": "string"
 					},
-					"roomId": {
+					"roomName": {
 						"type": "string"
 					}
 				},
 				"required": [
 					"userId",
 					"content",
-					"roomId"
+					"roomName"
 				],
 				"type": "object",
 				"additionalProperties": false
