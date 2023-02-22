@@ -8,15 +8,18 @@ import { BadRequestException, DuplicateResourceException, ErrorMessage } from '.
 import { RESERVED_USERNAME } from './reserved-username';
 import AuthResponse from '../responses/auth.response';
 import { Body, Post, Route } from 'tsoa';
+import { Room } from '../room/room.entity';
 
 @Route('api/auth')
 export default class AuthService {
   authRepository: Repository<User>;
+  roomRepository: Repository<Room>;
   jwtSecret: string;
   expiresIn: string;
   salt: string;
   constructor() {
     this.authRepository = ESNDataSource.getRepository(User);
+    this.roomRepository = ESNDataSource.getRepository(Room);
     this.jwtSecret = process.env.JWT_SECRET as string;
     this.expiresIn = process.env.EXPIRES_IN as string;
     this.salt = process.env.SALT as string;
@@ -45,6 +48,7 @@ export default class AuthService {
     if (existingUser) {
       throw new DuplicateResourceException(ErrorMessage.DUPLICATEUSER);
     }
+    
 
     const user = new User();
     user.username = authUserInput.username.toLowerCase();
@@ -52,7 +56,16 @@ export default class AuthService {
     user.role = Role.CITIZEN;
     user.status = Status.Undefined;
 
+    let room = await this.roomRepository.findOneBy({id:'public'});
+    if(room === null){
+      room = new Room();
+      room.id = 'public';
+    }
+    user.rooms.push(room);
     const newUesr = await this.authRepository.save(user);
+    const newRoom = await this.roomRepository.save(room);
+
+
     const token = jwt.sign(
       {
         id: newUesr.id,
@@ -96,6 +109,9 @@ export default class AuthService {
     if (this.encodePassword(authUserInput.password) !== user.password) {
       throw new BadRequestException(ErrorMessage.WRONGPASSWORD);
     }
+    
+    user.onlineStatus = true;
+    await this.authRepository.save(user);
 
     const token = jwt.sign(
       {
@@ -110,6 +126,18 @@ export default class AuthService {
     );
     return new AuthResponse(user.id, token);
   }
+
+
+  @Post('/logout')
+  async logoutUser(@Body()userId: number): Promise<User> {
+    const user = await this.authRepository.findOneBy({id:userId});
+    if(user === null){
+      throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
+    }
+    user.onlineStatus = false;
+    return await this.authRepository.save(user);
+  }
+
 
   encodePassword(password: string): string {
     return crypto
