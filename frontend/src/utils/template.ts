@@ -69,6 +69,7 @@ class TemplateElement extends HTMLElement {
 
 customElements.define('menu-template', TemplateElement);
 
+const id = localStorage.getItem('id') || '';
 const token = localStorage.getItem('token') || '';
 const setting = document.getElementById('setting-button') || new HTMLDivElement();
 const modal = document.getElementById("setting-modal") || new HTMLDivElement();
@@ -76,6 +77,11 @@ const back = document.getElementById("back-button") || new HTMLDivElement();
 const logout = document.getElementById("logout-button") || new HTMLDivElement();
 const chatList = document.getElementById("chat-button") || new HTMLDivElement();
 const directory = document.getElementById("directory-button") || new HTMLDivElement();
+
+
+if (!id || !token) {
+    window.location.href = 'index.html';
+}
 
 setting.addEventListener('click', async function handleClick(event) {
     modal.style.display = "block";
@@ -86,7 +92,7 @@ setting.addEventListener('click', async function handleClick(event) {
 
 logout.onclick = async () => {
     const id = localStorage.getItem('id') || '';
-    const res = await fetch('http://localhost:3000/api/auth/logout', {
+    await fetch('http://localhost:3000/api/auth/logout', {
         method: 'POST',
         headers: {
             "Content-Type": "application/json"
@@ -109,5 +115,3 @@ chatList.addEventListener('click', () => {
 directory.addEventListener('click', () => {
     window.location.href = 'directory.html';
 })
-
-

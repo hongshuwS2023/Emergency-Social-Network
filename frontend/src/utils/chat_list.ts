@@ -1,7 +1,8 @@
 import { io, Socket } from 'socket.io-client';
 import MessageResponse from '../../response/chat.response';
 
-const socket: Socket = io('http://localhost:3000', { transports: ['websocket'] });
+const id = localStorage.getItem('id') || '';
+const socket: Socket = io(`http://localhost:3000/?userid=${id}`, { transports: ['websocket'] });
 const formattedToken = "Bearer " + localStorage.getItem('token') as string;
 const join = document.getElementById('join-button') || new HTMLDivElement;
 const history = document.getElementById('chat-history') || new HTMLDivElement;

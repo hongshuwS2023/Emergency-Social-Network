@@ -154,6 +154,7 @@ export default class AuthService {
     SocketServer.io.emit('online status', users);
     return newUser;
   }
+  
   encodePassword(password: string): string {
     return crypto
       .pbkdf2Sync(password, this.salt, 1000, 32, 'sha512')

@@ -3,11 +3,8 @@ import MessageResponse from '../../response/chat.response'
 import { Status } from '../../response/chat.response';
 import { parseStatus } from '../../response/chat.response';
 
-if (!localStorage.getItem('token') || !localStorage.getItem('id')) {
-    window.location.href = 'index.html';
-}
-
-const socket: Socket = io('http://localhost:3000', { transports: ['websocket'] });
+const id = localStorage.getItem('id') || '';
+const socket: Socket = io(`http://localhost:3000/?userid=${id}`, { transports: ['websocket'] });
 const send = document.getElementById('send-button') || new HTMLDivElement();
 const token = "Bearer " + localStorage.getItem('token') as string;
 
