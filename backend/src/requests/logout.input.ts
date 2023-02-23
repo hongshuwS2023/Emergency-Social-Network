@@ -1,3 +1,3 @@
 export interface LogoutInput {
-    id: number;
+  id: number;
 }

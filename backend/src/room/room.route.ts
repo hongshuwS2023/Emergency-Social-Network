@@ -13,11 +13,9 @@ export default class RoomRoute {
   }
 
   private setRoute(): void {
-
     this.router.post('/', (req, res, next) => {
       this.roomController.joinRoom(req, res, next);
     });
-
   }
   getRouter() {
     return this.router;

@@ -1,10 +1,10 @@
-import { Repository } from 'typeorm';
-import {ErrorMessage, NotFoundException } from '../exceptions/api.exception';
+import {Repository} from 'typeorm';
+import {ErrorMessage, NotFoundException} from '../exceptions/api.exception';
 import ESNDataSource from '../utils/datasource';
-import { User } from '../user/user.entity';
-import { Body, Get, Post, Route } from 'tsoa';
-import { Room } from './room.entity';
-import { JoinRoomInput } from '../requests/joinroom.input';
+import {User} from '../user/user.entity';
+import {Body, Get, Post, Route} from 'tsoa';
+import {Room} from './room.entity';
+import {JoinRoomInput} from '../requests/joinroom.input';
 
 @Route('/api/rooms')
 export default class RoomService {
@@ -15,19 +15,21 @@ export default class RoomService {
     this.roomRepository = ESNDataSource.getRepository(Room);
     this.userRepository = ESNDataSource.getRepository(User);
   }
-  
+
   /**
    * Join a room, if not exist then create
-   * @param joinRoomInput 
+   * @param joinRoomInput
    * @returns Room
    */
   @Post()
-  async joinRoom(@Body()joinRoomInput: JoinRoomInput): Promise<Room> {
+  async joinRoom(@Body() joinRoomInput: JoinRoomInput): Promise<Room> {
     let room = await this.roomRepository.findOneBy({name: joinRoomInput.name});
     if (room === null) {
-        room = new Room();
+      room = new Room();
     }
-    const user = await this.userRepository.findOneBy({ id: joinRoomInput.userId });
+    const user = await this.userRepository.findOneBy({
+      id: joinRoomInput.userId,
+    });
     if (user === null) {
       throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
     }

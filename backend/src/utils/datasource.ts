@@ -1,8 +1,8 @@
 import {DataSource} from 'typeorm';
 import dotenv from 'dotenv';
 import {User} from '../user/user.entity';
-import { Message } from '../message/message.entity';
-import { Room } from '../room/room.entity';
+import {Message} from '../message/message.entity';
+import {Room} from '../room/room.entity';
 
 const args = process.argv;
 const mode = args[3];

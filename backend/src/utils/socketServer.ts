@@ -1,7 +1,7 @@
-import { Server, Socket } from 'socket.io';
-import { Repository } from 'typeorm';
-import { BadRequestException, ErrorMessage } from '../exceptions/api.exception';
-import { OnlineStatus, User } from '../user/user.entity';
+import {Server, Socket} from 'socket.io';
+import {Repository} from 'typeorm';
+import {BadRequestException, ErrorMessage} from '../exceptions/api.exception';
+import {OnlineStatus, User} from '../user/user.entity';
 import ESNDataSource from './datasource';
 
 export class SocketServer {
@@ -16,20 +16,20 @@ export class SocketServer {
       console.log(socket.handshake.query);
       const userId = socket.handshake.query.userid;
 
-      const user = await this.userRepository.findOneBy({ id: userId });
-        if (user === null) {
-          throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
-        }
-        console.log(userId);
-        user.onlineStatus = OnlineStatus.ONLINE;
-        await this.userRepository.save(user);
-        const users = await this.userRepository.find({
-          order: {
-            onlineStatus: 'ASC',
-            username: 'ASC',
-          },
-        });
-        SocketServer.io.emit('online status', users);
+      const user = await this.userRepository.findOneBy({id: userId});
+      if (user === null) {
+        throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
+      }
+      console.log(userId);
+      user.onlineStatus = OnlineStatus.ONLINE;
+      await this.userRepository.save(user);
+      const users = await this.userRepository.find({
+        order: {
+          onlineStatus: 'ASC',
+          username: 'ASC',
+        },
+      });
+      SocketServer.io.emit('online status', users);
 
       socket.on('chat message', (msg: string) => {
         console.log('message: ' + msg);
@@ -37,8 +37,7 @@ export class SocketServer {
       });
 
       socket.on('disconnect', async (socket: any) => {
-
-        const user = await this.userRepository.findOneBy({ id: userId });
+        const user = await this.userRepository.findOneBy({id: userId});
         if (user === null) {
           throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
         }

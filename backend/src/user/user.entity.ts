@@ -1,7 +1,14 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Message } from '../message/message.entity';
-import { Exclude } from 'class-transformer';
-import { Room } from '../room/room.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import {Message} from '../message/message.entity';
+import {Exclude} from 'class-transformer';
+import {Room} from '../room/room.entity';
 
 export enum Role {
   ADMIN,
@@ -42,7 +49,7 @@ export class User {
   @Column()
   onlineStatus!: OnlineStatus;
 
-  @OneToMany(() => Message, (message) => message.user)
+  @OneToMany(() => Message, message => message.user)
   messages!: Message[];
 
   @ManyToMany(() => Room)

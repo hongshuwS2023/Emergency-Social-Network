@@ -23,8 +23,6 @@ export const restVerifyToken = (
 
   const header = req.headers['authorization'] as string;
 
-
-
   if (!header) {
     const error = new BadRequestException(ErrorMessage.AUTHNOHEADER);
     next(error);
@@ -33,14 +31,10 @@ export const restVerifyToken = (
   console.log(header);
   const token = header.split(' ')[1];
 
- 
-
   if (!header) {
     const error = new BadRequestException(ErrorMessage.AUTHWRONGHEADER);
     next(error);
   }
-  
-  
 
   jwt.verify(token, process.env.JWT_SECRET as string, async (err, data) => {
     if (err || !data) {

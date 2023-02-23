@@ -1,6 +1,6 @@
-import { Repository } from 'typeorm';
-import { AuthUserInput } from '../requests/authuser.input';
-import { OnlineStatus, Role, Status, User } from '../user/user.entity';
+import {Repository} from 'typeorm';
+import {AuthUserInput} from '../requests/authuser.input';
+import {OnlineStatus, Role, Status, User} from '../user/user.entity';
 import ESNDataSource from '../utils/datasource';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
@@ -9,12 +9,12 @@ import {
   DuplicateResourceException,
   ErrorMessage,
 } from '../exceptions/api.exception';
-import { RESERVED_USERNAME } from './reserved-username';
+import {RESERVED_USERNAME} from './reserved-username';
 import AuthResponse from '../responses/auth.response';
-import { Body, Post, Route } from 'tsoa';
-import { Room } from '../room/room.entity';
-import { LogoutInput } from '../requests/logout.input';
-import { SocketServer } from '../utils/socketServer';
+import {Body, Post, Route} from 'tsoa';
+import {Room} from '../room/room.entity';
+import {LogoutInput} from '../requests/logout.input';
+import {SocketServer} from '../utils/socketServer';
 @Route('api/auth')
 export default class AuthService {
   authRepository: Repository<User>;
@@ -38,7 +38,7 @@ export default class AuthService {
   async registerUser(
     @Body() authUserInput: AuthUserInput
   ): Promise<AuthResponse> {
-    const { username, password } = authUserInput;
+    const {username, password} = authUserInput;
     if (
       username.length < 3 ||
       RESERVED_USERNAME.indexOf(username.toLowerCase()) !== -1
@@ -60,7 +60,7 @@ export default class AuthService {
     user.role = Role.CITIZEN;
     user.status = Status.Undefined;
     user.onlineStatus = OnlineStatus.ONLINE;
-    const room = await this.roomRepository.findOneBy({ name: 'public' });
+    const room = await this.roomRepository.findOneBy({name: 'public'});
     if (room === null) {
       const newRoom = new Room();
       newRoom.name = 'public';
@@ -95,7 +95,7 @@ export default class AuthService {
    */
   @Post('/login')
   async loginUser(@Body() authUserInput: AuthUserInput): Promise<AuthResponse> {
-    const { username, password } = authUserInput;
+    const {username, password} = authUserInput;
     if (
       username.length < 3 ||
       RESERVED_USERNAME.indexOf(username.toLowerCase()) !== -1
@@ -138,8 +138,7 @@ export default class AuthService {
   }
   @Post('/logout')
   async logoutUser(@Body() logoutInput: LogoutInput): Promise<User> {
-    
-    const user = await this.authRepository.findOneBy({ id: logoutInput.id });
+    const user = await this.authRepository.findOneBy({id: logoutInput.id});
     if (user === null) {
       throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
     }
@@ -154,7 +153,7 @@ export default class AuthService {
     SocketServer.io.emit('online status', users);
     return newUser;
   }
-  
+
   encodePassword(password: string): string {
     return crypto
       .pbkdf2Sync(password, this.salt, 1000, 32, 'sha512')

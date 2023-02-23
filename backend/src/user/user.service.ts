@@ -29,7 +29,7 @@ export default class UserService {
 
   /**
    * Get a user based on userId provided
-   * @param userId 
+   * @param userId
    * @returns user entity
    */
   @Get()
@@ -42,7 +42,6 @@ export default class UserService {
     });
     return users;
   }
-
 
   /**
    * Update the states of an user based on state provieded

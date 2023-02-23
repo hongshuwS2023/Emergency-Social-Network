@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response } from 'express';
-import { AuthUserInput } from '../requests/authuser.input';
+import {NextFunction, Request, Response} from 'express';
+import {AuthUserInput} from '../requests/authuser.input';
 import AuthService from './auth.service';
-import { LogoutInput } from '../requests/logout.input';
+import {LogoutInput} from '../requests/logout.input';
 export default class AuthController {
   authService: AuthService;
   constructor() {
@@ -33,9 +33,8 @@ export default class AuthController {
     try {
       const logoutInput: LogoutInput = req.body;
       const user = await this.authService.logoutUser(logoutInput);
-      
-      res.send(user);
 
+      res.send(user);
     } catch (err) {
       next(err);
     }
