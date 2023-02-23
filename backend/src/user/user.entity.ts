@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Column,
   Entity,
@@ -15,6 +14,11 @@ export enum Role {
   ADMIN,
   COORDINATOR,
   CITIZEN,
+}
+
+export enum OnlineStatus {
+  ONLINE,
+  OFFLINE,
 }
 
 export enum Status {
@@ -42,8 +46,8 @@ export class User {
   @Column()
   status!: Status;
 
-  @Column({default: false})
-  onlineStatus!: Boolean;
+  @Column()
+  onlineStatus!: OnlineStatus;
 
   @OneToMany(() => Message, message => message.user)
   messages!: Message[];

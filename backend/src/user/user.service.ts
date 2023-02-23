@@ -28,6 +28,22 @@ export default class UserService {
   }
 
   /**
+   * Get a user based on userId provided
+   * @param userId
+   * @returns user entity
+   */
+  @Get()
+  async getUsers(): Promise<User[]> {
+    const users = await this.userRepository.find({
+      order: {
+        onlineStatus: 'ASC',
+        username: 'ASC',
+      },
+    });
+    return users;
+  }
+
+  /**
    * Update the states of an user based on state provieded
    * @param updateUserInput
    * @returns user entity

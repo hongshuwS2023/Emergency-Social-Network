@@ -1,4 +1,5 @@
 import {Status} from '../user/user.entity';
+
 export default class AuthResponse {
   id: number;
   name: string;

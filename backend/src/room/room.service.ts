@@ -2,7 +2,7 @@ import {Repository} from 'typeorm';
 import {ErrorMessage, NotFoundException} from '../exceptions/api.exception';
 import ESNDataSource from '../utils/datasource';
 import {User} from '../user/user.entity';
-import {Body, Get, Post, Route} from 'tsoa';
+import {Body, Post, Route} from 'tsoa';
 import {Room} from './room.entity';
 import {JoinRoomInput} from '../requests/joinroom.input';
 

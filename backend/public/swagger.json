@@ -69,10 +69,12 @@
 				],
 				"type": "number"
 			},
-			"Boolean": {
-				"properties": {},
-				"type": "object",
-				"additionalProperties": false
+			"OnlineStatus": {
+				"enum": [
+					0,
+					1
+				],
+				"type": "number"
 			},
 			"User": {
 				"properties": {
@@ -93,7 +95,7 @@
 						"$ref": "#/components/schemas/Status"
 					},
 					"onlineStatus": {
-						"$ref": "#/components/schemas/Boolean"
+						"$ref": "#/components/schemas/OnlineStatus"
 					},
 					"messages": {
 						"items": {
@@ -177,6 +179,19 @@
 					"name",
 					"messages",
 					"users"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LogoutInput": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -341,8 +356,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"type": "number",
-								"format": "double"
+								"$ref": "#/components/schemas/LogoutInput"
 							}
 						}
 					}
@@ -408,6 +422,27 @@
 			}
 		},
 		"/api/users": {
+			"get": {
+				"operationId": "GetUsers",
+				"responses": {
+					"200": {
+						"description": "user entity",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/User"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get a user based on userId provided",
+				"security": [],
+				"parameters": []
+			},
 			"put": {
 				"operationId": "UpdateUser",
 				"responses": {

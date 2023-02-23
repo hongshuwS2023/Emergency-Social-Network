@@ -5,6 +5,11 @@ export enum Status {
     Undefined,
 }
 
+export enum OnlineStatus {
+    ONLINE,
+    OFFLINE,
+}
+
 export default class MessageResponse {
     username: string;
     content: string;
@@ -17,6 +22,19 @@ export default class MessageResponse {
         this.status = status;
     }
 }
+
+export class OnlineStatusResponse {
+    id: number;
+    name: string;
+    status: Status;
+    onlineStatus: boolean;
+    constructor(id: number, name: string, status: Status, onlineStatus: boolean) {
+      this.id = id;
+      this.name = name;
+      this.status = status;
+      this.onlineStatus = onlineStatus;
+    }
+  }
 
 export function parseStatus(status: Status) {
     switch (status) {

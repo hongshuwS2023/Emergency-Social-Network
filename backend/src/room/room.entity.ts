@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Entity,
   OneToMany,
   ManyToMany,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
   Column,
 } from 'typeorm';

@@ -24,6 +24,10 @@ export default class AuthRoute {
     this.router.post('/logout', (req, res, next) => {
       this.authController.logoutUser(req, res, next);
     });
+
+    this.router.post('/offline', (req, res, next) => {
+      this.authController.logoutUser(req, res, next);
+    });
   }
 
   getRouter() {

@@ -25,10 +25,9 @@ join?.addEventListener('click', async function handleClick(event) {
         console.log('login success');
         localStorage.setItem('id', res.id);
         localStorage.setItem('token', res.token);
-        window.location.href = "chat.html";
+        window.location.href = "directory.html";
     }
     else if (res.message != ErrorMessage.WRONGUSERNAME) {
-        console.log(res);
         const err = document.getElementById('error-message') as HTMLElement || new HTMLDivElement;
         err.innerHTML = '';
         const div = document.createElement("div");
@@ -65,8 +64,17 @@ confirm.addEventListener('click', async function handleClick(event) {
         confirm.classList.add('invisible');
         buttonClass?.appendChild(confirm);
         modal.style.display = "block"
-        ack.onclick = function () {
-            modal.style.display = "none";
+        ack.onclick = async function () {
+            const res = await fetch('http://localhost:3000/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(createUserRequest)
+            }).then(response => { return response.json() })
+            localStorage.setItem('id', res.id);
+            localStorage.setItem('token', res.token);
+            window.location.href = "directory.html";
         };
     }
     else {

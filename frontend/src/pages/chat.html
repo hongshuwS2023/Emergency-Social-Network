@@ -6,56 +6,34 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <script src="../utils/chat.ts" type="module"></script>
+    <script src="../utils/template.ts" type="module"></script>
     <link href="../css/index.css" rel="stylesheet" />
 </head>
 
 <body>
     <div class="w-screen h-screen bg-[#DBDBDB] dark:bg-gray-900">
-        <div class="absolute w-screen h-1/5 bg-cover right-0 top-0">
-            <img src="../../public/assets/png/FSE_ESN_triangles.png" class="w-full h-full relative">
-        </div>
-
-        <div class="absolute top-5 right-5 z-50">
-            <button class="text-white" id="menu-button">Menu</button>
-        </div>
-
-        <div class="flex flex-col justify-center w-screen h-screen pt-6">
-
-            <div class="grid w-screen h-4/6 mt-20 justify-items-center">
-                <div class="w-9/12">
-                    <div class="flex flex-col bg-white h-full max-h-96 w-full rounded-lg dark:bg-grey-100 overflow-auto"
+        <menu-template></menu-template>
+        <div class="flex flex-col justify-center w-screen h-screen pb-7">
+            <div class="grid pb-5 justify-items-center">
+                <p class="text-black dark:text-white text-4xl">Public</p>
+            </div>
+            <div class="grid w-screen h-4/6 justify-items-center">
+                <div class="w-10/12">
+                    <div class="flex flex-col bg-white h-full max-h-[60vh] w-full rounded-lg dark:bg-grey-100 overflow-auto"
                         id="history">
+                        <div class="mt-4"></div>
                     </div>
                 </div>
             </div>
             <div class="grid w-screen h-2/12 justify-items-center">
-                <div class="w-9/12">
+                <div class="w-10/12">
                     <input class="text-2xl w-full h-full rounded-lg dark:bg-grey-100" id="input" />
                 </div>
             </div>
-            <div class="grid mt-5 justify-items-center">
+            <div class="grid pt-5 justify-items-center">
                 <div class="w-7/12 h-1/12">
                     <button class="w-full h-full bg-[#C41230] rounded-lg text-2xl dark:text-white"
                         id="send-button">Send</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="menu-modal" class="absolute modal hidden fixed">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
-            <div class="p-0 ml-[20%] mt-[40%] w-3/5 h-3/5 overflow-auto rounded-lg bg-gray-300 bg-opacity-100 border-2">
-                <div class="modal-content flex flex-col justify-between h-full">
-                    <div class="mt-8 text-center text-2xl">
-                        ESN Directory
-                    </div>
-                    <div class="mt-8 text-center text-2xl">
-                        <button id="logout-button" class="text-esn-red">Logout</button>
-                    </div>
-
-                    <div class="mt-4 mb-8 text-center">
-                        <button id="back-button" class="text-esn-red text-2xl font-bold">Back</button>
-                    </div>
                 </div>
             </div>
         </div>

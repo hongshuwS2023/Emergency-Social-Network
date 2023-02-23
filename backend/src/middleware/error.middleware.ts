@@ -11,6 +11,6 @@ export const errorHandler = (
   if (err instanceof ApiException) {
     res.send((err as ApiException).toJson());
   } else {
-    res.send(err.message);
+    console.log(err.message);
   }
 };

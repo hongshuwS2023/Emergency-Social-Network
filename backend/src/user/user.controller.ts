@@ -37,6 +37,19 @@ export default class UserController {
     }
   }
 
+  async getUsers(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const users = await this.userService.getUsers();
+      res.send(users);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async deleteUser(
     req: Request,
     res: Response,
