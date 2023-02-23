@@ -43,5 +43,6 @@ export class User {
   messages!: Message[];
 
   @ManyToMany(() => Room)
+  @JoinTable()
   rooms!: Room[];
 }

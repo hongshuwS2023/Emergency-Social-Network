@@ -56,8 +56,13 @@ module.exports = {
     'z-50',
     'w-8',
     'h-8',
+    'w-7',
+    'h-7',
+    'rounded-full',
+    'bg-green-500',
+    'bg-gray-500',
     'stroke-black',
-    'dark:stroke-white'
+    'dark:stroke-white',
   ],
   plugins: [],
 }

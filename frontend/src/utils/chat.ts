@@ -15,6 +15,7 @@ send.addEventListener('click', async function handleClick(event) {
     const messageBody = {
         userId: Number(localStorage.getItem('id')),
         content: (document.getElementById('input') as HTMLInputElement).value,
+        roomName: 'public'
     }
 
     if (messageBody.content.trim().length) {
@@ -28,7 +29,9 @@ send.addEventListener('click', async function handleClick(event) {
         }).then(response => {
             return response.json();
         });
+        console.log(res);
     }
+    
     (document.getElementById('input') as HTMLInputElement).value = '';
 });
 

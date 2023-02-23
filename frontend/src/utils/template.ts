@@ -1,5 +1,5 @@
 const html = `
-<div class="absolute w-screen h-[5%] bg-cover bottom-0 bg-[#C41230] flex justify-center items-center">
+<div class="absolute w-screen h-[5%] bg-cover bottom-0 bg-[#C41230] flex justify-center">
     <div class="justify-items-start mr-auto ml-1">
         <div class="w-8 h-8" id="directory-button">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="w-6 h-6">
@@ -7,7 +7,7 @@ const html = `
             </svg> 
         </div>
     </div>
-    <div class="justify-center">
+    <div class="justify-items-center mt-auto mb-auto">
         <div class="w-8 h-8" id="chat-button">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
@@ -63,19 +63,14 @@ class TemplateElement extends HTMLElement {
     }
     connectedCallback() {
         this.innerHTML = template.innerHTML;
-        // const div = document.createElement('img');
-        // div.src = "../../public/assets/png/settings_icon.png";
-        // const img = document.createElement('img');
-        // this.querySelector('#setting-button')?.appendChild(img);
-        // if(img){
-        // img.src = this.getAttribute('src') || '';
-        // }
     }
 
 }
 
 customElements.define('menu-template', TemplateElement);
 
+const token = localStorage.getItem('token') || '';
+const id = localStorage.getItem('id') || '';
 const setting = document.getElementById('setting-button') || new HTMLDivElement();
 const modal = document.getElementById("setting-modal") || new HTMLDivElement();
 const back = document.getElementById("back-button") || new HTMLDivElement();
@@ -90,10 +85,19 @@ setting.addEventListener('click', async function handleClick(event) {
     };
 });
 
-logout.addEventListener('click', () => {
+console.log(localStorage.getItem('id'));
+logout.addEventListener('click', async () => {
+    console.log(localStorage.getItem('id'));
+    const res = await fetch('http://localhost:3000/api/auth/logout', {
+        method: 'POST',
+        body: JSON.stringify({id: id})
+    }).then(response => {
+        return response.json();
+    });
     localStorage.removeItem('id');
     localStorage.removeItem('token');
-    window.location.href = "index.html";
+    console.log('logout');
+    //window.location.href = 'index.html';
 })
 
 chatList.addEventListener('click', () => {

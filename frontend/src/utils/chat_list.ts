@@ -1,4 +1,4 @@
-const token = "Bearer " + localStorage.getItem('token') as string;
+//const token = "Bearer " + localStorage.getItem('token') as string;
 const join = document.getElementById('join-button') || new HTMLDivElement;
 async function getLatestHistory() {
     const res = await fetch('http://localhost:3000/api/messages', {
@@ -10,13 +10,15 @@ async function getLatestHistory() {
     }).then(response => {
         return response.json();
     })
-    const msg = res.slice(-1)[0];
-    console.log(res);
-    const div = document.createElement("div");
-    div.innerHTML = `<div class="text-xs">
+    if (res.length>0) {
+        const msg = res.slice(-1)[0];
+        console.log(res);
+        const div = document.createElement("div");
+        div.innerHTML = `<div class="text-xs">
     ${formatHistory(msg.user.username, msg.content)}
      </div>`;
-    document.querySelector('#chat-history')?.append(div);
+        document.querySelector('#chat-history')?.append(div);
+    }
 }
 
 function formatHistory(username: string, content: string) {
@@ -30,7 +32,7 @@ function formatHistory(username: string, content: string) {
 }
 
 join.addEventListener('click', () => {
-    window.location.href='chat.html';
+    window.location.href = 'chat.html';
 })
 
 getLatestHistory();

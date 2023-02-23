@@ -9,6 +9,7 @@ import { RESERVED_USERNAME } from './reserved-username';
 import AuthResponse from '../responses/auth.response';
 import { Body, Post, Route } from 'tsoa';
 import { Room } from '../room/room.entity';
+import { LogoutInput } from '../requests/logout.input';
 
 @Route('api/auth')
 export default class AuthService {
@@ -61,25 +62,26 @@ export default class AuthService {
       const newRoom = new Room();
       newRoom.name = 'public';
       user.rooms = [newRoom];
+      await this.roomRepository.save(newRoom);
     }else{
-      user.rooms.push(room);
+      user.rooms=[room];
     }
-    const newUesr = await this.authRepository.save(user);
+    const newUser = await this.authRepository.save(user);
     // const newRoom = await this.roomRepository.save(room);
 
 
     const token = jwt.sign(
       {
-        id: newUesr.id,
-        role: newUesr.role,
-        status: newUesr.status,
+        id: newUser.id,
+        role: newUser.role,
+        status: newUser.status,
       },
       this.jwtSecret,
       {
         expiresIn: this.expiresIn,
       }
     );
-    return new AuthResponse(newUesr.id, token);
+    return new AuthResponse(newUser.id, newUser.username, newUser.status, token);
   }
 
     /**
@@ -126,13 +128,13 @@ export default class AuthService {
         expiresIn: this.expiresIn,
       }
     );
-    return new AuthResponse(user.id, token);
+    return new AuthResponse(user.id, user.username, user.status, token);
   }
 
 
   @Post('/logout')
-  async logoutUser(@Body()userId: number): Promise<User> {
-    const user = await this.authRepository.findOneBy({id:userId});
+  async logoutUser(@Body()logoutInput: LogoutInput): Promise<User> {
+    const user = await this.authRepository.findOneBy({id:logoutInput.id});
     if(user === null){
       throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
     }

@@ -1,8 +1,14 @@
+import { Status } from "../user/user.entity";
+
 export default class OnlineStatusResponse {
-    userId: number;
-    onlineStatus: boolean;
-    constructor(userId: number, onlineStatus:boolean) {
-      this.userId = userId;
-      this.onlineStatus = onlineStatus;
-    }
+  id: number;
+  name: string;
+  status: Status;
+  onlineStatus: boolean;
+  constructor(id: number, name: string, status: Status, onlineStatus: boolean) {
+    this.id = id;
+    this.name = name;
+    this.status = status;
+    this.onlineStatus = onlineStatus;
   }
+}

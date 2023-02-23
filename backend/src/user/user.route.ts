@@ -21,6 +21,10 @@ export default class UserRoute {
       this.userController.updateUser(req, res, next);
     });
 
+    this.router.get('/', (req, res, next) => {
+      this.userController.getUsers(req, res, next);
+    });
+
     this.router.delete('/:userId', (req, res, next) => {
       this.userController.deleteUser(req, res, next);
     });

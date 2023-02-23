@@ -65,11 +65,21 @@ confirm.addEventListener('click', async function handleClick(event) {
         confirm.classList.add('invisible');
         buttonClass?.appendChild(confirm);
         modal.style.display = "block"
-        ack.onclick = function () {
-            modal.style.display = "none";
+        ack.onclick = async function () {
+            const res = await fetch('http://localhost:3000/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(createUserRequest)
+            }).then(response => { return response.json() })
+            localStorage.setItem('id', res.id);
+            localStorage.setItem('token', res.token);
+            window.location.href = "directory.html";
         };
     }
     else {
+        console.log(res);
         const div = document.createElement("div");
         div.innerHTML = `<div class="dark:text-white">${parseError(res.message)}</div>`;
         document.querySelector('#error-message')?.appendChild(div);
