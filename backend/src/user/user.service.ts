@@ -34,7 +34,12 @@ export default class UserService {
    */
   @Get()
   async getUsers(): Promise<User[]> {
-    const users= await this.userRepository.find();
+    const users = await this.userRepository.find({
+      order: {
+        onlineStatus: 'ASC',
+        username: 'ASC',
+      },
+    });
     return users;
   }
 

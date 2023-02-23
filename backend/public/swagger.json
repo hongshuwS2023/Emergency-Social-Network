@@ -69,10 +69,12 @@
 				],
 				"type": "number"
 			},
-			"Boolean": {
-				"properties": {},
-				"type": "object",
-				"additionalProperties": false
+			"OnlineStatus": {
+				"enum": [
+					0,
+					1
+				],
+				"type": "number"
 			},
 			"User": {
 				"properties": {
@@ -93,7 +95,7 @@
 						"$ref": "#/components/schemas/Status"
 					},
 					"onlineStatus": {
-						"$ref": "#/components/schemas/Boolean"
+						"$ref": "#/components/schemas/OnlineStatus"
 					},
 					"messages": {
 						"items": {

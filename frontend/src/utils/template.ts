@@ -70,7 +70,6 @@ class TemplateElement extends HTMLElement {
 customElements.define('menu-template', TemplateElement);
 
 const token = localStorage.getItem('token') || '';
-const id = localStorage.getItem('id') || '';
 const setting = document.getElementById('setting-button') || new HTMLDivElement();
 const modal = document.getElementById("setting-modal") || new HTMLDivElement();
 const back = document.getElementById("back-button") || new HTMLDivElement();
@@ -85,20 +84,23 @@ setting.addEventListener('click', async function handleClick(event) {
     };
 });
 
-console.log(localStorage.getItem('id'));
-logout.addEventListener('click', async () => {
-    console.log(localStorage.getItem('id'));
+logout.onclick = async () => {
+    const id = localStorage.getItem('id') || '';
     const res = await fetch('http://localhost:3000/api/auth/logout', {
         method: 'POST',
-        body: JSON.stringify({id: id})
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: id })
     }).then(response => {
-        return response.json();
+        response.json();
+    }).then(() => {
+        localStorage.removeItem('id');
+        localStorage.removeItem('token');
+        location.href = 'index.html';
     });
-    localStorage.removeItem('id');
-    localStorage.removeItem('token');
-    console.log('logout');
-    //window.location.href = 'index.html';
-})
+
+}
 
 chatList.addEventListener('click', () => {
     window.location.href = 'chat_list.html';
@@ -107,3 +109,5 @@ chatList.addEventListener('click', () => {
 directory.addEventListener('click', () => {
     window.location.href = 'directory.html';
 })
+
+

@@ -11,6 +11,11 @@ const socket: Socket = io('http://localhost:3000', { transports: ['websocket'] }
 const send = document.getElementById('send-button') || new HTMLDivElement();
 const token = "Bearer " + localStorage.getItem('token') as string;
 
+const messageBackgroundClass = 'class="grid bg-gray-300 rounded-lg dark:bg-grey-100 w-4/5 h-auto ml-auto mr-auto mb-4 text-xs mb-auto"';
+const messageUsernameClass = 'class="float-left ml-1 mt-1"';
+const messageTimeClass = 'class="float-right ml-1 mt-1 mr-1"';
+const messageContentClass = 'class="ml-1 mb-1"';
+
 send.addEventListener('click', async function handleClick(event) {
     const messageBody = {
         userId: Number(localStorage.getItem('id')),
@@ -29,9 +34,7 @@ send.addEventListener('click', async function handleClick(event) {
         }).then(response => {
             return response.json();
         });
-        console.log(res);
     }
-    
     (document.getElementById('input') as HTMLInputElement).value = '';
 });
 
@@ -39,13 +42,7 @@ socket.on('connect', () => {
     socket.on('public message', (msg: MessageResponse) => {
         displayMessage(msg.username, msg.status, msg.content, msg.time);
     });
-
 });
-
-const messageBackgroundClass = 'class="grid bg-gray-300 rounded-lg dark:bg-grey-100 w-4/5 h-auto ml-auto mr-auto mb-4 text-xs mb-auto"';
-const messageUsernameClass = 'class="float-left ml-1 mt-1"';
-const messageTimeClass = 'class="float-right ml-1 mt-1 mr-1"';
-const messageContentClass = 'class="ml-1 mb-1"';
 
 function displayMessage(username: string, status: Status, message: string, time: string) {
     const div = document.createElement("div");

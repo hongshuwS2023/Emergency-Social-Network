@@ -5,6 +5,11 @@ export enum Status {
     Undefined,
 }
 
+export enum OnlineStatus {
+    ONLINE,
+    OFFLINE,
+}
+
 export default class MessageResponse {
     username: string;
     content: string;

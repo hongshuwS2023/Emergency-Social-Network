@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Message } from '../message/message.entity';
 import { Exclude } from 'class-transformer';
 import { Room } from '../room/room.entity';
@@ -8,6 +8,11 @@ export enum Role {
   ADMIN,
   COORDINATOR,
   CITIZEN,
+}
+
+export enum OnlineStatus {
+  ONLINE,
+  OFFLINE,
 }
 
 export enum Status {
@@ -25,7 +30,7 @@ export class User {
 
   @Column()
   username!: string;
-  
+
   @Exclude()
   @Column()
   password!: string;
@@ -36,8 +41,8 @@ export class User {
   @Column()
   status!: Status;
 
-  @Column({default:false})
-  onlineStatus!: Boolean;
+  @Column()
+  onlineStatus!: OnlineStatus;
 
   @OneToMany(() => Message, (message) => message.user)
   messages!: Message[];

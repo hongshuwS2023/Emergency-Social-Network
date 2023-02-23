@@ -13,11 +13,11 @@
 
   <div class="w-screen h-screen bg-[#DBDBDB] dark:bg-gray-900">
     <div class="absolute w-screen h-1/5 bg-cover right-0 top-0">
-      <img src="../../public/assets/png/FSE_ESN_triangles.png" class="w-full h-full"> 
+      <img src="../../public/assets/png/FSE_ESN_triangles.png" class="w-full h-full">
     </div>
 
     <div class="absolute w-screen h-1/5 bg-cover bottom-0 left-0 rotate-180">
-      <img src="../../public/assets/png/FSE_ESN_triangles.png" class="w-full h-full"> 
+      <img src="../../public/assets/png/FSE_ESN_triangles.png" class="w-full h-full">
     </div>
 
     <div class="flex flex-col justify-center w-screen h-screen">
@@ -25,9 +25,14 @@
       <div class="grid w-screen h-1/12 justify-items-center">
         <div class="w-9/12 h-9/12 text-4xl text-bold text-esn-red leading-tight">
           <p class="font-extrabold">FSE</p>
-          <p class="inline font-extrabold">E<p class="inline text-black dark:text-white">mergency</p></p>
-          <p class="inline font-extrabold">S<p class="inline text-black dark:text-white">ocial</p>
-          <p class="inline font-extrabold">N<p class="inline text-black dark:text-white">etwork</p></p>
+          <p class="inline font-extrabold">E
+          <p class="inline text-black dark:text-white">mergency</p>
+          </p>
+          <p class="inline font-extrabold">S
+          <p class="inline text-black dark:text-white">ocial</p>
+          <p class="inline font-extrabold">N
+          <p class="inline text-black dark:text-white">etwork</p>
+          </p>
         </div>
       </div>
 
@@ -35,52 +40,63 @@
         <div class="grid w-screen h-1/12 mt-8 justify-items-center">
           <div class="w-9/12">
             <label class="text-2xl text-black dark:text-white">Username</label>
-            <input class="text-2xl w-full rounded-lg dark:bg-gray-300" id="username"/>
+            <input class="text-2xl w-full rounded-lg dark:bg-gray-300" id="username" />
           </div>
         </div>
-      
+
         <div class="grid w-screen h-1/12 mt-3 justify-items-center">
           <div class="w-9/12">
             <label class="text-2xl text-black dark:text-white">Password</label>
-            <input type="password" class="text-2xl w-full rounded-lg dark:bg-gray-300" id="password"/>
+            <input type="password" class="text-2xl w-full rounded-lg dark:bg-gray-300" id="password" />
           </div>
         </div>
         <div class="grid w-screen h-10 mt-8 justify-items-center" id="button-class">
           <button class="w-4/12 h-8 bg-[#C41230] rounded-lg text-2xl dark:text-white" id="button">Join</button>
-          <button class="w-4/12 h-8 bg-[#C41230] rounded-lg text-2xl dark:text-white invisible" id="confirm-button">Confirm</button>
+          <button class="w-4/12 h-8 bg-[#C41230] rounded-lg text-2xl dark:text-white invisible"
+            id="confirm-button">Confirm</button>
         </div>
 
         <div class="grid w-screen h-1/12 mt-3 justify-items-center" id="error-message"></div>
 
       </div>
 
-  </div>
+    </div>
 
 
-  <div id="welcome-modal" class="modal hidden fixed p-0 left-[10%] top-[10%] w-4/5 h-4/5 overflow-auto rounded-lg bg-gray-300 border-2">
-    <div class="modal-content pl-7 pr-3 flex flex-col justify-between h-full">
-      <div class="mt-8 text-center">
-        <p>Welcome to the</p><p class="font-extrabold">FSE Emergency Social Network</p>
-      </div>
-      
-      <div class="my-5">
-        <p class="font-bold mb-1">Users may share their status:</p>
-        <ul class="mx-1 list-disc">
-          <li><p class="inline font-extrabold text-green-700">OK:</p> "I do not need help."</li>
-          <li><p class="inline font-extrabold text-yellow-500">Help:</p> "I need help, but this is not a life threatening emergency"</li>
-          <li><p class="inline font-extrabold text-red-600">Emergency:</p> "I need help now! This is a life threatening emergency!"</li>
-        </ul>
-  
-        <p class="mt-4">Your current status is visible to everyone in the user directory.</p>
-        <p class="mt-2">All messages you post will include your status at the time of posting.</p>
-      </div>
+    <div id="welcome-modal"
+      class="modal hidden fixed p-0 left-[10%] top-[10%] w-4/5 h-4/5 overflow-auto rounded-lg bg-gray-300 border-2">
+      <div class="modal-content pl-7 pr-3 flex flex-col justify-between h-full">
+        <div class="mt-8 text-center">
+          <p>Welcome to the</p>
+          <p class="font-extrabold">FSE Emergency Social Network</p>
+        </div>
 
-      <div class="mt-4 mb-8 text-center">
-        <p>I understand the information above.</p>
-        <button id="ack-button" class="text-esn-red text-2xl font-bold">Acknowledge</button>
+        <div class="my-5">
+          <p class="font-bold mb-1">Users may share their status:</p>
+          <ul class="mx-1 list-disc">
+            <li>
+              <p class="inline font-extrabold text-green-700">OK:</p> "I do not need help."
+            </li>
+            <li>
+              <p class="inline font-extrabold text-yellow-500">Help:</p> "I need help, but this is not a life
+              threatening emergency"
+            </li>
+            <li>
+              <p class="inline font-extrabold text-red-600">Emergency:</p> "I need help now! This is a life threatening
+              emergency!"
+            </li>
+          </ul>
+
+          <p class="mt-4">Your current status is visible to everyone in the user directory.</p>
+          <p class="mt-2">All messages you post will include your status at the time of posting.</p>
+        </div>
+
+        <div class="mt-4 mb-8 text-center">
+          <p>I understand the information above.</p>
+          <button id="ack-button" class="text-esn-red text-2xl font-bold">Acknowledge</button>
+        </div>
       </div>
     </div>
-  </div>
 
 </body>
 

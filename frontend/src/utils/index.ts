@@ -28,7 +28,6 @@ join?.addEventListener('click', async function handleClick(event) {
         window.location.href = "directory.html";
     }
     else if (res.message != ErrorMessage.WRONGUSERNAME) {
-        console.log(res);
         const err = document.getElementById('error-message') as HTMLElement || new HTMLDivElement;
         err.innerHTML = '';
         const div = document.createElement("div");
@@ -79,7 +78,6 @@ confirm.addEventListener('click', async function handleClick(event) {
         };
     }
     else {
-        console.log(res);
         const div = document.createElement("div");
         div.innerHTML = `<div class="dark:text-white">${parseError(res.message)}</div>`;
         document.querySelector('#error-message')?.appendChild(div);
