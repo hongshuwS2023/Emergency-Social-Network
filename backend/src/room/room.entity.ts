@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Entity, OneToMany, ManyToMany, PrimaryColumn, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, OneToMany, ManyToMany, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Message } from '../message/message.entity';
 

@@ -1,6 +1,10 @@
-import { Repository } from 'typeorm';
-import { BadRequestException, ErrorMessage, NotFoundException } from '../exceptions/api.exception';
-import { PostMessageInput } from '../requests/postmessage.input';
+import {Repository} from 'typeorm';
+import {
+  BadRequestException,
+  ErrorMessage,
+  NotFoundException,
+} from '../exceptions/api.exception';
+import {PostMessageInput} from '../requests/postmessage.input';
 import ESNDataSource from '../utils/datasource';
 import { Message } from './message.entity';
 import { User } from '../user/user.entity';
@@ -26,7 +30,16 @@ export default class MessageService {
    */
   @Get()
   async getPublicMessages(): Promise<Message[]> {
-    const messages = await this.messageRepository.createQueryBuilder('message').leftJoinAndSelect('message.user', 'user').select(['message.content', 'message.time', 'user.username', 'user.status']).getMany();
+    const messages = await this.messageRepository
+      .createQueryBuilder('message')
+      .leftJoinAndSelect('message.user', 'user')
+      .select([
+        'message.content',
+        'message.time',
+        'user.username',
+        'user.status',
+      ])
+      .getMany();
 
     if (messages === null) {
       return [];
@@ -36,7 +49,7 @@ export default class MessageService {
 
   /**
    * Post a new message to the target room
-   * @param publicMessageInput 
+   * @param publicMessageInput
    * @returns Message
    */
   @Post()
@@ -59,5 +72,4 @@ export default class MessageService {
     message.time = getFormattedDate();
     return await this.messageRepository.save(message);
   }
-
 }

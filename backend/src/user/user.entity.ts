@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Message } from '../message/message.entity';
 import { Exclude } from 'class-transformer';
@@ -21,7 +20,6 @@ export enum Status {
   Emergency,
   Undefined,
 }
-
 
 @Entity()
 export class User {

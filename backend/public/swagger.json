@@ -241,6 +241,23 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"JoinRoomInput": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"userId": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"name",
+					"userId"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -500,6 +517,36 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/PostMessageInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/rooms": {
+			"post": {
+				"operationId": "JoinRoom",
+				"responses": {
+					"200": {
+						"description": "Room",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Room"
+								}
+							}
+						}
+					}
+				},
+				"description": "Join a room, if not exist then create",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/JoinRoomInput"
 							}
 						}
 					}

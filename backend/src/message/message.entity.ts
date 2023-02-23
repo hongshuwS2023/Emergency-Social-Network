@@ -9,8 +9,8 @@ export class Message {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => User, (user) => user.messages)
-    user!: User;
+  @ManyToOne(() => User, user => user.messages)
+  user!: User;
 
   @Column()
   content!: string;
@@ -21,4 +21,3 @@ export class Message {
   @ManyToOne(() => Room, (room) => room.messages)
     room!: Room;
 }
-

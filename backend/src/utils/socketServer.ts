@@ -1,4 +1,3 @@
-import { stat } from 'fs';
 import { Server, Socket } from 'socket.io';
 import { Repository } from 'typeorm';
 import { BadRequestException, ErrorMessage } from '../exceptions/api.exception';
@@ -57,5 +56,4 @@ export class SocketServer {
       });
     });
   }
-
 }

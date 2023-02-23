@@ -5,7 +5,7 @@ export const errorHandler = (
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  _: NextFunction
 ) => {
   res.status(200);
   if(err instanceof(ApiException)){

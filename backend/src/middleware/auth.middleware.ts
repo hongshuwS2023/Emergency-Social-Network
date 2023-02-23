@@ -13,7 +13,10 @@ export const restVerifyToken = (
   _: Response,
   next: NextFunction
 ) => {
-  if (req.originalUrl.match('/api/auth/*') || req.originalUrl.match('/api/docs')) {
+  if (
+    req.originalUrl.match('/api/auth/*') ||
+    req.originalUrl.match('/api/docs')
+  ) {
     next();
     return;
   }
@@ -41,8 +44,8 @@ export const restVerifyToken = (
 
   jwt.verify(token, process.env.JWT_SECRET as string, async (err, data) => {
     if (err || !data) {
-       const error = new UnauthorizedException(ErrorMessage.AUTHUNAUTHORIZED);
-       next(error)
+      const error = new UnauthorizedException(ErrorMessage.AUTHUNAUTHORIZED);
+      next(error);
     }
 
     next();

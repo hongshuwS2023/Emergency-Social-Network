@@ -34,5 +34,4 @@ export default class RoomService {
     room.users.push(user);
     return await this.roomRepository.save(room);
   }
-
 }
