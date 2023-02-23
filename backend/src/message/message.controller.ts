@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from 'express';
 import MessageService from './message.service';
 import {PostMessageInput} from '../requests/postmessage.input';
 import {SocketServer} from '../utils/socketServer';
-import MessageResponse from '../responses/api.response';
+import MessageResponse from '../responses/message.response';
 
 export default class MessageController {
   messageService: MessageService;

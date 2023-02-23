@@ -63,6 +63,7 @@ module.exports = {
     'bg-gray-500',
     'stroke-black',
     'dark:stroke-white',
+    'inline'
   ],
   plugins: [],
 }

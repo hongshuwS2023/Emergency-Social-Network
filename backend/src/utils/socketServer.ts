@@ -1,4 +1,4 @@
-import {Server, Socket} from 'socket.io';
+import {Server} from 'socket.io';
 import {Repository} from 'typeorm';
 import {BadRequestException, ErrorMessage} from '../exceptions/api.exception';
 import {OnlineStatus, User} from '../user/user.entity';
