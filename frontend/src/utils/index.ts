@@ -35,6 +35,9 @@ join?.addEventListener('click', async function handleClick(event) {
         document.querySelector('#error-message')?.appendChild(div);
     }
     else {
+        const div = document.createElement("div");
+        div.innerHTML = `<div class="dark:text-white">Confirm to register?</div>`;
+        document.querySelector('#confirm-message')?.appendChild(div);
         confirm.classList.remove('invisible');
         join.classList.add('invisible');
         buttonClass?.removeChild(join);
