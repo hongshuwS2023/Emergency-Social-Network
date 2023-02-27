@@ -6,16 +6,20 @@ jobs:
     executor:
       name: node/default
       tag: 'lts'
-    working_directory: ~/s23-EN-SB1
+    working_directory: ~/s23-ESN-SB1
     steps:
       - checkout
 
       - node/install-packages:
-          app-dir: ~/s23-EN-SB1/backend
+          app-dir: ~/s23-ESN-SB1/backend
           cache-path: .yarn
           override-ci-command: yarn
       - run:
-          working_directory: ~/s23-EN-SB1/backend
+          working_directory: ~/s23-ESN-SB1/backend
+          command: yarn lint
+          name: Check CodeStyle
+      - run:
+          working_directory: ~/s23-ESN-SB1/backend
           command: yarn build
           name: Build backend
 
@@ -23,16 +27,16 @@ jobs:
     executor:
       name: node/default
       tag: 'lts'
-    working_directory: ~/s23-EN-SB1
+    working_directory: ~/s23-ESN-SB1
     steps:
       - checkout
 
       - node/install-packages:
-          app-dir: ~/s23-EN-SB1/frontend
+          app-dir: ~/s23-ESN-SB1/frontend
           cache-path: .yarn
           override-ci-command: yarn
       - run:
-          working_directory: ~/s23-EN-SB1/backend
+          working_directory: ~/s23-ESN-SB1/backend
           command: yarn build
           name: Build backend
 workflows:
