@@ -6,37 +6,20 @@ jobs:
     executor:
       name: node/default
       tag: 'lts'
-    working_directory: ~/s23-ESN-SB1
+    working_directory: ~/s23-EN-SB1
     steps:
       - checkout
 
       - node/install-packages:
-          app-dir: ~/s23-ESN-SB1/backend
+          app-dir: ~/s23-EN-SB1/backend
           cache-path: .yarn
           override-ci-command: yarn
       - run:
-          working_directory: ~/s23-ESN-SB1/backend
+          working_directory: ~/s23-EN-SB1/backend
           command: yarn lint
-          name: Check CodeStyle
+          name: Lint backend   
       - run:
-          working_directory: ~/s23-ESN-SB1/backend
-          command: yarn build
-          name: Build backend
-
-  build-frontend:
-    executor:
-      name: node/default
-      tag: 'lts'
-    working_directory: ~/s23-ESN-SB1
-    steps:
-      - checkout
-
-      - node/install-packages:
-          app-dir: ~/s23-ESN-SB1/frontend
-          cache-path: .yarn
-          override-ci-command: yarn
-      - run:
-          working_directory: ~/s23-ESN-SB1/frontend
+          working_directory: ~/s23-EN-SB1/backend
           command: yarn build
           name: Build backend
 
