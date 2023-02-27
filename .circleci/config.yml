@@ -36,7 +36,7 @@ jobs:
           cache-path: .yarn
           override-ci-command: yarn
       - run:
-          working_directory: ~/s23-ESN-SB1/backend
+          working_directory: ~/s23-ESN-SB1/frontend
           command: yarn build
           name: Build backend
 workflows:
