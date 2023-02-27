@@ -26,3 +26,4 @@ YOU ARE *NOT* PERMITTED TO SHARE THIS REPO OUTSIDE THIS GITHUB ORG. YOU ARE *NOT
   * Fire up containers using docker-compose --file docker-compose-dev.yml up --build -d db api
   * Ender frontend folder, and run yarn
   * Run yarn dev, then you are good to go
+* Make sure your code can pass the CI
