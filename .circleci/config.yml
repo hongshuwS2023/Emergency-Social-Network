@@ -1,0 +1,24 @@
+version: 2.1
+orbs:
+  node: circleci/node@5.1.0
+jobs:
+  build:
+    executor:
+      name: node/default
+      tag: 'lts'
+    working_directory: ~/s23-EN-SB1
+    steps:
+      - checkout
+
+      - node/install-packages:
+          app-dir: ~/s23-EN-SB1/backend
+          cache-path: .yarn
+          override-ci-command: yarn
+      - run:
+          working_directory: ~/s23-EN-SB1/backend
+          command: yarn build
+          name: Build backend
+workflows:
+  build_system:
+    jobs:
+      - build
