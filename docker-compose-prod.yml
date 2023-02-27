@@ -2,42 +2,43 @@ version: '3.9'
 services:
   db:
     container_name: esn-db
-    image: esn-database
-    build:
-      context: ./backend
-      dockerfile: Dockerfile-sql
+    image: mysql:latest
     restart: always
     networks:
       - esn
     expose:
       - 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 's23-esn-s2023'
+      MYSQL_DATABASE: 'fse'
+      MYSQL_USER: 'esnbackend'
+      MYSQL_PASSWORD: 's23-esn-s2023'
   api:
     container_name: esn-api
-    image: esn-api
-    build:
-      context: ./backend
-      dockerfile: Dockerfile-api
+    image: jyang285/esn-api:latest
     expose:
       - 3000
-    depends_on:
-      - db
-    restart: always
-    networks:
-      - esn
-  web:
-    container_name: esn-web
-    image: esn-web
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-frontend
-    restart: always
-    networks:
-      - esn
-    depends_on:
-      - db
-      - api
     ports:
-      - 2333:80
+      - 3000:3000
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - esn
+  # web:
+  #   container_name: esn-web
+  #   image: esn-web
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile-frontend
+  #   restart: always
+  #   networks:
+  #     - esn
+  #   depends_on:
+  #     - db
+  #     - api
+  #   ports:
+  #     - 2333:80
 networks:
   esn:
     driver: bridge
