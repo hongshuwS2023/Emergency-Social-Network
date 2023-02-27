@@ -19,7 +19,14 @@ export default class UserService {
    */
   @Get('{userId}')
   async getUser(userId: number): Promise<User> {
-    const user = await this.userRepository.findOneBy({id: userId});
+    const user = await this.userRepository.findOne({
+      relations:{
+        rooms: true,
+      },
+      where:{
+        id: userId
+      }
+    });
 
     if (user === null) {
       throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
