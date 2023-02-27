@@ -56,7 +56,9 @@ function displayMessage(username: string, status: Status, message: string, time:
 }
 
 async function getHistory() {
-    const res = await fetch('http://localhost:3000/api/messages', {
+    const url = new URL('http://localhost:3000/api/messages');
+    url.searchParams.set('roomName', 'public');
+    const res = await fetch(url.toString(), {
         method: 'GET',
         headers: {
             "authorization": token,

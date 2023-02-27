@@ -472,9 +472,9 @@
 				}
 			}
 		},
-		"/api/messages": {
+		"/api/messages/{roomName}": {
 			"get": {
-				"operationId": "GetPublicMessages",
+				"operationId": "GetMessages",
 				"responses": {
 					"200": {
 						"description": "Message[]",
@@ -490,10 +490,21 @@
 						}
 					}
 				},
-				"description": "Retrieve all messages in the database",
+				"description": "Retrieve all messages in the database in the specified room",
 				"security": [],
-				"parameters": []
-			},
+				"parameters": [
+					{
+						"in": "path",
+						"name": "roomName",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/messages": {
 			"post": {
 				"operationId": "PostMessage",
 				"responses": {

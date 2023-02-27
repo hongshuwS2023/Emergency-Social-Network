@@ -25,20 +25,26 @@ export default class MessageService {
   }
 
   /**
-   * Retrieve all messages in the database
+   * Retrieve all messages in the database in the specified room
+   * @param roomName
    * @returns Message[]
    */
-  @Get()
-  async getPublicMessages(): Promise<Message[]> {
+  @Get('{roomName}')
+  async getMessages(roomName: string): Promise<Message[]> {
     const messages = await this.messageRepository
       .createQueryBuilder('message')
       .leftJoinAndSelect('message.user', 'user')
+      .leftJoinAndSelect('message.room', 'room')
       .select([
         'message.content',
         'message.time',
+        'message.room',
         'user.username',
         'user.status',
       ])
+      .where('room.name = :room_name', {
+        room_name: roomName,
+      })
       .getMany();
 
     if (messages === null) {

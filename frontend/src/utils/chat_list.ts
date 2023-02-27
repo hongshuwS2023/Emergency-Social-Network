@@ -9,7 +9,9 @@ const history = document.getElementById('chat-history') || new HTMLDivElement;
 const header = document.getElementById('chat-history')?.innerHTML || '';
 
 async function getLatestHistory() {
-    const res = await fetch('http://localhost:3000/api/messages', {
+    const url = new URL('http://localhost:3000/api/messages');
+    url.searchParams.set('roomName', 'public');
+    const res = await fetch(url.toString(), {
         method: 'GET',
         headers: {
             "authorization": formattedToken,

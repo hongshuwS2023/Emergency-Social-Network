@@ -11,13 +11,14 @@ export default class MessageController {
     this.messageService = new MessageService();
   }
 
-  async getPublicMessages(
+  async getMessages(
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
-      const messages = await this.messageService.getPublicMessages();
+      const roomName: string = req.query.roomName as string;
+      const messages = await this.messageService.getMessages(roomName);
       res.send(messages);
     } catch (error) {
       next(error);
