@@ -36,7 +36,7 @@ export class SocketServer {
         SocketServer.io.emit('chat message', msg);
       });
 
-      socket.on('disconnect', async (socket: any) => {
+      socket.on('disconnect', async () => {
         const user = await this.userRepository.findOneBy({id: userId});
         if (user === null) {
           throw new BadRequestException(ErrorMessage.WRONGUSERNAME);

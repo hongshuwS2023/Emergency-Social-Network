@@ -16,6 +16,10 @@ jobs:
           override-ci-command: yarn
       - run:
           working_directory: ~/s23-EN-SB1/backend
+          command: yarn lint
+          name: Lint backend   
+      - run:
+          working_directory: ~/s23-EN-SB1/backend
           command: yarn build
           name: Build backend
 
