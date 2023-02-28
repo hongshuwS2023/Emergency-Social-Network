@@ -534,6 +534,35 @@
 				}
 			}
 		},
+		"/api/rooms/{roomName}": {
+			"get": {
+				"operationId": "GetRoom",
+				"responses": {
+					"200": {
+						"description": "Room",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Room"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieve the room with all the related messages in the database",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "roomName",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
 		"/api/rooms": {
 			"post": {
 				"operationId": "JoinRoom",

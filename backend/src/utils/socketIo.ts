@@ -1,6 +1,6 @@
-import {Server, Socket} from 'socket.io';
+import {Server} from 'socket.io';
 import {Repository} from 'typeorm';
-import {BadRequestException, ErrorMessage} from '../exceptions/api.exception';
+import {ErrorMessage} from '../exceptions/api.exception';
 import {OnlineStatus, User} from '../user/user.entity';
 import ESNDataSource from './datasource';
 
@@ -13,6 +13,7 @@ export class SocketIo {
     // initialize the socket.io server
     this.io = new Server();
     this.userRepository = ESNDataSource.getRepository(User);
+    this.registerEvents();
   }
 
   public static getInstance(): SocketIo {
@@ -50,7 +51,7 @@ export class SocketIo {
         this.io.emit('online status', users);
       }
 
-      socket.on('disconnect', async (socket: any) => {
+      socket.on('disconnect', async () => {
         const user = await this.userRepository.findOneBy({id: userId});
         if (user === null) {
           console.log(ErrorMessage.WRONGUSERNAME);
@@ -71,3 +72,6 @@ export class SocketIo {
     });
   }
 }
+
+const io = SocketIo.getInstance().getIO();
+export {io};

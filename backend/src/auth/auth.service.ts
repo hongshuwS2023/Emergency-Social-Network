@@ -14,7 +14,7 @@ import AuthResponse from '../responses/auth.response';
 import {Body, Post, Route} from 'tsoa';
 import {Room} from '../room/room.entity';
 import {LogoutInput} from '../requests/logout.input';
-import {SocketIo} from '../utils/socketIo';
+import {io} from '../utils/socketIo';
 @Route('api/auth')
 export default class AuthService {
   authRepository: Repository<User>;
@@ -133,7 +133,7 @@ export default class AuthService {
         username: 'ASC',
       },
     });
-    SocketIo.getInstance().getIO().emit('online status', users);
+    io.emit('online status', users);
     return new AuthResponse(user.id, user.username, user.status, token);
   }
   @Post('/logout')
@@ -150,7 +150,7 @@ export default class AuthService {
         username: 'ASC',
       },
     });
-    SocketIo.getInstance().getIO().emit('online status', users);
+    io.emit('online status', users);
     return newUser;
   }
 
