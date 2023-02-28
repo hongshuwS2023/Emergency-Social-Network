@@ -13,6 +13,9 @@ export default class RoomRoute {
   }
 
   private setRoute(): void {
+    this.router.get('/:roomName', (req, res, next) => {
+      this.roomController.getRoom(req, res, next);
+    });
     this.router.post('/', (req, res, next) => {
       this.roomController.joinRoom(req, res, next);
     });

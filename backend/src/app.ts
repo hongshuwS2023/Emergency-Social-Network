@@ -9,21 +9,22 @@ import ESNDataSource from './utils/datasource';
 import {errorHandler} from './middleware/error.middleware';
 import * as swaggerDocument from '../public/swagger.json';
 import MessageRoute from './message/message.route';
-import {SocketServer} from './utils/socketServer';
 import swaggerUi from 'swagger-ui-express';
 import RoomRoute from './room/room.route';
+import {SocketIo} from './utils/socketIo';
 
 export default class App {
   private app: express.Application;
   private port: number;
   private httpServer;
-  private socketServer: SocketServer;
+  private socketIo: SocketIo;
 
   private constructor() {
     this.app = express();
     this.httpServer = createServer(this.app);
     this.port = 3000;
-    this.socketServer = new SocketServer(this.httpServer);
+    this.socketIo = SocketIo.getInstance();
+    this.socketIo.attach(this.httpServer);
   }
 
   private registerConfigs() {

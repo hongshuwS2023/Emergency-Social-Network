@@ -20,12 +20,12 @@ export default class UserService {
   @Get('{userId}')
   async getUser(userId: number): Promise<User> {
     const user = await this.userRepository.findOne({
-      relations:{
+      relations: {
         rooms: true,
       },
-      where:{
-        id: userId
-      }
+      where: {
+        id: userId,
+      },
     });
 
     if (user === null) {

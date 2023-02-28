@@ -1,8 +1,12 @@
 import {Repository} from 'typeorm';
-import {ErrorMessage, NotFoundException} from '../exceptions/api.exception';
+import {
+  ErrorMessage,
+  NotFoundException,
+  BadRequestException,
+} from '../exceptions/api.exception';
 import ESNDataSource from '../utils/datasource';
 import {User} from '../user/user.entity';
-import {Body, Post, Route} from 'tsoa';
+import {Body, Get, Post, Route} from 'tsoa';
 import {Room} from './room.entity';
 import {JoinRoomInput} from '../requests/joinroom.input';
 
@@ -14,6 +18,25 @@ export default class RoomService {
   constructor() {
     this.roomRepository = ESNDataSource.getRepository(Room);
     this.userRepository = ESNDataSource.getRepository(User);
+  }
+
+  /**
+   * Retrieve the room with all the related messages in the database
+   * @param roomName
+   * @returns Room
+   */
+  @Get('{roomName}')
+  async getRoom(roomName: string): Promise<Room> {
+    const room = await this.roomRepository.findOne({
+      relations: ['messages', 'messages.user'],
+      where: {
+        name: roomName,
+      },
+    });
+    if (room === null) {
+      throw new BadRequestException(ErrorMessage.EMPTYMESSAGE);
+    }
+    return room;
   }
 
   /**

@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from 'express';
 import MessageService from './message.service';
 import {PostMessageInput} from '../requests/postmessage.input';
-import {SocketServer} from '../utils/socketServer';
 import MessageResponse from '../responses/message.response';
+import {SocketIo} from '../utils/socketIo';
 
 export default class MessageController {
   messageService: MessageService;
@@ -39,7 +39,7 @@ export default class MessageController {
         message.time,
         message.user.status
       );
-      SocketServer.io.emit('public message', responseMessage);
+      SocketIo.getInstance().getIO().emit('public message', responseMessage);
       res.send(responseMessage);
     } catch (error) {
       next(error);
