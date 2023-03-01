@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import UserService from './user.service';
 import {UpdateUserInput} from '../requests/updateuser.input';
+import {getFormattedDate} from '../utils/date';
 
 export default class UserController {
   userService: UserService;
@@ -17,6 +18,7 @@ export default class UserController {
     try {
       const updateUserInput: UpdateUserInput = req.body;
       const user = await this.userService.updateUser(updateUserInput);
+      user.statusTimeStamp = getFormattedDate();
       res.send(user);
     } catch (error) {
       next(error);
