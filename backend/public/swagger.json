@@ -108,6 +108,12 @@
 							"$ref": "#/components/schemas/Room"
 						},
 						"type": "array"
+					},
+					"speedtests": {
+						"items": {
+							"$ref": "#/components/schemas/SpeedTest"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
@@ -118,7 +124,8 @@
 					"status",
 					"onlineStatus",
 					"messages",
-					"rooms"
+					"rooms",
+					"speedtests"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -179,6 +186,42 @@
 					"name",
 					"messages",
 					"users"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SpeedTest": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"admin": {
+						"$ref": "#/components/schemas/User"
+					},
+					"onGoing": {
+						"type": "boolean"
+					},
+					"interval": {
+						"type": "number",
+						"format": "double"
+					},
+					"postRate": {
+						"type": "number",
+						"format": "double"
+					},
+					"getRate": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id",
+					"admin",
+					"onGoing",
+					"interval",
+					"postRate",
+					"getRate"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -255,6 +298,24 @@
 				"required": [
 					"name",
 					"userId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateSpeedTestInput": {
+				"properties": {
+					"adminId": {
+						"type": "number",
+						"format": "double"
+					},
+					"interval": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"adminId",
+					"interval"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -551,6 +612,66 @@
 						}
 					}
 				}
+			}
+		},
+		"/api/speedtests": {
+			"post": {
+				"operationId": "CreateSpeedTest",
+				"responses": {
+					"200": {
+						"description": "speedtest entity",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SpeedTest"
+								}
+							}
+						}
+					}
+				},
+				"description": "Start a speed test session.",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateSpeedTestInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/speedtests/{speedtestId}": {
+			"put": {
+				"operationId": "StopSpeedTest",
+				"responses": {
+					"200": {
+						"description": "speedtest entity",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SpeedTest"
+								}
+							}
+						}
+					}
+				},
+				"description": "Stop a speed test session",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "speedtestId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		}
 	},
