@@ -15,6 +15,7 @@ import {Body, Post, Route} from 'tsoa';
 import {Room} from '../room/room.entity';
 import {LogoutInput} from '../requests/logout.input';
 import {SocketServer} from '../utils/socketServer';
+import {getFormattedDate} from '../utils/date';
 @Route('api/auth')
 export default class AuthService {
   authRepository: Repository<User>;
@@ -60,6 +61,7 @@ export default class AuthService {
     user.role = Role.CITIZEN;
     user.status = Status.Undefined;
     user.onlineStatus = OnlineStatus.ONLINE;
+    user.statusTimeStamp = getFormattedDate();
     const room = await this.roomRepository.findOneBy({name: 'public'});
     if (room === null) {
       const newRoom = new Room();
@@ -115,6 +117,7 @@ export default class AuthService {
       throw new BadRequestException(ErrorMessage.WRONGPASSWORD);
     }
     user.onlineStatus = OnlineStatus.ONLINE;
+    user.statusTimeStamp = getFormattedDate();
     await this.authRepository.save(user);
     const token = jwt.sign(
       {

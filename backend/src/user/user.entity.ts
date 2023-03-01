@@ -49,6 +49,9 @@ export class User {
   @Column()
   onlineStatus!: OnlineStatus;
 
+  @Column()
+  statusTimeStamp!: string;
+
   @OneToMany(() => Message, message => message.user)
   messages!: Message[];
 
