@@ -32,9 +32,7 @@ export class SocketServer {
     SocketServer.io.on('connection', async (socket: any) => {
       const userId = socket.handshake.query.userid;
       const user = await this.userRepository.findOneBy({id: userId});
-      if (user === null) {
-        console.log(ErrorMessage.WRONGUSERNAME);
-      } else {
+      if (user) {
         user.onlineStatus = OnlineStatus.ONLINE;
         await this.userRepository.save(user);
         const users = await this.userRepository.find({
@@ -48,9 +46,7 @@ export class SocketServer {
 
       socket.on('disconnect', async () => {
         const user = await this.userRepository.findOneBy({id: userId});
-        if (user === null) {
-          console.log(ErrorMessage.WRONGUSERNAME);
-        } else {
+        if (user) {
           user.onlineStatus = OnlineStatus.OFFLINE;
           await this.userRepository.save(user);
           const users = await this.userRepository.find({
@@ -60,7 +56,6 @@ export class SocketServer {
             },
           });
           SocketServer.io.emit('online status', users);
-          console.log('user disconnected');
         }
       });
     });

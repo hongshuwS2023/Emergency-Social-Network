@@ -67,12 +67,8 @@ async function getLatestHistory(name: string) {
   }).then((response) => {
     return response.json();
   });
-  console.log(res);
   if (res) {
-    const msg = res.messages.slice(-1)[0];
-    console.log(msg);
-    
-    
+    const msg = res.messages.slice(-1)[0];    
     document
       .querySelector("#"+name)
       ?.append(displayMessage(msg.user.username, msg.content));
