@@ -1,6 +1,0 @@
-FROM mysql:8.0.32
-
-ENV MYSQL_ROOT_PASSWORD s23-esn-s2023
-ADD ./sql/database_init.sql /docker-entrypoint-initdb.d
-
-EXPOSE 3306
