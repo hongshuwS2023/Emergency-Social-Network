@@ -6,8 +6,6 @@ import {
   UnauthorizedException,
 } from '../exceptions/api.exception';
 
-console.log(1);
-
 export const restVerifyToken = (
   req: Request,
   _: Response,
