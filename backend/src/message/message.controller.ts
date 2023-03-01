@@ -2,27 +2,13 @@ import {NextFunction, Request, Response} from 'express';
 import MessageService from './message.service';
 import {PostMessageInput} from '../requests/postmessage.input';
 import MessageResponse from '../responses/message.response';
-import {io} from '../utils/socketIo';
+import {SocketServer} from '../utils/socketServer';
 
 export default class MessageController {
   messageService: MessageService;
 
   constructor() {
     this.messageService = new MessageService();
-  }
-
-  async getMessages(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const roomName: string = req.query.roomName as string;
-      const messages = await this.messageService.getMessages(roomName);
-      res.send(messages);
-    } catch (error) {
-      next(error);
-    }
   }
 
   async postPublicMessage(
@@ -39,7 +25,7 @@ export default class MessageController {
         message.time,
         message.user.status
       );
-      io.emit('public message', responseMessage);
+      SocketServer.emitEvent('public message', responseMessage);
       res.send(responseMessage);
     } catch (error) {
       next(error);

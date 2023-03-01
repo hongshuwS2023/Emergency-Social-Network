@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import UserService from './user.service';
 import {UpdateUserInput} from '../requests/updateuser.input';
+import UserResponse from '../responses/user.response';
 
 export default class UserController {
   userService: UserService;
@@ -31,7 +32,15 @@ export default class UserController {
     try {
       const userId = Number(req.params.userId);
       const user = await this.userService.getUser(userId);
-      res.send(user);
+      const userResponse = new UserResponse(
+        user.id,
+        user.username,
+        user.status,
+        user.onlineStatus,
+        user.role,
+        user.rooms
+      );
+      res.send(userResponse);
     } catch (error) {
       next(error);
     }

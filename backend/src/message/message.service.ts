@@ -9,7 +9,7 @@ import ESNDataSource from '../utils/datasource';
 import {Message} from './message.entity';
 import {User} from '../user/user.entity';
 import {getFormattedDate} from '../utils/date';
-import {Body, Get, Post, Route} from 'tsoa';
+import {Body, Post, Route} from 'tsoa';
 import {Room} from '../room/room.entity';
 
 @Route('/api/messages')
@@ -22,35 +22,6 @@ export default class MessageService {
     this.messageRepository = ESNDataSource.getRepository(Message);
     this.userRepository = ESNDataSource.getRepository(User);
     this.roomRepository = ESNDataSource.getRepository(Room);
-  }
-
-  /**
-   * Retrieve all messages in the database in the specified room
-   * @param roomName
-   * @returns Message[]
-   */
-  @Get('{roomName}')
-  async getMessages(roomName: string): Promise<Message[]> {
-    const messages = await this.messageRepository
-      .createQueryBuilder('message')
-      .leftJoinAndSelect('message.user', 'user')
-      .leftJoinAndSelect('message.room', 'room')
-      .select([
-        'message.content',
-        'message.time',
-        'message.room',
-        'user.username',
-        'user.status',
-      ])
-      .where('room.name = :room_name', {
-        room_name: roomName,
-      })
-      .getMany();
-
-    if (messages === null) {
-      return [];
-    }
-    return messages;
   }
 
   /**

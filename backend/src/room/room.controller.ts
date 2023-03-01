@@ -15,7 +15,7 @@ export default class RoomController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const roomName = String(req.params.roomName);
+      const roomName = req.params.roomName;
       const room = await this.roomService.getRoom(roomName);
       res.send(room);
     } catch (error) {

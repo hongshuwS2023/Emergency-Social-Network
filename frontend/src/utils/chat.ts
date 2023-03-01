@@ -2,9 +2,10 @@ import { io, Socket } from 'socket.io-client';
 import MessageResponse from '../../response/chat.response'
 import { Status } from '../../response/chat.response';
 import { parseStatus } from '../../response/chat.response';
+import { message_endpoint, api_base, room_endpoint } from '../sdk/api';
 
 const id = localStorage.getItem('id') || '';
-const socket: Socket = io(`http://localhost:3000/?userid=${id}`, { transports: ['websocket'] });
+const socket: Socket = io(api_base+`/?userid=${id}`, { transports: ['websocket'] });
 const send = document.getElementById('send-button') || new HTMLDivElement();
 const token = "Bearer " + localStorage.getItem('token') as string;
 
@@ -17,11 +18,11 @@ send.addEventListener('click', async function handleClick(event) {
     const messageBody = {
         userId: Number(localStorage.getItem('id')),
         content: (document.getElementById('input') as HTMLInputElement).value,
-        roomName: 'public'
+        roomName: localStorage.getItem("room")
     }
 
     if (messageBody.content.trim().length) {
-        const res = await fetch('http://localhost:3000/api/messages', {
+        const res = await fetch(message_endpoint, {
             method: 'POST',
             headers: {
                 "authorization": token,
@@ -56,9 +57,7 @@ function displayMessage(username: string, status: Status, message: string, time:
 }
 
 async function getHistory() {
-    const url = new URL('http://localhost:3000/api/messages');
-    url.searchParams.set('roomName', 'public');
-    const res = await fetch(url.toString(), {
+    const res = await fetch(room_endpoint+'/'+localStorage.getItem('room'), {
         method: 'GET',
         headers: {
             "authorization": token,
@@ -67,7 +66,7 @@ async function getHistory() {
     }).then(response => {
         return response.json();
     })
-    res.forEach(msg => {
+    res.messages.forEach(msg => {
         displayMessage(msg.user.username, msg.user.status, msg.content, msg.time);
     });
 }

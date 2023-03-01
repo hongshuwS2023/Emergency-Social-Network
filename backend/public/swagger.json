@@ -339,7 +339,7 @@
 				"operationId": "LogoutUser",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "user entity",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -349,6 +349,7 @@
 						}
 					}
 				},
+				"description": "logout user based on provided user id",
 				"security": [],
 				"parameters": [],
 				"requestBody": {
@@ -378,7 +379,7 @@
 						}
 					}
 				},
-				"description": "Get a user based on userId provided",
+				"description": "Get a user based on userId provided, related rooms are retrieved with the user",
 				"security": [],
 				"parameters": [
 					{
@@ -470,38 +471,6 @@
 						}
 					}
 				}
-			}
-		},
-		"/api/messages/{roomName}": {
-			"get": {
-				"operationId": "GetMessages",
-				"responses": {
-					"200": {
-						"description": "Message[]",
-						"content": {
-							"application/json": {
-								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/Message"
-									},
-									"type": "array"
-								}
-							}
-						}
-					}
-				},
-				"description": "Retrieve all messages in the database in the specified room",
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "roomName",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
 			}
 		},
 		"/api/messages": {

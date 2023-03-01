@@ -4,37 +4,32 @@ import {ErrorMessage} from '../exceptions/api.exception';
 import {OnlineStatus, User} from '../user/user.entity';
 import ESNDataSource from './datasource';
 
-export class SocketIo {
-  private static instance: SocketIo;
+export class SocketServer {
+  private static instance: SocketServer;
   private userRepository: Repository<User>;
-  private io: Server;
+  private static io: Server;
 
   private constructor() {
     // initialize the socket.io server
-    this.io = new Server();
+    SocketServer.io = new Server();
     this.userRepository = ESNDataSource.getRepository(User);
     this.registerEvents();
   }
 
-  public static getInstance(): SocketIo {
-    if (!SocketIo.instance) {
-      SocketIo.instance = new SocketIo();
+  public static getInstance(): SocketServer {
+    if (!SocketServer.instance) {
+      SocketServer.instance = new SocketServer();
     }
-    return SocketIo.instance;
+    return SocketServer.instance;
   }
 
   public attach(server: any): void {
-    // attach the socket.io server to the HTTP server
-    this.io.attach(server);
-  }
-
-  public getIO(): Server {
-    return this.io;
+    SocketServer.io.attach(server);
   }
 
   private registerEvents(): void {
     this.userRepository = ESNDataSource.getRepository(User);
-    this.io.on('connection', async (socket: any) => {
+    SocketServer.io.on('connection', async (socket: any) => {
       const userId = socket.handshake.query.userid;
       const user = await this.userRepository.findOneBy({id: userId});
       if (user === null) {
@@ -48,7 +43,7 @@ export class SocketIo {
             username: 'ASC',
           },
         });
-        this.io.emit('online status', users);
+        SocketServer.io.emit('online status', users);
       }
 
       socket.on('disconnect', async () => {
@@ -56,7 +51,6 @@ export class SocketIo {
         if (user === null) {
           console.log(ErrorMessage.WRONGUSERNAME);
         } else {
-          console.log(userId);
           user.onlineStatus = OnlineStatus.OFFLINE;
           await this.userRepository.save(user);
           const users = await this.userRepository.find({
@@ -65,13 +59,14 @@ export class SocketIo {
               username: 'ASC',
             },
           });
-          this.io.emit('online status', users);
+          SocketServer.io.emit('online status', users);
           console.log('user disconnected');
         }
       });
     });
   }
-}
 
-const io = SocketIo.getInstance().getIO();
-export {io};
+  public static emitEvent(event: string, data: any): void {
+    SocketServer.io.emit(event, data);
+  }
+}

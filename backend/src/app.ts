@@ -11,20 +11,20 @@ import * as swaggerDocument from '../public/swagger.json';
 import MessageRoute from './message/message.route';
 import swaggerUi from 'swagger-ui-express';
 import RoomRoute from './room/room.route';
-import {SocketIo} from './utils/socketIo';
+import {SocketServer} from './utils/socketServer';
 
 export default class App {
   private app: express.Application;
   private port: number;
   private httpServer;
-  private socketIo: SocketIo;
+  private socketServer: SocketServer;
 
   private constructor() {
     this.app = express();
     this.httpServer = createServer(this.app);
     this.port = 3000;
-    this.socketIo = SocketIo.getInstance();
-    this.socketIo.attach(this.httpServer);
+    this.socketServer = SocketServer.getInstance();
+    this.socketServer.attach(this.httpServer);
   }
 
   private registerConfigs() {

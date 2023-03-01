@@ -13,7 +13,7 @@ export default class UserService {
   }
 
   /**
-   * Get a user based on userId provided
+   * Get a user based on userId provided, related rooms are retrieved with the user
    * @param userId
    * @returns user entity
    */

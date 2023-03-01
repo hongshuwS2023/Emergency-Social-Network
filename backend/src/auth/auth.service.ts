@@ -14,7 +14,7 @@ import AuthResponse from '../responses/auth.response';
 import {Body, Post, Route} from 'tsoa';
 import {Room} from '../room/room.entity';
 import {LogoutInput} from '../requests/logout.input';
-import {io} from '../utils/socketIo';
+import {SocketServer} from '../utils/socketServer';
 @Route('api/auth')
 export default class AuthService {
   authRepository: Repository<User>;
@@ -133,9 +133,15 @@ export default class AuthService {
         username: 'ASC',
       },
     });
-    io.emit('online status', users);
+    SocketServer.emitEvent('online status', users);
     return new AuthResponse(user.id, user.username, user.status, token);
   }
+
+  /**
+   * logout user based on provided user id
+   * @param logoutInput
+   * @returns user entity
+   */
   @Post('/logout')
   async logoutUser(@Body() logoutInput: LogoutInput): Promise<User> {
     const user = await this.authRepository.findOneBy({id: logoutInput.id});
@@ -150,7 +156,7 @@ export default class AuthService {
         username: 'ASC',
       },
     });
-    io.emit('online status', users);
+    SocketServer.emitEvent('online status', users);
     return newUser;
   }
 

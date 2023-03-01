@@ -13,10 +13,6 @@ export default class MessageRoute {
   }
 
   private setRoute(): void {
-    this.router.get('/', (req, res, next) => {
-      this.messageController.getMessages(req, res, next);
-    });
-
     this.router.post('/', (req, res, next) => {
       this.messageController.postPublicMessage(req, res, next);
     });
