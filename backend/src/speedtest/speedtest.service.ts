@@ -7,7 +7,7 @@ import {User} from '../user/user.entity';
 import ESNDataSource from '../utils/datasource';
 import {SpeedTest} from './speedtest.entity';
 
-@Route('/api/speedtest')
+@Route('/api/speedtests')
 export default class SpeedtestService {
   private speedTestRepository: Repository<SpeedTest>;
   private messageRepository: Repository<Message>;
@@ -49,7 +49,7 @@ export default class SpeedtestService {
    * @param speed test id
    * @returns speedtest entity
    */
-  @Put('{speedtestid}')
+  @Put('{speedtestId}')
   async stopSpeedTest(speedtestId: number): Promise<SpeedTest> {
     const speedtest = await this.speedTestRepository.findOneBy({
       id: speedtestId,
