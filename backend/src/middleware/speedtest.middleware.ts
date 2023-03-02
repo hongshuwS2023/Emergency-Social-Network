@@ -6,15 +6,23 @@ import ESNDataSource from '../utils/datasource';
 
 export class SpeedTestMiddleware {
   private speedTestRepository: Repository<SpeedTest>;
-
-  constructor() {
+  private static instance: SpeedTestMiddleware;
+  private constructor() {
     this.speedTestRepository = ESNDataSource.getRepository(SpeedTest);
   }
 
+  static getInstance() {
+    if (!SpeedTestMiddleware.instance) {
+      SpeedTestMiddleware.instance = new SpeedTestMiddleware();
+    }
+
+    return SpeedTestMiddleware.instance;
+  }
   async handleSpeedTest(req: Request, _: Response, next: NextFunction) {
-    const onGoingSpeedTest = await this.speedTestRepository.findOneBy({
-      onGoing: true,
-    });
+    const onGoingSpeedTest =
+      await SpeedTestMiddleware.instance.speedTestRepository.findOneBy({
+        onGoing: true,
+      });
 
     if (onGoingSpeedTest && !req.originalUrl.match('/api/speedtest/*')) {
       next(new UnauthorizedException(ErrorMessage.ONGOINGSPEEDTEST));
