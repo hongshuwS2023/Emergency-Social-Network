@@ -19,9 +19,10 @@ export class SpeedTestMiddleware {
     return SpeedTestMiddleware.instance;
   }
   async handleSpeedTest(req: Request, _: Response, next: NextFunction) {
-    const onGoingSpeedTest = await SpeedTestMiddleware.instance.speedTestRepository.findOneBy({
-      onGoing: true,
-    });
+    const onGoingSpeedTest =
+      await SpeedTestMiddleware.instance.speedTestRepository.findOneBy({
+        onGoing: true,
+      });
 
     if (onGoingSpeedTest && !req.originalUrl.match('/api/speedtest/*')) {
       next(new UnauthorizedException(ErrorMessage.ONGOINGSPEEDTEST));
