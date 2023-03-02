@@ -33,7 +33,7 @@ export default class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({extended: true}));
     this.app.use(restVerifyToken);
-    this.app.use(new SpeedTestMiddleware().handleSpeedTest);
+    this.app.use(SpeedTestMiddleware.getInstance().handleSpeedTest);
   }
 
   private registerRoutes() {
