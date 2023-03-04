@@ -1,40 +1,63 @@
-import {NextFunction, Request, Response} from 'express';
-import MessageService from './message.service';
-<<<<<<< HEAD
+import {Repository} from 'typeorm';
+import {
+  BadRequestException,
+  ErrorMessage,
+  NotFoundException,
+} from '../responses/api.exception';
 import {PostMessageInput} from '../requests/postmessage.input';
-import MessageResponse from '../responses/message.response';
+import ESNDataSource from '../utils/datasource';
+import {Message} from './message.entity';
+import {User} from '../user/user.entity';
+import {getFormattedDate} from '../utils/date';
+import {Body, Post, Route} from 'tsoa';
+import {Room} from '../room/room.entity';
 import {SocketServer} from '../utils/socketServer';
-=======
-import {PostMessageInput} from './dto/postmessage.input';
-import {SocketServer} from '../utils/socketServer';
-import MessageResponse from './dto/message.response';
->>>>>>> 51a6f4c49ec219fdefb0a2d7e14bf82b2d053e53
 
+@Route('/api/messages')
 export default class MessageController {
-  messageService: MessageService;
+  socketServer: SocketServer;
+  messageRepository: Repository<Message>;
+  userRepository: Repository<User>;
+  roomRepository: Repository<Room>;
 
   constructor() {
-    this.messageService = new MessageService();
+    this.socketServer = SocketServer.getInstance();
+    this.messageRepository = ESNDataSource.getRepository(Message);
+    this.userRepository = ESNDataSource.getRepository(User);
+    this.roomRepository = ESNDataSource.getRepository(Room);
   }
 
-  async postPublicMessage(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const postMessageInput: PostMessageInput = req.body;
-      const message = await this.messageService.postMessage(postMessageInput);
-      const responseMessage = new MessageResponse(
-        message.user.username,
-        message.content,
-        message.time,
-        message.user.status
-      );
-      SocketServer.emitEvent('public message', responseMessage);
-      res.send(responseMessage);
-    } catch (error) {
-      next(error);
+  /**
+   * Post a new message to the target room
+   * @param publicMessageInput
+   * @returns Message
+   */
+  @Post()
+  async postMessage(
+    @Body() postMessageInput: PostMessageInput
+  ): Promise<Message> {
+    const user = await this.userRepository.findOneBy({
+      id: postMessageInput.userId,
+    });
+    if (user === null) {
+      throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
     }
+    const message = this.messageRepository.create();
+    message.content = postMessageInput.content;
+    if (postMessageInput.content.trim().length <= 0) {
+      throw new BadRequestException(ErrorMessage.EMPTYMESSAGE);
+    }
+    const room = await this.roomRepository.findOneBy({
+      name: postMessageInput.roomName,
+    });
+    if (room === null) {
+      throw new BadRequestException(ErrorMessage.ROOMIDNOTFOUND);
+    }
+    message.sender = user;
+    message.time = getFormattedDate();
+
+    this.socketServer.broadcastChatMessage(message.room.name, message);
+    await this.messageRepository.save(message);
+    return message;
   }
 }

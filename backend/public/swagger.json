@@ -140,7 +140,7 @@
 						"type": "number",
 						"format": "double"
 					},
-					"user": {
+					"sender": {
 						"$ref": "#/components/schemas/User"
 					},
 					"content": {
@@ -155,7 +155,7 @@
 				},
 				"required": [
 					"id",
-					"user",
+					"sender",
 					"content",
 					"time",
 					"room"
@@ -237,17 +237,14 @@
 						"type": "number",
 						"format": "double"
 					},
-					"username": {
-						"type": "string"
-					},
-					"password": {
-						"type": "string"
-					},
 					"role": {
 						"$ref": "#/components/schemas/Role"
 					},
 					"status": {
 						"$ref": "#/components/schemas/Status"
+					},
+					"onlineStatus": {
+						"$ref": "#/components/schemas/OnlineStatus"
 					}
 				},
 				"required": [

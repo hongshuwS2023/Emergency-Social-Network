@@ -1,4 +1,5 @@
 import {Router} from 'express';
+import {CreateSpeedTestInput} from '../requests/createspeedtest.input';
 import SpeedTestController from './speedtest.controller';
 
 export default class SpeedTestRoute {
@@ -13,12 +14,26 @@ export default class SpeedTestRoute {
   }
 
   private setRoute(): void {
-    this.router.post('/', (req, res, next) => {
-      this.speedTestController.createSpeedTest(req, res, next);
+    this.router.post('/', async (req, res, next) => {
+      try {
+        const createSpeedTestInput: CreateSpeedTestInput = req.body;
+
+        res.send(
+          await this.speedTestController.createSpeedTest(createSpeedTestInput)
+        );
+      } catch (error) {
+        next(error);
+      }
     });
 
-    this.router.put('/:roomId', (req, res, next) => {
-      this.speedTestController.stopSpeedTest(req, res, next);
+    this.router.put('/:testId', async (req, res, next) => {
+      try {
+        const speedTestId = Number(req.params.testId);
+
+        res.send(await this.speedTestController.stopSpeedTest(speedTestId));
+      } catch (error) {
+        next(error);
+      }
     });
   }
 

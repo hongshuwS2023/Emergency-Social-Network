@@ -1,17 +1,17 @@
-import {Server} from 'socket.io';
+import {IncomingMessage, ServerResponse, Server as HttpServer} from 'http';
+import {Server, Socket} from 'socket.io';
 import {Repository} from 'typeorm';
-import {ErrorMessage} from '../exceptions/api.exception';
-import {OnlineStatus, User} from '../user/user.entity';
+import {User} from '../user/user.entity';
 import ESNDataSource from './datasource';
 
 export class SocketServer {
   private static instance: SocketServer;
   private userRepository: Repository<User>;
-  private static io: Server;
+  private io: Server;
 
   private constructor() {
     // initialize the socket.io server
-    SocketServer.io = new Server();
+    this.io = new Server();
     this.userRepository = ESNDataSource.getRepository(User);
     this.registerEvents();
   }
@@ -23,74 +23,34 @@ export class SocketServer {
     return SocketServer.instance;
   }
 
-  public attach(server: any): void {
-    SocketServer.io.attach(server);
+  attach(
+    server: HttpServer<typeof IncomingMessage, typeof ServerResponse>
+  ): void {
+    this.io.attach(server);
   }
 
   private registerEvents(): void {
     this.userRepository = ESNDataSource.getRepository(User);
-    SocketServer.io.on('connection', async (socket: any) => {
-      const userId = socket.handshake.query.userid;
-      const user = await this.userRepository.findOneBy({id: userId});
-<<<<<<< HEAD
-      if (user) {
-        user.onlineStatus = OnlineStatus.ONLINE;
-=======
-      if (user === null) {
-        throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
-      }
-      console.log(userId);
-      user.onlineStatus = OnlineStatus.ONLINE;
-      await this.userRepository.save(user);
-      const users = await this.userRepository.find({
-        order: {
-          onlineStatus: 'ASC',
-          username: 'ASC',
-        },
-      });
-      SocketServer.io.emit('online status', users);
 
-      socket.on('chat message', (msg: string) => {
-        console.log('message: ' + msg);
-        SocketServer.io.emit('chat message', msg);
-      });
-
+    this.io.on('connection', async (socket: Socket) => {
       socket.on('disconnect', async () => {
-        const user = await this.userRepository.findOneBy({id: userId});
-        if (user === null) {
-          throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
-        }
-        console.log(userId);
-        user.onlineStatus = OnlineStatus.OFFLINE;
->>>>>>> 51a6f4c49ec219fdefb0a2d7e14bf82b2d053e53
-        await this.userRepository.save(user);
-        const users = await this.userRepository.find({
-          order: {
-            onlineStatus: 'ASC',
-            username: 'ASC',
-          },
-        });
-        SocketServer.io.emit('online status', users);
-      }
-
-      socket.on('disconnect', async () => {
-        const user = await this.userRepository.findOneBy({id: userId});
-        if (user) {
-          user.onlineStatus = OnlineStatus.OFFLINE;
-          await this.userRepository.save(user);
-          const users = await this.userRepository.find({
-            order: {
-              onlineStatus: 'ASC',
-              username: 'ASC',
-            },
-          });
-          SocketServer.io.emit('online status', users);
-        }
+        await this.broadcastOnlineUsers();
       });
     });
   }
 
-  public static emitEvent(event: string, data: any): void {
-    SocketServer.io.emit(event, data);
+  async broadcastOnlineUsers() {
+    const users = await this.userRepository.find({
+      order: {
+        onlineStatus: 'ASC',
+        username: 'ASC',
+      },
+    });
+
+    this.io.emit('online status', users);
+  }
+
+  async broadcastChatMessage(roomName: string, message: Object): Promise<void> {
+    this.io.to(roomName).emit('chat message', message);
   }
 }

@@ -1,39 +1,69 @@
-import {NextFunction, Request, Response} from 'express';
-import {JoinRoomInput} from './dto/joinroom.input';
-import RoomService from './room.service';
+import {Repository} from 'typeorm';
+import {
+  ErrorMessage,
+  NotFoundException,
+  BadRequestException,
+} from '../responses/api.exception';
+import ESNDataSource from '../utils/datasource';
+import {User} from '../user/user.entity';
+import {Body, Get, Post, Route} from 'tsoa';
+import {Room} from './room.entity';
+import {JoinRoomInput} from '../requests/joinroom.input';
 
+@Route('/api/rooms')
 export default class RoomController {
-  roomService: RoomService;
+  roomRepository: Repository<Room>;
+  userRepository: Repository<User>;
 
   constructor() {
-    this.roomService = new RoomService();
+    this.roomRepository = ESNDataSource.getRepository(Room);
+    this.userRepository = ESNDataSource.getRepository(User);
   }
 
-  async getRoom(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const roomName = req.params.roomName;
-      const room = await this.roomService.getRoom(roomName);
-      res.send(room);
-    } catch (error) {
-      next(error);
+  /**
+   * Retrieve the room with all the related messages in the database
+   * @param roomName
+   * @returns Room
+   */
+  @Get('{roomName}')
+  async getRoom(roomName: string): Promise<Room> {
+    console.log(roomName);
+    const room = await this.roomRepository.findOne({
+      relations: {
+        messages: true,
+        users: true,
+      },
+      where: {
+        name: roomName,
+      },
+    });
+
+    if (room === null) {
+      throw new BadRequestException(ErrorMessage.EMPTYMESSAGE);
     }
+
+    room.messages;
+    return room;
   }
 
-  async joinRoom(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const joinRoomInput: JoinRoomInput = req.body;
-      const room = await this.roomService.joinRoom(joinRoomInput);
-      res.send(room.id);
-    } catch (error) {
-      next(error);
+  /**
+   * Join a room, if not exist then create
+   * @param joinRoomInput
+   * @returns Room
+   */
+  @Post()
+  async joinRoom(@Body() joinRoomInput: JoinRoomInput): Promise<Room> {
+    let room = await this.roomRepository.findOneBy({name: joinRoomInput.name});
+    if (room === null) {
+      room = new Room();
     }
+    const user = await this.userRepository.findOneBy({
+      id: joinRoomInput.userId,
+    });
+    if (user === null) {
+      throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
+    }
+    room.users.push(user);
+    return await this.roomRepository.save(room);
   }
 }

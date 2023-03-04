@@ -1,6 +1,9 @@
-import {NextFunction, Response} from 'express';
-import {ErrorMessage, UnauthorizedException} from '../exceptions/api.exception';
+import {NextFunction, Request, Response} from 'express';
+import {ErrorMessage, UnauthorizedException} from '../responses/api.exception';
 
+interface ISpeedtestRequest extends Request {
+  userId: number;
+}
 export class SpeedTestMiddleware {
   private userId: number;
   private numPostRequests: number;
@@ -19,18 +22,20 @@ export class SpeedTestMiddleware {
 
     return SpeedTestMiddleware.instance;
   }
-  async handleSpeedTest(req: any, _: Response, next: NextFunction) {
+  async handleSpeedTest(req: Request, _: Response, next: NextFunction) {
     if (SpeedTestMiddleware.instance.userId === -1) {
       next();
       return;
     }
 
-    if (req.userId !== SpeedTestMiddleware.instance.userId) {
+    if (
+      (req as ISpeedtestRequest).userId !== SpeedTestMiddleware.instance.userId
+    ) {
       next(new UnauthorizedException(ErrorMessage.ONGOINGSPEEDTEST));
       return;
     }
 
-    if (req.originalUrl.math('api/messages')) {
+    if (req.originalUrl.match('api/messages')) {
       if (req.method === 'GET') {
         SpeedTestMiddleware.instance.numGetRequests += 1;
       } else if (req.method === 'POST') {

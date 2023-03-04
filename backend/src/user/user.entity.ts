@@ -24,8 +24,8 @@ export enum OnlineStatus {
 export enum Status {
   OK,
   HELP,
-  Emergency,
-  Undefined,
+  EMERGENCY,
+  UNDEFINED,
 }
 
 @Entity()
@@ -48,10 +48,10 @@ export class User {
   @Column()
   onlineStatus!: OnlineStatus;
 
-  @OneToMany(() => Message, message => message.user)
+  @OneToMany(() => Message, message => message.sender)
   messages!: Message[];
 
-  @ManyToMany(() => Room)
+  @ManyToMany(() => Room, room => room.users)
   @JoinTable()
   rooms!: Room[];
 

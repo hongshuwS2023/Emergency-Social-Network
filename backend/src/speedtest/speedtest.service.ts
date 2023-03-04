@@ -1,12 +1,12 @@
 import {Body, Post, Put, Route} from 'tsoa';
 import {Repository} from 'typeorm';
-import {ErrorMessage, NotFoundException} from '../exceptions/api.exception';
-import {CreateSpeedTestInput} from './dto/createspeedtest.input';
+import {ErrorMessage, NotFoundException} from '../responses/api.exception';
+import {CreateSpeedTestInput} from '../requests/createspeedtest.input';
 import {User} from '../user/user.entity';
 import ESNDataSource from '../utils/datasource';
 import {SpeedTest} from './speedtest.entity';
 import {Room} from '../room/room.entity';
-import CreateSpeedTestResponse from './dto/speedtest.response';
+import CreateSpeedTestResponse from '../responses/speedtest.response';
 import {SpeedTestMiddleware} from '../middleware/speedtest.middleware';
 
 @Route('/api/speedtests')

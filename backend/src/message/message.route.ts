@@ -1,4 +1,5 @@
 import {Router} from 'express';
+import {PostMessageInput} from '../requests/postmessage.input';
 import MessageController from './message.controller';
 
 export default class MessageRoute {
@@ -14,7 +15,12 @@ export default class MessageRoute {
 
   private setRoute(): void {
     this.router.post('/', (req, res, next) => {
-      this.messageController.postPublicMessage(req, res, next);
+      try {
+        const postMessageInput: PostMessageInput = req.body;
+        res.send(this.messageController.postMessage(postMessageInput));
+      } catch (err) {
+        next(err);
+      }
     });
   }
   getRouter() {
