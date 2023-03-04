@@ -6,39 +6,21 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"Status": {
-				"enum": [
-					0,
-					1,
-					2,
-					3
-				],
-				"type": "number"
-			},
-			"AuthResponse": {
+			"TokenResponse": {
 				"properties": {
-					"id": {
+					"userId": {
 						"type": "number",
 						"format": "double"
-					},
-					"name": {
-						"type": "string"
-					},
-					"status": {
-						"$ref": "#/components/schemas/Status"
 					},
 					"token": {
 						"type": "string"
 					},
 					"expiresIn": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					}
 				},
 				"required": [
-					"id",
-					"name",
-					"status",
+					"userId",
 					"token",
 					"expiresIn"
 				],
@@ -61,11 +43,33 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"LogoutInput": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"Role": {
 				"enum": [
 					0,
 					1,
 					2
+				],
+				"type": "number"
+			},
+			"Status": {
+				"enum": [
+					0,
+					1,
+					2,
+					3
 				],
 				"type": "number"
 			},
@@ -108,6 +112,12 @@
 							"$ref": "#/components/schemas/Room"
 						},
 						"type": "array"
+					},
+					"speedtests": {
+						"items": {
+							"$ref": "#/components/schemas/SpeedTest"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
@@ -118,7 +128,8 @@
 					"status",
 					"onlineStatus",
 					"messages",
-					"rooms"
+					"rooms",
+					"speedtests"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -183,15 +194,39 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"LogoutInput": {
+			"SpeedTest": {
 				"properties": {
 					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"admin": {
+						"$ref": "#/components/schemas/User"
+					},
+					"interval": {
+						"type": "number",
+						"format": "double"
+					},
+					"duration": {
+						"type": "number",
+						"format": "double"
+					},
+					"postRate": {
+						"type": "number",
+						"format": "double"
+					},
+					"getRate": {
 						"type": "number",
 						"format": "double"
 					}
 				},
 				"required": [
-					"id"
+					"id",
+					"admin",
+					"interval",
+					"duration",
+					"postRate",
+					"getRate"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -258,6 +293,34 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"CreateSpeedTestResponse": {
+				"properties": {},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateSpeedTestInput": {
+				"properties": {
+					"adminId": {
+						"type": "number",
+						"format": "double"
+					},
+					"interval": {
+						"type": "number",
+						"format": "double"
+					},
+					"duration": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"adminId",
+					"interval",
+					"duration"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -279,11 +342,11 @@
 				"operationId": "RegisterUser",
 				"responses": {
 					"200": {
-						"description": "AuthResponse",
+						"description": "TokenResponse",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/AuthResponse"
+									"$ref": "#/components/schemas/TokenResponse"
 								}
 							}
 						}
@@ -309,11 +372,11 @@
 				"operationId": "LoginUser",
 				"responses": {
 					"200": {
-						"description": "AuthResponse",
+						"description": "TokenResponse",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/AuthResponse"
+									"$ref": "#/components/schemas/TokenResponse"
 								}
 							}
 						}
@@ -339,17 +402,17 @@
 				"operationId": "LogoutUser",
 				"responses": {
 					"200": {
-						"description": "user entity",
+						"description": "TokenResponse",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/User"
+									"$ref": "#/components/schemas/TokenResponse"
 								}
 							}
 						}
 					}
 				},
-				"description": "logout user based on provided user id",
+				"description": "Logout the user",
 				"security": [],
 				"parameters": [],
 				"requestBody": {
@@ -560,6 +623,66 @@
 						}
 					}
 				}
+			}
+		},
+		"/api/speedtests": {
+			"post": {
+				"operationId": "CreateSpeedTest",
+				"responses": {
+					"200": {
+						"description": "createSpeedTestResponse",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CreateSpeedTestResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Start a speed test session.",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateSpeedTestInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/speedtests/{speedtestId}": {
+			"put": {
+				"operationId": "StopSpeedTest",
+				"responses": {
+					"200": {
+						"description": "speedtest entity",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SpeedTest"
+								}
+							}
+						}
+					}
+				},
+				"description": "Stop a speed test session",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "speedtestId",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
 			}
 		}
 	},

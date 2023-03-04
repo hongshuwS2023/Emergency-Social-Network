@@ -1,6 +1,6 @@
-import {Role, Status} from '../user/user.entity';
+import {Role, Status} from '../user.entity';
 
-export interface UpdateUserInput {
+export default interface UpdateUserInput {
   id: number;
   username?: string;
   password?: string;

@@ -1,7 +1,11 @@
 import {NextFunction, Request, Response} from 'express';
 import UserService from './user.service';
+<<<<<<< HEAD
 import {UpdateUserInput} from '../requests/updateuser.input';
 import UserResponse from '../responses/user.response';
+=======
+import UpdateUserInput from './dto/updateuser.input';
+>>>>>>> 51a6f4c49ec219fdefb0a2d7e14bf82b2d053e53
 
 export default class UserController {
   userService: UserService;

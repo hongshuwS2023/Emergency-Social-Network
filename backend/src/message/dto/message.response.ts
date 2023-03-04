@@ -1,4 +1,4 @@
-import {Status} from '../user/user.entity';
+import {Status} from '../../user/user.entity';
 
 export default class MessageResponse {
   username: string;

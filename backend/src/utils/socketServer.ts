@@ -32,8 +32,37 @@ export class SocketServer {
     SocketServer.io.on('connection', async (socket: any) => {
       const userId = socket.handshake.query.userid;
       const user = await this.userRepository.findOneBy({id: userId});
+<<<<<<< HEAD
       if (user) {
         user.onlineStatus = OnlineStatus.ONLINE;
+=======
+      if (user === null) {
+        throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
+      }
+      console.log(userId);
+      user.onlineStatus = OnlineStatus.ONLINE;
+      await this.userRepository.save(user);
+      const users = await this.userRepository.find({
+        order: {
+          onlineStatus: 'ASC',
+          username: 'ASC',
+        },
+      });
+      SocketServer.io.emit('online status', users);
+
+      socket.on('chat message', (msg: string) => {
+        console.log('message: ' + msg);
+        SocketServer.io.emit('chat message', msg);
+      });
+
+      socket.on('disconnect', async () => {
+        const user = await this.userRepository.findOneBy({id: userId});
+        if (user === null) {
+          throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
+        }
+        console.log(userId);
+        user.onlineStatus = OnlineStatus.OFFLINE;
+>>>>>>> 51a6f4c49ec219fdefb0a2d7e14bf82b2d053e53
         await this.userRepository.save(user);
         const users = await this.userRepository.find({
           order: {

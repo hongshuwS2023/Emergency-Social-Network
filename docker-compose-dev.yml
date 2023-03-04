@@ -2,15 +2,17 @@ version: '3.9'
 services:
   db:
     container_name: esn-db
-    image: esn-database
-    build:
-      context: ./backend
-      dockerfile: Dockerfile-sql
+    image: mysql:latest
     restart: always
     networks:
       - esn
     ports:
       - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 's23-esn-s2023'
+      MYSQL_DATABASE: 'fse'
+      MYSQL_USER: 'esnbackend'
+      MYSQL_PASSWORD: 's23-esn-s2023'
   api:
     container_name: esn-api
     image: esn-api

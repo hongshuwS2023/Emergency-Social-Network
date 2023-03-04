@@ -12,6 +12,8 @@ import MessageRoute from './message/message.route';
 import swaggerUi from 'swagger-ui-express';
 import RoomRoute from './room/room.route';
 import {SocketServer} from './utils/socketServer';
+import {SpeedTestMiddleware} from './middleware/speedtest.middleware';
+import SpeedTestRoute from './speedtest/speedtest.route';
 
 export default class App {
   private app: express.Application;
@@ -32,6 +34,7 @@ export default class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({extended: true}));
     this.app.use(restVerifyToken);
+    this.app.use(SpeedTestMiddleware.getInstance().handleSpeedTest);
   }
 
   private registerRoutes() {
@@ -44,6 +47,7 @@ export default class App {
     this.app.use('/api/auth', new AuthRoute().getRouter());
     this.app.use('/api/messages', new MessageRoute().getRouter());
     this.app.use('/api/rooms', new RoomRoute().getRouter());
+    this.app.use('/api/speedtests', new SpeedTestRoute().getRouter());
   }
 
   private registerMiddlewares() {
@@ -51,18 +55,17 @@ export default class App {
   }
 
   private async startServer() {
-    ESNDataSource.initialize()
-      .then(() => {
-        console.log('database started');
-        this.httpServer.listen(this.port, () => {
-          console.log(`server started at http://localhost:${this.port}`);
-        });
-      })
-      .catch(err => {
-        console.log(err);
-        console.log('cannot connect to database');
+    try {
+      await ESNDataSource.initialize();
+
+      this.httpServer.listen(this.port, () => {
+        console.log(`server started at http://localhost:${this.port}`);
       });
+    } catch (err) {
+      console.log(err);
+    }
   }
+
   static start() {
     const appServer = new App();
     appServer.registerConfigs();
