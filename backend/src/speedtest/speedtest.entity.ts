@@ -9,11 +9,11 @@ export class SpeedTest {
   @ManyToOne(() => User, user => user.speedtests)
   admin!: User;
 
-  @Column({default: true})
-  onGoing!: boolean;
-
   @Column()
   interval!: number;
+
+  @Column()
+  duration!: number;
 
   @Column({default: 0})
   postRate!: number;

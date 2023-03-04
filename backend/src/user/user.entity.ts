@@ -7,7 +7,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import {Message} from '../message/message.entity';
-import {Exclude} from 'class-transformer';
 import {Room} from '../room/room.entity';
 import {SpeedTest} from '../speedtest/speedtest.entity';
 
@@ -37,8 +36,7 @@ export class User {
   @Column()
   username!: string;
 
-  @Exclude()
-  @Column()
+  @Column({select: false})
   password!: string;
 
   @Column()

@@ -26,7 +26,6 @@ export const restVerifyToken = (
     next(error);
   }
 
-  console.log(header);
   const token = header.split(' ')[1];
 
   if (!header) {

@@ -4,7 +4,7 @@ import ESNDataSource from '../utils/datasource';
 import {User} from '../user/user.entity';
 import {Body, Post, Route} from 'tsoa';
 import {Room} from './room.entity';
-import {JoinRoomInput} from '../requests/joinroom.input';
+import {JoinRoomInput} from './dto/joinroom.input';
 
 @Route('/api/rooms')
 export default class RoomService {
