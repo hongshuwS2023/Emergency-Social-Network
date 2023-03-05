@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
 import UserService from './user.service';
-import {UpdateUserInput} from '../requests/updateuser.input';
-import {getFormattedDate} from '../utils/date';
+import UpdateUserInput from './dto/updateuser.input';
+import { getFormattedDate } from '../utils/date';
 
 export default class UserController {
   userService: UserService;

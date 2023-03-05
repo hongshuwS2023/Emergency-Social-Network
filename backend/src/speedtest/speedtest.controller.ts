@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express';
-import {CreateSpeedTestInput} from '../requests/createspeedtest.input';
+import {CreateSpeedTestInput} from './dto/createspeedtest.input';
 import SpeedtestService from './speedtest.service';
 
 export default class SpeedTestController {

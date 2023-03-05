@@ -4,7 +4,7 @@ import {
   ErrorMessage,
   NotFoundException,
 } from '../exceptions/api.exception';
-import {PostMessageInput} from '../requests/postmessage.input';
+import {PostMessageInput} from './dto/postmessage.input';
 import ESNDataSource from '../utils/datasource';
 import {Message} from './message.entity';
 import {User} from '../user/user.entity';

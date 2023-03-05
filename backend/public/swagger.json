@@ -6,39 +6,21 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"Status": {
-				"enum": [
-					0,
-					1,
-					2,
-					3
-				],
-				"type": "number"
-			},
-			"AuthResponse": {
+			"TokenResponse": {
 				"properties": {
-					"id": {
+					"userId": {
 						"type": "number",
 						"format": "double"
-					},
-					"name": {
-						"type": "string"
-					},
-					"status": {
-						"$ref": "#/components/schemas/Status"
 					},
 					"token": {
 						"type": "string"
 					},
 					"expiresIn": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					}
 				},
 				"required": [
-					"id",
-					"name",
-					"status",
+					"userId",
 					"token",
 					"expiresIn"
 				],
@@ -61,11 +43,33 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"LogoutInput": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"Role": {
 				"enum": [
 					0,
 					1,
 					2
+				],
+				"type": "number"
+			},
+			"Status": {
+				"enum": [
+					0,
+					1,
+					2,
+					3
 				],
 				"type": "number"
 			},
@@ -203,10 +207,11 @@
 					"admin": {
 						"$ref": "#/components/schemas/User"
 					},
-					"onGoing": {
-						"type": "boolean"
-					},
 					"interval": {
+						"type": "number",
+						"format": "double"
+					},
+					"duration": {
 						"type": "number",
 						"format": "double"
 					},
@@ -222,23 +227,10 @@
 				"required": [
 					"id",
 					"admin",
-					"onGoing",
 					"interval",
+					"duration",
 					"postRate",
 					"getRate"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"LogoutInput": {
-				"properties": {
-					"id": {
-						"type": "number",
-						"format": "double"
-					}
-				},
-				"required": [
-					"id"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -306,6 +298,11 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CreateSpeedTestResponse": {
+				"properties": {},
+				"type": "object",
+				"additionalProperties": false
+			},
 			"CreateSpeedTestInput": {
 				"properties": {
 					"adminId": {
@@ -315,11 +312,16 @@
 					"interval": {
 						"type": "number",
 						"format": "double"
+					},
+					"duration": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [
 					"adminId",
-					"interval"
+					"interval",
+					"duration"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -344,11 +346,11 @@
 				"operationId": "RegisterUser",
 				"responses": {
 					"200": {
-						"description": "AuthResponse",
+						"description": "TokenResponse",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/AuthResponse"
+									"$ref": "#/components/schemas/TokenResponse"
 								}
 							}
 						}
@@ -374,11 +376,11 @@
 				"operationId": "LoginUser",
 				"responses": {
 					"200": {
-						"description": "AuthResponse",
+						"description": "TokenResponse",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/AuthResponse"
+									"$ref": "#/components/schemas/TokenResponse"
 								}
 							}
 						}
@@ -404,16 +406,17 @@
 				"operationId": "LogoutUser",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "TokenResponse",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/User"
+									"$ref": "#/components/schemas/TokenResponse"
 								}
 							}
 						}
 					}
 				},
+				"description": "Logout the user",
 				"security": [],
 				"parameters": [],
 				"requestBody": {
@@ -623,11 +626,11 @@
 				"operationId": "CreateSpeedTest",
 				"responses": {
 					"200": {
-						"description": "speedtest entity",
+						"description": "createSpeedTestResponse",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/SpeedTest"
+									"$ref": "#/components/schemas/CreateSpeedTestResponse"
 								}
 							}
 						}

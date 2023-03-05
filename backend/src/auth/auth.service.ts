@@ -1,5 +1,5 @@
 import {Repository} from 'typeorm';
-import {AuthUserInput} from '../requests/authuser.input';
+import AuthUserInput from './dto/authuser.input';
 import {OnlineStatus, Role, Status, User} from '../user/user.entity';
 import ESNDataSource from '../utils/datasource';
 import jwt from 'jsonwebtoken';
@@ -10,10 +10,10 @@ import {
   ErrorMessage,
 } from '../exceptions/api.exception';
 import {RESERVED_USERNAME} from './reserved-username';
-import AuthResponse from '../responses/auth.response';
+import TokenResponse from './dto/token.response';
 import {Body, Post, Route} from 'tsoa';
 import {Room} from '../room/room.entity';
-import {LogoutInput} from '../requests/logout.input';
+import LogoutInput from './dto/logout.input';
 import {SocketServer} from '../utils/socketServer';
 import {getFormattedDate} from '../utils/date';
 @Route('api/auth')
@@ -23,6 +23,7 @@ export default class AuthService {
   jwtSecret: string;
   expiresIn: string;
   salt: string;
+
   constructor() {
     this.authRepository = ESNDataSource.getRepository(User);
     this.roomRepository = ESNDataSource.getRepository(Room);
@@ -30,25 +31,20 @@ export default class AuthService {
     this.expiresIn = process.env.EXPIRES_IN as string;
     this.salt = process.env.SALT as string;
   }
+
   /**
    * Registers user based on provided username and password
    * @param authUserInput
-   * @returns AuthResponse
+   * @returns TokenResponse
    */
   @Post('/register')
   async registerUser(
     @Body() authUserInput: AuthUserInput
-  ): Promise<AuthResponse> {
+  ): Promise<TokenResponse> {
     const {username, password} = authUserInput;
-    if (
-      username.length < 3 ||
-      RESERVED_USERNAME.indexOf(username.toLowerCase()) !== -1
-    ) {
-      throw new BadRequestException(ErrorMessage.BADUSERNAMEREQ);
-    }
-    if (password.length < 4) {
-      throw new BadRequestException(ErrorMessage.BADPASSWORDREQ);
-    }
+
+    this.validateUsernameAndPassword(username, password);
+
     const existingUser = await this.authRepository.findOneBy({
       username: username.toLowerCase(),
     });
@@ -71,6 +67,7 @@ export default class AuthService {
     } else {
       user.rooms = [room];
     }
+
     const newUser = await this.authRepository.save(user);
     const token = jwt.sign(
       {
@@ -83,33 +80,25 @@ export default class AuthService {
         expiresIn: this.expiresIn,
       }
     );
-    return new AuthResponse(
-      newUser.id,
-      newUser.username,
-      newUser.status,
-      token
-    );
+    return new TokenResponse(newUser.id, token, this.expiresIn);
   }
   /**
    * login user based on provided username and password
    * @param authUserInput
-   * @returns AuthResponse
+   * @returns TokenResponse
    */
   @Post('/login')
-  async loginUser(@Body() authUserInput: AuthUserInput): Promise<AuthResponse> {
+  async loginUser(
+    @Body() authUserInput: AuthUserInput
+  ): Promise<TokenResponse> {
     const {username, password} = authUserInput;
-    if (
-      username.length < 3 ||
-      RESERVED_USERNAME.indexOf(username.toLowerCase()) !== -1
-    ) {
-      throw new BadRequestException(ErrorMessage.BADUSERNAMEREQ);
-    }
-    if (password.length < 4) {
-      throw new BadRequestException(ErrorMessage.BADPASSWORDREQ);
-    }
+
+    this.validateUsernameAndPassword(username, password);
+
     const user = await this.authRepository.findOneBy({
       username: authUserInput.username.toLowerCase(),
     });
+
     if (user === null) {
       throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
     }
@@ -137,16 +126,22 @@ export default class AuthService {
       },
     });
     SocketServer.io.emit('online status', users);
-    return new AuthResponse(user.id, user.username, user.status, token);
+    return new TokenResponse(user.id, token, this.expiresIn);
   }
+
+  /**
+   * Logout the user
+   * @param logoutInput
+   * @returns TokenResponse
+   */
   @Post('/logout')
-  async logoutUser(@Body() logoutInput: LogoutInput): Promise<User> {
+  async logoutUser(@Body() logoutInput: LogoutInput): Promise<TokenResponse> {
     const user = await this.authRepository.findOneBy({id: logoutInput.id});
     if (user === null) {
       throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
     }
     user.onlineStatus = OnlineStatus.OFFLINE;
-    const newUser = await this.authRepository.save(user);
+    await this.authRepository.save(user);
     const users = await this.authRepository.find({
       order: {
         onlineStatus: 'ASC',
@@ -154,10 +149,22 @@ export default class AuthService {
       },
     });
     SocketServer.io.emit('online status', users);
-    return newUser;
+    return new TokenResponse(-1, '', '');
   }
 
-  encodePassword(password: string): string {
+  private validateUsernameAndPassword(username: string, password: string) {
+    if (
+      username.length < 3 ||
+      RESERVED_USERNAME.indexOf(username.toLowerCase()) !== -1
+    ) {
+      throw new BadRequestException(ErrorMessage.BADUSERNAMEREQ);
+    }
+    if (password.length < 4) {
+      throw new BadRequestException(ErrorMessage.BADPASSWORDREQ);
+    }
+  }
+
+  private encodePassword(password: string): string {
     return crypto
       .pbkdf2Sync(password, this.salt, 1000, 32, 'sha512')
       .toString('hex');

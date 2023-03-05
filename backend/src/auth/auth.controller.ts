@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
-import {AuthUserInput} from '../requests/authuser.input';
+import AuthUserInput from './dto/authuser.input';
 import AuthService from './auth.service';
-import {LogoutInput} from '../requests/logout.input';
+import LogoutInput from './dto/logout.input';
 export default class AuthController {
   authService: AuthService;
   constructor() {
