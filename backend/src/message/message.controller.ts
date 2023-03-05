@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from 'express';
 import MessageService from './message.service';
-import {PostMessageInput} from '../requests/postmessage.input';
+import {PostMessageInput} from './dto/postmessage.input';
 import {SocketServer} from '../utils/socketServer';
-import MessageResponse from '../responses/message.response';
+import MessageResponse from './dto/message.response';
 
 export default class MessageController {
   messageService: MessageService;

@@ -1,6 +1,6 @@
 import {Repository} from 'typeorm';
 import {NotFoundException, ErrorMessage} from '../exceptions/api.exception';
-import {UpdateUserInput} from '../requests/updateuser.input';
+import UpdateUserInput from './dto/updateuser.input';
 import ESNDataSource from '../utils/datasource';
 import {User} from './user.entity';
 import {Body, Delete, Get, Put, Route} from 'tsoa';

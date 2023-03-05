@@ -1,4 +1,4 @@
-export interface CreateUserInput {
+export default interface AuthUserInput {
   username: string;
   password: string;
 }
