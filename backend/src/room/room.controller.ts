@@ -65,11 +65,12 @@ export default class RoomController {
       throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
     }
 
-    const roomName1 = user1.username+"-"+user2.username;
-    const roomName2 =  user2.username+"-"+user1.username;
-    let room = await this.roomRepository.findOneBy({name: roomName1})||
-    await this.roomRepository.findOneBy({name: roomName2});
-    if(room === null){
+    const roomName1 = user1.username + '-' + user2.username;
+    const roomName2 = user2.username + '-' + user1.username;
+    let room =
+      (await this.roomRepository.findOneBy({name: roomName1})) ||
+      (await this.roomRepository.findOneBy({name: roomName2}));
+    if (room === null) {
       room = new Room();
       room.name = roomName1;
     }
