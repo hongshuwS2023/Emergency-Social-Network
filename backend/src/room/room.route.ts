@@ -27,7 +27,7 @@ export default class RoomRoute {
       try {
         const joinRoomInput: JoinRoomInput = req.body;
         const room = await this.roomController.joinRoom(joinRoomInput);
-        res.send(room.id);
+        res.send(room);
       } catch (error) {
         next(error);
       }

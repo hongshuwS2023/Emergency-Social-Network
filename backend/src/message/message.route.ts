@@ -14,10 +14,11 @@ export default class MessageRoute {
   }
 
   private setRoute(): void {
-    this.router.post('/', (req, res, next) => {
+    this.router.post('/', async (req, res, next) => {
       try {
         const postMessageInput: PostMessageInput = req.body;
-        res.send(this.messageController.postMessage(postMessageInput));
+        const message = await this.messageController.postMessage(postMessageInput);
+        res.send(message);
       } catch (err) {
         next(err);
       }

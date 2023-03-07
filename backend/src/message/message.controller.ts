@@ -55,6 +55,7 @@ export default class MessageController {
     }
     message.sender = user;
     message.time = getFormattedDate();
+    message.room = room;
 
     this.socketServer.broadcastChatMessage(message.room.name, message);
     await this.messageRepository.save(message);

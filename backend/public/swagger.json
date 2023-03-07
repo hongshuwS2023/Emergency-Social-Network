@@ -276,17 +276,16 @@
 			},
 			"JoinRoomInput": {
 				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"userId": {
-						"type": "number",
-						"format": "double"
+					"idList": {
+						"items": {
+							"type": "number",
+							"format": "double"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
-					"name",
-					"userId"
+					"idList"
 				],
 				"type": "object",
 				"additionalProperties": false
