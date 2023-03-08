@@ -16,7 +16,7 @@ export default class UserRoute {
   private setRoute(): void {
     this.router.get('/:userId', async (req, res, next) => {
       try {
-        const userId = Number(req.params.userId);
+        const userId = req.params.userId;
         res.send(await this.userController.getUser(userId));
       } catch (error) {
         next(error);
@@ -42,7 +42,7 @@ export default class UserRoute {
 
     this.router.delete('/:userId', async (req, res, next) => {
       try {
-        const userId = Number(req.params.userId);
+        const userId = req.params.userId;
         await this.userController.deleteUser(userId);
         res.sendStatus(200);
       } catch (error) {

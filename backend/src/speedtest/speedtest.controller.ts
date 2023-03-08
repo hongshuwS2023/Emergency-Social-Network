@@ -40,7 +40,7 @@ export default class SpeedtestService {
       throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
     }
 
-    room.name = 'speedtest';
+    room.id = 'speedtest';
     room.users.push(user);
 
     await this.roomRepository.save(room);
@@ -52,7 +52,7 @@ export default class SpeedtestService {
     await this.speedTestRepository.save(speedTest);
 
     SpeedTestMiddleware.getInstance().setUserId(user.id);
-    return new CreateSpeedTestResponse(speedTest.id, room.id, room.name);
+    return new CreateSpeedTestResponse(speedTest.id, room.id);
   }
 
   /**

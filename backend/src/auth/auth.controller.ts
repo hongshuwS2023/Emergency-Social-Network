@@ -15,6 +15,7 @@ import {Body, Post, Route} from 'tsoa';
 import {Room} from '../room/room.entity';
 import LogoutInput from '../requests/logout.input';
 import {SocketServer} from '../utils/socketServer';
+import {v4 as uuid} from 'uuid';
 
 @Route('api/auth')
 export default class AuthController {
@@ -56,17 +57,18 @@ export default class AuthController {
     }
 
     const user = this.authRepository.create();
+    user.id = uuid();
     user.username = username;
     user.password = this.encodePassword(password);
     user.role = Role.CITIZEN;
     user.status = Status.UNDEFINED;
     user.onlineStatus = OnlineStatus.ONLINE;
 
-    const room = await this.roomRepository.findOneBy({name: 'public'});
+    const room = await this.roomRepository.findOneBy({id: 'public'});
 
     if (room === null) {
       const newRoom = this.roomRepository.create();
-      newRoom.name = 'public';
+      newRoom.id = 'public';
       user.rooms = [newRoom];
       await this.roomRepository.save(newRoom);
     } else {
@@ -150,7 +152,7 @@ export default class AuthController {
 
     await this.socketServer.broadcastOnlineUsers();
 
-    return new TokenResponse(-1, '', '');
+    return new TokenResponse('', '', '');
   }
 
   private validateUsernameAndPassword(username: string, password: string) {

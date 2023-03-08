@@ -2,15 +2,15 @@ import {NextFunction, Request, Response} from 'express';
 import {ErrorMessage, UnauthorizedException} from '../responses/api.exception';
 
 interface ISpeedtestRequest extends Request {
-  userId: number;
+  userId: string;
 }
 export class SpeedTestMiddleware {
-  private userId: number;
+  private userId: string;
   private numPostRequests: number;
   private numGetRequests: number;
   private static instance: SpeedTestMiddleware;
   private constructor() {
-    this.userId = -1;
+    this.userId = '';
     this.numGetRequests = 0;
     this.numPostRequests = 0;
   }
@@ -23,7 +23,7 @@ export class SpeedTestMiddleware {
     return SpeedTestMiddleware.instance;
   }
   async handleSpeedTest(req: Request, _: Response, next: NextFunction) {
-    if (SpeedTestMiddleware.instance.userId === -1) {
+    if (SpeedTestMiddleware.instance.userId === '') {
       next();
       return;
     }
@@ -46,12 +46,12 @@ export class SpeedTestMiddleware {
     next();
   }
 
-  setUserId(userId: number) {
+  setUserId(userId: string) {
     this.userId = userId;
   }
 
   reset() {
-    SpeedTestMiddleware.instance.userId = -1;
+    SpeedTestMiddleware.instance.userId = '';
     SpeedTestMiddleware.instance.numGetRequests = 0;
     SpeedTestMiddleware.instance.numPostRequests = 0;
   }

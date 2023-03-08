@@ -1,4 +1,4 @@
-import {Column, Entity, JoinTable, ManyToMany, OneToMany} from 'typeorm';
+import {PrimaryColumn, Column, Entity, JoinTable, ManyToMany, OneToMany} from 'typeorm';
 import {Message} from '../message/message.entity';
 import {Room} from '../room/room.entity';
 import {SpeedTest} from '../speedtest/speedtest.entity';
@@ -23,7 +23,7 @@ export enum Status {
 
 @Entity()
 export class User {
-  @Column()
+  @PrimaryColumn()
   id!: string;
 
   @Column()

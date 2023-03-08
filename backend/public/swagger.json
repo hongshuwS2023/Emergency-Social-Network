@@ -9,8 +9,7 @@
 			"TokenResponse": {
 				"properties": {
 					"userId": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"token": {
 						"type": "string"
@@ -46,8 +45,7 @@
 			"LogoutInput": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					}
 				},
 				"required": [
@@ -83,8 +81,7 @@
 			"User": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"username": {
 						"type": "string"
@@ -137,8 +134,7 @@
 			"Message": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"sender": {
 						"$ref": "#/components/schemas/User"
@@ -166,10 +162,6 @@
 			"Room": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"name": {
 						"type": "string"
 					},
 					"messages": {
@@ -187,7 +179,6 @@
 				},
 				"required": [
 					"id",
-					"name",
 					"messages",
 					"users"
 				],
@@ -234,8 +225,7 @@
 			"UpdateUserInput": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"role": {
 						"$ref": "#/components/schemas/Role"
@@ -256,20 +246,19 @@
 			"PostMessageInput": {
 				"properties": {
 					"userId": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"content": {
 						"type": "string"
 					},
-					"roomName": {
+					"roomId": {
 						"type": "string"
 					}
 				},
 				"required": [
 					"userId",
 					"content",
-					"roomName"
+					"roomId"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -278,8 +267,7 @@
 				"properties": {
 					"idList": {
 						"items": {
-							"type": "number",
-							"format": "double"
+							"type": "string"
 						},
 						"type": "array"
 					}
@@ -298,8 +286,7 @@
 			"CreateSpeedTestInput": {
 				"properties": {
 					"adminId": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"interval": {
 						"type": "number",
@@ -446,8 +433,7 @@
 						"name": "userId",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -474,8 +460,7 @@
 						"name": "userId",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -562,7 +547,7 @@
 				}
 			}
 		},
-		"/api/rooms/{roomName}": {
+		"/api/rooms/{roomId}": {
 			"get": {
 				"operationId": "GetRoom",
 				"responses": {
@@ -582,7 +567,7 @@
 				"parameters": [
 					{
 						"in": "path",
-						"name": "roomName",
+						"name": "roomId",
 						"required": true,
 						"schema": {
 							"type": "string"

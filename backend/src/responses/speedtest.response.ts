@@ -1,11 +1,9 @@
 export default class CreateSpeedTestResponse {
   private speedtestId: number;
-  private roomId: number;
-  private roomName: string;
+  private roomId: string;
 
-  constructor(speedtestId: number, roomId: number, roomName: string) {
+  constructor(speedtestId: number, roomId: string) {
     this.speedtestId = speedtestId;
     this.roomId = roomId;
-    this.roomName = roomName;
   }
 }

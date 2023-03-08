@@ -1,10 +1,10 @@
-import {Column, Entity, ManyToOne} from 'typeorm';
+import {PrimaryColumn, Column, Entity, ManyToOne} from 'typeorm';
 import {Room} from '../room/room.entity';
 import {User} from '../user/user.entity';
 
 @Entity()
 export class Message {
-  @Column()
+  @PrimaryColumn()
   id!: string;
 
   @ManyToOne(() => User)
