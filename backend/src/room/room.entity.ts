@@ -2,7 +2,6 @@ import {
   Entity,
   OneToMany,
   ManyToMany,
-  PrimaryGeneratedColumn,
   Column,
 } from 'typeorm';
 import {User} from '../user/user.entity';

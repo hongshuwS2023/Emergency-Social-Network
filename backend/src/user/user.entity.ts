@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-} from 'typeorm';
+import {Column, Entity, JoinTable, ManyToMany, OneToMany} from 'typeorm';
 import {Message} from '../message/message.entity';
 import {Room} from '../room/room.entity';
 import {SpeedTest} from '../speedtest/speedtest.entity';

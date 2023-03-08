@@ -9,7 +9,7 @@ import {User} from '../user/user.entity';
 import {Body, Get, Post, Route} from 'tsoa';
 import {Room} from './room.entity';
 import {JoinRoomInput} from '../requests/joinroom.input';
-import {v4 as uuid } from 'uuid';
+import {v4 as uuid} from 'uuid';
 @Route('/api/rooms')
 export default class RoomController {
   roomRepository: Repository<Room>;
@@ -69,7 +69,7 @@ export default class RoomController {
     room.users = users;
 
     // Broadcast room Id to users and connect sockets to room
-    
+
     return await this.roomRepository.save(room);
   }
 }
