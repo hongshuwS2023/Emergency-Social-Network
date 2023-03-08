@@ -1,9 +1,4 @@
-import {
-  Entity,
-  OneToMany,
-  ManyToMany,
-  Column,
-} from 'typeorm';
+import {Entity, OneToMany, ManyToMany, Column} from 'typeorm';
 import {User} from '../user/user.entity';
 import {Message} from '../message/message.entity';
 
