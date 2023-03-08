@@ -1,9 +1,9 @@
-import {Column, Entity, ManyToOne} from 'typeorm';
+import {PrimaryColumn, Column, Entity, ManyToOne} from 'typeorm';
 import {User} from '../user/user.entity';
 
 @Entity()
 export class SpeedTest {
-  @Column()
+  @PrimaryColumn()
   id!: string;
 
   @ManyToOne(() => User, user => user.speedtests)

@@ -28,7 +28,7 @@ export default class SpeedTestRoute {
 
     this.router.put('/:testId', async (req, res, next) => {
       try {
-        const speedTestId = Number(req.params.testId);
+        const speedTestId = req.params.testId;
 
         res.send(await this.speedTestController.stopSpeedTest(speedTestId));
       } catch (error) {

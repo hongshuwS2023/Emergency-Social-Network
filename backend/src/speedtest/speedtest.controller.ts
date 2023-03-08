@@ -8,6 +8,7 @@ import {SpeedTest} from './speedtest.entity';
 import {Room} from '../room/room.entity';
 import CreateSpeedTestResponse from '../responses/speedtest.response';
 import {SpeedTestMiddleware} from '../middleware/speedtest.middleware';
+import {v4 as uuid} from 'uuid';
 
 @Route('/api/speedtests')
 export default class SpeedtestService {
@@ -45,6 +46,7 @@ export default class SpeedtestService {
 
     await this.roomRepository.save(room);
 
+    speedTest.id = uuid();
     speedTest.admin = user;
     speedTest.interval = interval;
     speedTest.duration = duration;
@@ -61,7 +63,7 @@ export default class SpeedtestService {
    * @returns speedtest entity
    */
   @Put('{speedtestId}')
-  async stopSpeedTest(speedtestId: number): Promise<SpeedTest> {
+  async stopSpeedTest(speedtestId: string): Promise<SpeedTest> {
     const speedtest = await this.speedTestRepository.findOneBy({
       id: speedtestId,
     });
