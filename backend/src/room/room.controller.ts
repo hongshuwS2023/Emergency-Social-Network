@@ -9,7 +9,7 @@ import {User} from '../user/user.entity';
 import {Body, Get, Post, Route} from 'tsoa';
 import {Room} from './room.entity';
 import {JoinRoomInput} from '../requests/joinroom.input';
-
+import {v4 as uuid } from 'uuid';
 @Route('/api/rooms')
 export default class RoomController {
   roomRepository: Repository<Room>;
@@ -22,18 +22,18 @@ export default class RoomController {
 
   /**
    * Retrieve the room with all the related messages in the database
-   * @param roomName
+   * @param roomId
    * @returns Room
    */
-  @Get('{roomName}')
-  async getRoom(roomName: string): Promise<Room> {
+  @Get('{roomId}')
+  async getRoom(roomId: string): Promise<Room> {
     const room = await this.roomRepository.findOne({
       relations: {
         messages: true,
         users: true,
       },
       where: {
-        name: roomName,
+        id: roomId,
       },
     });
 
@@ -52,29 +52,24 @@ export default class RoomController {
    */
   @Post()
   async joinRoom(@Body() joinRoomInput: JoinRoomInput): Promise<Room> {
-    const user1 = await this.userRepository.findOneBy({
-      id: joinRoomInput.idList[0],
-    });
-    if (user1 === null) {
-      throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
-    }
-    const user2 = await this.userRepository.findOneBy({
-      id: joinRoomInput.idList[1],
-    });
-    if (user2 === null) {
-      throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
+    const users: User[] = [];
+
+    for (const userId of joinRoomInput.idList) {
+      const user = await this.userRepository.findOneBy({id: userId});
+      if (user === null) {
+        throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
+      }
+
+      users.push(user);
     }
 
-    const roomName1 = user1.username + '-' + user2.username;
-    const roomName2 = user2.username + '-' + user1.username;
-    let room =
-      (await this.roomRepository.findOneBy({name: roomName1})) ||
-      (await this.roomRepository.findOneBy({name: roomName2}));
-    if (room === null) {
-      room = new Room();
-      room.name = roomName1;
-    }
-    room.users = [user1, user2];
+    const room = this.roomRepository.create();
+
+    room.id = uuid();
+    room.users = users;
+
+    // Broadcast room Id to users and connect sockets to room
+    
     return await this.roomRepository.save(room);
   }
 }

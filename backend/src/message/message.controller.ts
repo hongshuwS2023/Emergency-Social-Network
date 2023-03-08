@@ -12,6 +12,7 @@ import {getFormattedDate} from '../utils/date';
 import {Body, Post, Route} from 'tsoa';
 import {Room} from '../room/room.entity';
 import {SocketServer} from '../utils/socketServer';
+import {v4 as uuid} from 'uuid';
 
 @Route('/api/messages')
 export default class MessageController {
@@ -48,7 +49,7 @@ export default class MessageController {
       throw new BadRequestException(ErrorMessage.EMPTYMESSAGE);
     }
     const room = await this.roomRepository.findOneBy({
-      name: postMessageInput.roomName,
+      id: postMessageInput.roomId,
     });
     if (room === null) {
       throw new BadRequestException(ErrorMessage.ROOMIDNOTFOUND);
@@ -56,8 +57,8 @@ export default class MessageController {
     message.sender = user;
     message.time = getFormattedDate();
     message.room = room;
-
-    this.socketServer.broadcastChatMessage(message.room.name, message);
+    message.id = uuid();
+    this.socketServer.broadcastChatMessage(message.room.id, message);
     await this.messageRepository.save(message);
     return message;
   }

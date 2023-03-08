@@ -4,7 +4,6 @@ import {
   JoinTable,
   ManyToMany,
   OneToMany,
-  PrimaryGeneratedColumn,
 } from 'typeorm';
 import {Message} from '../message/message.entity';
 import {Room} from '../room/room.entity';
@@ -30,8 +29,8 @@ export enum Status {
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @Column()
+  id!: string;
 
   @Column()
   username!: string;

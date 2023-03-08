@@ -19,7 +19,7 @@ export default class UserController {
    * @returns user entity
    */
   @Get('{userId}')
-  async getUser(userId: number): Promise<User> {
+  async getUser(userId: string): Promise<User> {
     const user = await this.userRepository.findOne({
       relations: {
         rooms: true,
@@ -81,7 +81,7 @@ export default class UserController {
    * @returns true
    */
   @Delete('{userId}')
-  async deleteUser(userId: number): Promise<boolean> {
+  async deleteUser(userId: string): Promise<boolean> {
     const user = await this.getUser(userId);
 
     await this.userRepository.delete({id: user.id});

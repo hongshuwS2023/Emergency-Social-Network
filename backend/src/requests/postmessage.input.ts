@@ -1,5 +1,5 @@
 export interface PostMessageInput {
-  userId: number;
+  userId: string;
   content: string;
-  roomName: string;
+  roomId: string;
 }

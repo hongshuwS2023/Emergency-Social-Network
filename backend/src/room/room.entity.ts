@@ -10,11 +10,8 @@ import {Message} from '../message/message.entity';
 
 @Entity()
 export class Room {
-  @PrimaryGeneratedColumn()
-  id!: number;
-
   @Column()
-  name!: string;
+  id!: string;
 
   @OneToMany(() => Message, message => message.room)
   messages!: Message[];

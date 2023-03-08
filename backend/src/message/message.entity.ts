@@ -1,11 +1,11 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, ManyToOne} from 'typeorm';
 import {Room} from '../room/room.entity';
 import {User} from '../user/user.entity';
 
 @Entity()
 export class Message {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @Column()
+  id!: string;
 
   @ManyToOne(() => User)
   sender!: User;
