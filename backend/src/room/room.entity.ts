@@ -1,4 +1,4 @@
-import {PrimaryColumn, Entity, OneToMany, ManyToMany, Column} from 'typeorm';
+import {PrimaryColumn, Entity, OneToMany, ManyToMany} from 'typeorm';
 import {User} from '../user/user.entity';
 import {Message} from '../message/message.entity';
 

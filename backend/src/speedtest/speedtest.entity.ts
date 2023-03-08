@@ -1,10 +1,10 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, ManyToOne} from 'typeorm';
 import {User} from '../user/user.entity';
 
 @Entity()
 export class SpeedTest {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @Column()
+  id!: string;
 
   @ManyToOne(() => User, user => user.speedtests)
   admin!: User;
