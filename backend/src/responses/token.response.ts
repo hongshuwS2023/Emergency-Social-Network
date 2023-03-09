@@ -1,11 +1,11 @@
 export default class TokenResponse {
-  userId: string;
+  user_id: string;
   token: string;
-  expiresIn: string;
+  expires_in: string;
 
-  constructor(userId: string, token: string, expiresIn: string) {
-    this.userId = userId;
+  constructor(user_id: string, token: string, expires_in: string) {
+    this.user_id = user_id;
     this.token = token;
-    this.expiresIn = expiresIn;
+    this.expires_in = expires_in;
   }
 }
