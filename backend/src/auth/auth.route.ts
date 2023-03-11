@@ -1,5 +1,7 @@
-import {Router} from 'express';
+import {NextFunction, Request, Response, Router} from 'express';
 import AuthController from './auth.controller';
+import AuthUserInput from '../requests/authuser.input';
+import LogoutInput from '../requests/logout.input';
 
 export default class AuthRoute {
   router: Router;
@@ -13,24 +15,44 @@ export default class AuthRoute {
   }
 
   private setRoute(): void {
-    this.router.post('/register', (req, res, next) => {
-      this.authController.registerUser(req, res, next);
-    });
+    this.router.post(
+      '/register',
+      async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          const authUserInput: AuthUserInput = req.body;
+          res.send(await this.authController.registerUser(authUserInput));
+        } catch (err) {
+          next(err);
+        }
+      }
+    );
 
-    this.router.post('/login', (req, res, next) => {
-      this.authController.loginUser(req, res, next);
-    });
+    this.router.post(
+      '/login',
+      async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          const authUserInput: AuthUserInput = req.body;
+          res.send(await this.authController.loginUser(authUserInput));
+        } catch (err) {
+          next(err);
+        }
+      }
+    );
 
-    this.router.post('/logout', (req, res, next) => {
-      this.authController.logoutUser(req, res, next);
-    });
-
-    this.router.post('/offline', (req, res, next) => {
-      this.authController.logoutUser(req, res, next);
-    });
+    this.router.post(
+      '/logout',
+      async (req: Request, res: Response, next: NextFunction) => {
+        try {
+          const logoutInput: LogoutInput = req.body;
+          res.send(await this.authController.logoutUser(logoutInput));
+        } catch (err) {
+          next(err);
+        }
+      }
+    );
   }
 
-  getRouter() {
+  getRouter(): Router {
     return this.router;
   }
 }

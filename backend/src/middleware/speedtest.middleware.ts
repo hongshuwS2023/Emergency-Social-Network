@@ -1,13 +1,16 @@
-import {NextFunction, Response} from 'express';
-import {ErrorMessage, UnauthorizedException} from '../exceptions/api.exception';
+import {NextFunction, Request, Response} from 'express';
+import {ErrorMessage, UnauthorizedException} from '../responses/api.exception';
 
+interface ISpeedtestRequest extends Request {
+  userId: string;
+}
 export class SpeedTestMiddleware {
-  private userId: number;
+  private userId: string;
   private numPostRequests: number;
   private numGetRequests: number;
   private static instance: SpeedTestMiddleware;
   private constructor() {
-    this.userId = -1;
+    this.userId = '';
     this.numGetRequests = 0;
     this.numPostRequests = 0;
   }
@@ -19,18 +22,20 @@ export class SpeedTestMiddleware {
 
     return SpeedTestMiddleware.instance;
   }
-  async handleSpeedTest(req: any, _: Response, next: NextFunction) {
-    if (SpeedTestMiddleware.instance.userId === -1) {
+  async handleSpeedTest(req: Request, _: Response, next: NextFunction) {
+    if (SpeedTestMiddleware.instance.userId === '') {
       next();
       return;
     }
 
-    if (req.userId !== SpeedTestMiddleware.instance.userId) {
+    if (
+      (req as ISpeedtestRequest).userId !== SpeedTestMiddleware.instance.userId
+    ) {
       next(new UnauthorizedException(ErrorMessage.ONGOINGSPEEDTEST));
       return;
     }
 
-    if (req.originalUrl.math('api/messages')) {
+    if (req.originalUrl.match('api/messages')) {
       if (req.method === 'GET') {
         SpeedTestMiddleware.instance.numGetRequests += 1;
       } else if (req.method === 'POST') {
@@ -41,12 +46,12 @@ export class SpeedTestMiddleware {
     next();
   }
 
-  setUserId(userId: number) {
+  setUserId(userId: string) {
     this.userId = userId;
   }
 
   reset() {
-    SpeedTestMiddleware.instance.userId = -1;
+    SpeedTestMiddleware.instance.userId = '';
     SpeedTestMiddleware.instance.numGetRequests = 0;
     SpeedTestMiddleware.instance.numPostRequests = 0;
   }

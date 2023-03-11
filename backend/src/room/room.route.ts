@@ -1,4 +1,5 @@
 import {Router} from 'express';
+import {JoinRoomInput} from '../requests/joinroom.input';
 import RoomController from './room.controller';
 
 export default class RoomRoute {
@@ -13,8 +14,23 @@ export default class RoomRoute {
   }
 
   private setRoute(): void {
-    this.router.post('/', (req, res, next) => {
-      this.roomController.joinRoom(req, res, next);
+    this.router.get('/:roomName', async (req, res, next) => {
+      try {
+        const roomName = req.params.roomName;
+        const room = await this.roomController.getRoom(roomName);
+        res.send(room);
+      } catch (error) {
+        next(error);
+      }
+    });
+    this.router.post('/', async (req, res, next) => {
+      try {
+        const joinRoomInput: JoinRoomInput = req.body;
+        const room = await this.roomController.joinRoom(joinRoomInput);
+        res.send(room);
+      } catch (error) {
+        next(error);
+      }
     });
   }
   getRouter() {

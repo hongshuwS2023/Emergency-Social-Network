@@ -8,21 +8,20 @@
 		"schemas": {
 			"TokenResponse": {
 				"properties": {
-					"userId": {
-						"type": "number",
-						"format": "double"
+					"user_id": {
+						"type": "string"
 					},
 					"token": {
 						"type": "string"
 					},
-					"expiresIn": {
+					"expires_in": {
 						"type": "string"
 					}
 				},
 				"required": [
-					"userId",
+					"user_id",
 					"token",
-					"expiresIn"
+					"expires_in"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -46,8 +45,7 @@
 			"LogoutInput": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					}
 				},
 				"required": [
@@ -83,8 +81,7 @@
 			"User": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"username": {
 						"type": "string"
@@ -137,10 +134,9 @@
 			"Message": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
-					"user": {
+					"sender": {
 						"$ref": "#/components/schemas/User"
 					},
 					"content": {
@@ -155,7 +151,7 @@
 				},
 				"required": [
 					"id",
-					"user",
+					"sender",
 					"content",
 					"time",
 					"room"
@@ -166,10 +162,6 @@
 			"Room": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"name": {
 						"type": "string"
 					},
 					"messages": {
@@ -187,7 +179,6 @@
 				},
 				"required": [
 					"id",
-					"name",
 					"messages",
 					"users"
 				],
@@ -197,8 +188,7 @@
 			"SpeedTest": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"admin": {
 						"$ref": "#/components/schemas/User"
@@ -234,13 +224,6 @@
 			"UpdateUserInput": {
 				"properties": {
 					"id": {
-						"type": "number",
-						"format": "double"
-					},
-					"username": {
-						"type": "string"
-					},
-					"password": {
 						"type": "string"
 					},
 					"role": {
@@ -248,6 +231,9 @@
 					},
 					"status": {
 						"$ref": "#/components/schemas/Status"
+					},
+					"onlineStatus": {
+						"$ref": "#/components/schemas/OnlineStatus"
 					}
 				},
 				"required": [
@@ -259,37 +245,34 @@
 			"PostMessageInput": {
 				"properties": {
 					"userId": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"content": {
 						"type": "string"
 					},
-					"roomName": {
+					"roomId": {
 						"type": "string"
 					}
 				},
 				"required": [
 					"userId",
 					"content",
-					"roomName"
+					"roomId"
 				],
 				"type": "object",
 				"additionalProperties": false
 			},
 			"JoinRoomInput": {
 				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"userId": {
-						"type": "number",
-						"format": "double"
+					"idList": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
-					"name",
-					"userId"
+					"idList"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -302,8 +285,7 @@
 			"CreateSpeedTestInput": {
 				"properties": {
 					"adminId": {
-						"type": "number",
-						"format": "double"
+						"type": "string"
 					},
 					"interval": {
 						"type": "number",
@@ -442,7 +424,7 @@
 						}
 					}
 				},
-				"description": "Get a user based on userId provided",
+				"description": "Get a user based on userId provided, related rooms are retrieved with the user",
 				"security": [],
 				"parameters": [
 					{
@@ -450,8 +432,7 @@
 						"name": "userId",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -478,8 +459,7 @@
 						"name": "userId",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
@@ -537,27 +517,6 @@
 			}
 		},
 		"/api/messages": {
-			"get": {
-				"operationId": "GetPublicMessages",
-				"responses": {
-					"200": {
-						"description": "Message[]",
-						"content": {
-							"application/json": {
-								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/Message"
-									},
-									"type": "array"
-								}
-							}
-						}
-					}
-				},
-				"description": "Retrieve all messages in the database",
-				"security": [],
-				"parameters": []
-			},
 			"post": {
 				"operationId": "PostMessage",
 				"responses": {
@@ -585,6 +544,35 @@
 						}
 					}
 				}
+			}
+		},
+		"/api/rooms/{roomId}": {
+			"get": {
+				"operationId": "GetRoom",
+				"responses": {
+					"200": {
+						"description": "Room",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Room"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieve the room with all the related messages in the database",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "roomId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/api/rooms": {
@@ -670,8 +658,7 @@
 						"name": "speedtestId",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
 						}
 					}
 				]
