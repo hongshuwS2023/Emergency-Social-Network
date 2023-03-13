@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {PrimaryColumn, Column, Entity, ManyToOne} from 'typeorm';
 import {Room} from '../room/room.entity';
 import {User} from '../user/user.entity';
 
 @Entity()
 export class Message {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryColumn()
+  id!: string;
 
-  @ManyToOne(() => User, user => user.messages)
-  user!: User;
+  @ManyToOne(() => User)
+  sender!: User;
 
   @Column()
   content!: string;
@@ -17,6 +16,6 @@ export class Message {
   @Column()
   time!: string;
 
-  @ManyToOne(() => Room, room => room.messages)
+  @ManyToOne(() => Room)
   room!: Room;
 }

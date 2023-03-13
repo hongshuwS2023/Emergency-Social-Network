@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import { OnlineStatus } from '../../response/chat.response';
+import { api_base, user_endpoint } from '../sdk/api';
 
 interface User {
     id: number;
@@ -11,14 +12,14 @@ const token = "Bearer " + localStorage.getItem('token') as string;
 
 
 const id = localStorage.getItem('id') || '';
-const socket: Socket = io(`http://localhost:3000/?userid=${id}`, { transports: ['websocket'] });
+const socket: Socket = io(api_base+`/?userid=${id}`, { transports: ['websocket'] });
 const chat_button = `<button class="justify-items-center text-2xl dark:text-white" onclick="myFunction() id="button-chat">Chat</button>`;
 const hakan_button = `<button class="justify-items-center text-2xl dark:text-white" onclick="myFunction() id="button-chat">Me</button>`;
 const greenDot = `<div class="h-7 w-7 rounded-full bg-green-500"></div>`;
 const greyDot = `<div class="h-7 w-7 rounded-full bg-gray-500"></div>`;
 
 async function getUsers() {
-    const res = await fetch('http://localhost:3000/api/users', {
+    const res = await fetch(user_endpoint, {
         method: 'GET',
         headers: {
             "authorization": token,

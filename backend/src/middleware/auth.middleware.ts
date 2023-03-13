@@ -4,7 +4,7 @@ import {
   ErrorMessage,
   BadRequestException,
   UnauthorizedException,
-} from '../exceptions/api.exception';
+} from '../responses/api.exception';
 
 export const restVerifyToken = (
   req: Request,
