@@ -98,9 +98,6 @@
 					"onlineStatus": {
 						"$ref": "#/components/schemas/OnlineStatus"
 					},
-					"statusTimeStamp": {
-						"type": "string"
-					},
 					"messages": {
 						"items": {
 							"$ref": "#/components/schemas/Message"
@@ -127,7 +124,6 @@
 					"role",
 					"status",
 					"onlineStatus",
-					"statusTimeStamp",
 					"messages",
 					"rooms",
 					"speedtests"
