@@ -1,14 +1,14 @@
-import {Body, Post, Put, Route} from 'tsoa';
-import {Repository} from 'typeorm';
-import {ErrorMessage, NotFoundException} from '../responses/api.exception';
-import {CreateSpeedTestInput} from '../requests/createspeedtest.input';
-import {User} from '../user/user.entity';
+import { Body, Delete, Get, Post, Put, Route } from 'tsoa';
+import { Repository } from 'typeorm';
+import { ErrorMessage, NotFoundException } from '../responses/api.exception';
+import { CreateSpeedTestInput } from '../requests/createspeedtest.input';
+import { User } from '../user/user.entity';
 import ESNDataSource from '../utils/datasource';
-import {SpeedTest} from './speedtest.entity';
-import {Room} from '../room/room.entity';
+import { SpeedTest } from './speedtest.entity';
+import { Room } from '../room/room.entity';
 import CreateSpeedTestResponse from '../responses/speedtest.response';
-import {SpeedTestMiddleware} from '../middleware/speedtest.middleware';
-import {v4 as uuid} from 'uuid';
+import { SpeedTestMiddleware } from '../middleware/speedtest.middleware';
+import { v4 as uuid } from 'uuid';
 
 @Route('/api/speedtests')
 export default class SpeedtestService {
@@ -30,16 +30,17 @@ export default class SpeedtestService {
   async createSpeedTest(
     @Body() createSpeedTestInput: CreateSpeedTestInput
   ): Promise<CreateSpeedTestResponse> {
-    const {adminId, interval, duration} = createSpeedTestInput;
-
+    const { adminId, interval, duration } = createSpeedTestInput;
     const speedTest = this.speedTestRepository.create();
 
-    const user = await this.userRepository.findOneBy({id: adminId});
+    const user = await this.userRepository.findOneBy({ id: adminId });
     const room = this.roomRepository.create();
 
     if (!user) {
       throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
     }
+
+    SpeedTestMiddleware.getInstance().setUserId(adminId);
 
     room.id = 'speedtest';
     room.users.push(user);
@@ -54,16 +55,17 @@ export default class SpeedtestService {
     await this.speedTestRepository.save(speedTest);
 
     SpeedTestMiddleware.getInstance().setUserId(user.id);
+
     return new CreateSpeedTestResponse(speedTest.id, room.id);
   }
 
   /**
-   * Stop a speed test session
+   * Start a speed test session
    * @param speed test id
    * @returns speedtest entity
    */
   @Put('{speedtestId}')
-  async stopSpeedTest(speedtestId: string): Promise<SpeedTest> {
+  async startSpeedTest(speedtestId: string): Promise<SpeedTest> {
     const speedtest = await this.speedTestRepository.findOneBy({
       id: speedtestId,
     });
@@ -72,13 +74,39 @@ export default class SpeedtestService {
       throw new NotFoundException(ErrorMessage.SPEEDTESTNOTFOUND);
     }
 
-    const [numGetRequests, numPostRequests] =
-      SpeedTestMiddleware.getInstance().getStats();
+    speedtest.startTime = new Date().toISOString();
 
-    speedtest.postRate = numPostRequests / speedtest.interval;
-    speedtest.getRate = numGetRequests / speedtest.interval;
-
-    SpeedTestMiddleware.getInstance().reset();
     return await this.speedTestRepository.save(speedtest);
   }
+
+  /**
+ * Stop a speed test session
+ * @param speed test id
+ * @returns speedtest entity
+ */
+  @Delete('{speedtestId}')
+  async stopSpeedTest(speedtestId: string): Promise<string> {
+
+    await this.speedTestRepository.delete({ id: speedtestId });
+    SpeedTestMiddleware.getInstance().reset();
+    return 'succeed';
+  }
+
+    /**
+   * Start a speed test session
+   * @param speed test id
+   * @returns speedtest entity
+   */
+    @Get('{speedtestId}')
+    async getSpeedTest(speedtestId: string): Promise<SpeedTest> {
+      const speedtest = await this.speedTestRepository.findOneBy({
+        id: speedtestId,
+      });
+  
+      if (!speedtest) {
+        throw new NotFoundException(ErrorMessage.SPEEDTESTNOTFOUND);
+      }
+  
+      return speedtest;
+    }
 }
