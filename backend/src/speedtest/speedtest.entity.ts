@@ -14,10 +14,10 @@ export class SpeedTest {
 
   @Column()
   duration!: number;
-  
+
   @Column()
   startTime!: string;
-  
+
   @Column({default: 0})
   postRate!: number;
 
