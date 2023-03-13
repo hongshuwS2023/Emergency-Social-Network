@@ -91,6 +91,21 @@ export default class SpeedtestService {
    */
   @Delete('{speedtestId}')
   async stopSpeedTest(speedtestId: string): Promise<string> {
+    const messages = await this.messageRepository.find({
+      relations: {
+        room: true,
+      },
+      where: {
+        room: {
+          id: 'speedtest',
+        },
+      },
+    });
+    await this.messageRepository.remove(messages);
+    const room = await this.roomRepository.findOneBy({id: 'speedtest'});
+    if (room !== null) {
+      await this.roomRepository.remove(room);
+    }
     await this.speedTestRepository.delete(speedtestId);
     SpeedTestMiddleware.getInstance().reset();
     return 'succeed';
