@@ -53,17 +53,16 @@ export class SocketServer {
     });
     if (user !== null) {
       user.onlineStatus = OnlineStatus.ONLINE;
-    await this.userRepository.save(user);
-    await this.broadcastOnlineUsers();
-    this.userSocketMap.set(userId, socket.id);
-    const previousRooms: Room[] = user.rooms;
-    if (previousRooms) {
-      previousRooms.forEach((room: Room) => {
-        socket.join(room.id);
-      });
+      await this.userRepository.save(user);
+      await this.broadcastOnlineUsers();
+      this.userSocketMap.set(userId, socket.id);
+      const previousRooms: Room[] = user.rooms;
+      if (previousRooms) {
+        previousRooms.forEach((room: Room) => {
+          socket.join(room.id);
+        });
+      }
     }
-    }
-
   }
 
   private async disconnect(socket: Socket): Promise<void> {
@@ -71,9 +70,9 @@ export class SocketServer {
     const user = await this.userRepository.findOneBy({id: userId});
     if (user !== null) {
       user.onlineStatus = OnlineStatus.OFFLINE;
-    await this.userRepository.save(user);
-    this.userSocketMap.delete(userId);
-    await this.broadcastOnlineUsers();
+      await this.userRepository.save(user);
+      this.userSocketMap.delete(userId);
+      await this.broadcastOnlineUsers();
     }
   }
 

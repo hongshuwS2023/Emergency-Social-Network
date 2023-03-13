@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import UpdateUserInput from '../requests/updateuser.input';
-import { SocketServer } from '../utils/socketServer';
+import {SocketServer} from '../utils/socketServer';
 import UserController from './user.controller';
 
 export default class UserRoute {

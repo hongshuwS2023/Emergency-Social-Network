@@ -205,6 +205,9 @@
 						"type": "number",
 						"format": "double"
 					},
+					"startTime": {
+						"type": "string"
+					},
 					"postRate": {
 						"type": "number",
 						"format": "double"
@@ -219,6 +222,7 @@
 					"admin",
 					"interval",
 					"duration",
+					"startTime",
 					"postRate",
 					"getRate"
 				],
@@ -644,7 +648,7 @@
 		},
 		"/api/speedtests/{speedtestId}": {
 			"put": {
-				"operationId": "StopSpeedTest",
+				"operationId": "StartSpeedTest",
 				"responses": {
 					"200": {
 						"description": "speedtest entity",
@@ -657,7 +661,61 @@
 						}
 					}
 				},
+				"description": "Start a speed test session",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "speedtestId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "StopSpeedTest",
+				"responses": {
+					"200": {
+						"description": "speedtest entity",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
 				"description": "Stop a speed test session",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "speedtestId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"get": {
+				"operationId": "GetSpeedTest",
+				"responses": {
+					"200": {
+						"description": "speedtest entity",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SpeedTest"
+								}
+							}
+						}
+					}
+				},
+				"description": "Start a speed test session",
 				"security": [],
 				"parameters": [
 					{
