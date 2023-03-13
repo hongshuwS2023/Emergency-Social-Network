@@ -5,7 +5,6 @@ import {Message} from '../message/message.entity';
 import {OnlineStatus, User} from '../user/user.entity';
 import ESNDataSource from './datasource';
 import {Room} from '../room/room.entity';
-import {BadRequestException, ErrorMessage} from '../responses/api.exception';
 
 export class SocketServer {
   private static instance: SocketServer;
@@ -52,31 +51,29 @@ export class SocketServer {
         id: userId,
       },
     });
-    if (user === null) {
-      throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
-    }
-    user.onlineStatus = OnlineStatus.ONLINE;
-    await this.userRepository.save(user);
-    await this.broadcastOnlineUsers();
-    this.userSocketMap.set(userId, socket.id);
-    const previousRooms: Room[] = user.rooms;
-    if (previousRooms) {
-      previousRooms.forEach((room: Room) => {
-        socket.join(room.id);
-      });
+    if (user !== null) {
+      user.onlineStatus = OnlineStatus.ONLINE;
+      await this.userRepository.save(user);
+      await this.broadcastOnlineUsers();
+      this.userSocketMap.set(userId, socket.id);
+      const previousRooms: Room[] = user.rooms;
+      if (previousRooms) {
+        previousRooms.forEach((room: Room) => {
+          socket.join(room.id);
+        });
+      }
     }
   }
 
   private async disconnect(socket: Socket): Promise<void> {
     const userId = String(socket.handshake.query.userid);
     const user = await this.userRepository.findOneBy({id: userId});
-    if (user === null) {
-      throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
+    if (user !== null) {
+      user.onlineStatus = OnlineStatus.OFFLINE;
+      await this.userRepository.save(user);
+      this.userSocketMap.delete(userId);
+      await this.broadcastOnlineUsers();
     }
-    user.onlineStatus = OnlineStatus.OFFLINE;
-    await this.userRepository.save(user);
-    this.userSocketMap.delete(userId);
-    await this.broadcastOnlineUsers();
   }
 
   async broadcastOnlineUsers() {

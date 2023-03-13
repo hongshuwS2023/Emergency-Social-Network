@@ -654,7 +654,7 @@
 						}
 					}
 				},
-				"description": "<<<<<<< HEAD\n   Start a speed test session\n=======\n   Stop a speed test session\n>>>>>>> main",
+				"description": "Start a speed test session",
 				"security": [],
 				"parameters": [
 					{
