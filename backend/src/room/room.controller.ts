@@ -43,7 +43,6 @@ export default class RoomController {
       throw new BadRequestException(ErrorMessage.EMPTYMESSAGE);
     }
 
-    room.messages;
     return room;
   }
 

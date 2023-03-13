@@ -1,3 +1,7 @@
+import { user_endpoint, logout_endpoint } from "../sdk/api";
+import { Status } from "../../response/user.response";
+import { getFormattedDate } from "../../response/user.response";
+
 const html = `
 <div class="absolute w-screen h-[5%] bg-cover bottom-0 bg-[#C41230] flex justify-center">
     <div class="justify-items-start mr-auto ml-1">
@@ -24,14 +28,15 @@ const html = `
     </div>
 </div>
 
-<div id="setting-modal" class="absolute modal hidden fixed">
-    <div class="absolute left-5 top-5 z-50">
-        <div class="w-8 h-8" id="back-button">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="stroke-black dark:stroke-white">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
-            </svg> 
-        </div>
+<div class="absolute left-5 top-5 z-50">
+    <div class="w-8 h-8 hidden" id="back-button">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="stroke-black dark:stroke-white">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+        </svg> 
     </div>
+</div>
+
+<div id="setting-modal" class="absolute modal hidden fixed">
     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
         <div class="flex h-screen">
             <div class="p-0 m-auto w-3/5 h-2/5 overflow-auto rounded-lg bg-gray-300 bg-opacity-100 border-2">
@@ -41,11 +46,33 @@ const html = `
                     </div>
 
                     <div class="mt-4 text-center text-2xl">
-                        <button id="profile-button" class="text-esn-red">Change status</button>
+                        <button id="change-status" class="text-esn-red">Change status</button>
                     </div>
 
                     <div class="mt-4 mb-8 text-center">
                         <button id="logout-button" class="text-esn-red text-2xl font-bold">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="status-modal" class="absolute modal hidden fixed">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
+        <div class="flex h-screen">
+            <div class="p-0 m-auto w-3/5 h-2/5 overflow-auto rounded-lg bg-gray-300 bg-opacity-100 border-2">
+                <div class="modal-content flex flex-col justify-between h-full">
+                    <div class="mt-8 text-center text-2xl">
+                        <button id="status-ok" class="text-esn-red">OK</button>
+                    </div>
+        
+                    <div class="mt-4 text-center text-2xl">
+                        <button id="status-emergency" class="text-esn-red">Emergency</button>
+                    </div>
+        
+                    <div class="mt-4 mb-8 text-center">
+                        <button id="status-help" class="text-esn-red text-2xl">Help</button>
                     </div>
                 </div>
             </div>
@@ -70,29 +97,42 @@ class TemplateElement extends HTMLElement {
 customElements.define('menu-template', TemplateElement);
 
 const id = localStorage.getItem('id') || '';
+const formattedToken = ("Bearer " + localStorage.getItem("token")) as string;
 const token = localStorage.getItem('token') || '';
 const setting = document.getElementById('setting-button') || new HTMLDivElement();
-const modal = document.getElementById("setting-modal") || new HTMLDivElement();
+const menuModal = document.getElementById("setting-modal") || new HTMLDivElement();
+const statusModal = document.getElementById("status-modal") || new HTMLDivElement();
 const back = document.getElementById("back-button") || new HTMLDivElement();
+const changeStatus = document.getElementById("change-status") || new HTMLDivElement();
 const logout = document.getElementById("logout-button") || new HTMLDivElement();
 const chatList = document.getElementById("chat-button") || new HTMLDivElement();
 const directory = document.getElementById("directory-button") || new HTMLDivElement();
-
+const statusOK = document.getElementById("status-ok") || new HTMLDivElement();
+const statusEmergency = document.getElementById("status-emergency") || new HTMLDivElement();
+const statusHelp = document.getElementById("status-help") || new HTMLDivElement();
 
 if (!id || !token) {
     window.location.href = 'index.html';
 }
 
-setting.addEventListener('click', async function handleClick(event) {
-    modal.style.display = "block";
-    back.onclick = function () {
-        modal.style.display = "none";
-    };
-});
+setting.onclick = async () => {
+    menuModal.style.display = "block";
+    back.classList.remove("hidden");
+};
+
+changeStatus.onclick = async () => {
+    statusModal.style.display = "block";
+    menuModal.style.display = "none";
+};
+
+back.onclick = () => {
+    menuModal.style.display = "none";
+    statusModal.style.display = "none";
+    back.classList.add("hidden");
+};
 
 logout.onclick = async () => {
-    const id = localStorage.getItem('id') || '';
-    await fetch('http://localhost:3000/api/auth/logout', {
+    await fetch(logout_endpoint, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json"
@@ -108,10 +148,44 @@ logout.onclick = async () => {
 
 }
 
-chatList.addEventListener('click', () => {
+chatList.onclick = () => {
     window.location.href = 'chat_list.html';
-})
+}
 
-directory.addEventListener('click', () => {
+directory.onclick = () => {
     window.location.href = 'directory.html';
-})
+}
+
+statusOK.onclick = async () => {
+    await fetch(user_endpoint, {
+        method: 'PUT',
+        headers: {
+            "authorization": formattedToken,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: id, status: Status.OK, statusTimeStamp: getFormattedDate() })
+    })
+    console.log(id);
+}
+
+statusHelp.onclick = async () => {
+    await fetch(user_endpoint, {
+        method: 'PUT',
+        headers: {
+            "authorization": formattedToken,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: id, status: Status.HELP, statusTimeStamp: getFormattedDate() })
+    })
+}
+
+statusEmergency.onclick = async () => {
+    await fetch(user_endpoint, {
+        method: 'PUT',
+        headers: {
+            "authorization": formattedToken,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: id, status: Status.EMERGENCY, statusTimeStamp: getFormattedDate() })
+    })
+}

@@ -1,11 +1,12 @@
 import { io, Socket } from 'socket.io-client';
-import { OnlineStatus } from '../../response/chat.response';
+import { OnlineStatus, Status,parseStatus } from '../../response/user.response';
 import { api_base, user_endpoint } from '../sdk/api';
 
 interface User {
     id: number;
     name: string;
     onlineStatus: OnlineStatus;
+    status:Status;
 }
 
 const token = "Bearer " + localStorage.getItem('token') as string;
@@ -29,17 +30,22 @@ async function getUsers() {
         return response.json();
     });
     const allUsers: User[] = [];
-    res.forEach(user => allUsers.push({ id: user.id, name: user.username, onlineStatus: user.onlineStatus }));
+    res.forEach(user => allUsers.push({ id: user.id, name: user.username, onlineStatus: user.onlineStatus, status: user.status }));
     displayUsers(allUsers);
 }
 
 socket.on('connect', () => {
     socket.on('online status', (users) => {
         const allUsers: User[] = [];
-        users.forEach(user => allUsers.push({ id: user.id, name: user.username, onlineStatus: user.onlineStatus }));
+        users.forEach(user => allUsers.push({ id: user.id, name: user.username, onlineStatus: user.onlineStatus, status: user.status }));
         displayUsers(allUsers);
-    })
+    });
 
+    socket.on('user status', (users) => {
+        const allUsers: User[] = [];
+        users.forEach(user => allUsers.push({ id: user.id, name: user.username, onlineStatus: user.onlineStatus, status: user.status }));
+        displayUsers(allUsers);
+    });
 });
 
 function displayUsers(users: User[]) {
@@ -58,6 +64,11 @@ function displayUsers(users: User[]) {
              <span class="mr-[20%]">
                 <span class="text-2xl" id="${user.id}">
                     ${user.name}
+                </span>
+            </span>
+            <span class="mr-[20%]">
+                <span class="text-2xl" id="${user.id}">
+                    ${parseStatus(user.status)}
                 </span>
             </span>
             <span class="mr-[10%] w-20 h-8 bg-[#C41230] rounded-lg ml-auto flex justify-center">

@@ -24,7 +24,7 @@ join?.addEventListener('click', async function handleClick(event) {
     }).then(response => { return response.json() })
     if (res.token) {
         console.log('login success');
-        localStorage.setItem('id', res.id);
+        localStorage.setItem('id', res.user_id);
         localStorage.setItem('token', res.token);
         window.location.href = "directory.html";
     }
@@ -73,7 +73,7 @@ confirm.addEventListener('click', async function handleClick(event) {
                 },
                 body: JSON.stringify(createUserRequest)
             }).then(response => { return response.json() })
-            localStorage.setItem('id', res.id);
+            localStorage.setItem('id', res.user_id);
             localStorage.setItem('token', res.token);
             window.location.href = "directory.html";
         };
