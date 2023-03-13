@@ -30,7 +30,26 @@ export default class SpeedTestRoute {
       try {
         const speedTestId = req.params.testId;
 
+        res.send(await this.speedTestController.startSpeedTest(speedTestId));
+      } catch (error) {
+        next(error);
+      }
+    });
+    this.router.delete('/:testId', async (req, res, next) => {
+      try {
+        const speedTestId = req.params.testId;
+
         res.send(await this.speedTestController.stopSpeedTest(speedTestId));
+      } catch (error) {
+        next(error);
+      }
+    });
+
+    this.router.get('/:testId', async (req, res, next) => {
+      try {
+        const speedTestId = req.params.testId;
+
+        res.send(await this.speedTestController.getSpeedTest(speedTestId));
       } catch (error) {
         next(error);
       }

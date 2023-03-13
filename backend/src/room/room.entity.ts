@@ -7,7 +7,7 @@ export class Room {
   @PrimaryColumn()
   id!: string;
 
-  @OneToMany(() => Message, message => message.room)
+  @OneToMany(() => Message, message => message.room, {cascade: true})
   messages!: Message[];
 
   @ManyToMany(() => User, user => user.rooms)
