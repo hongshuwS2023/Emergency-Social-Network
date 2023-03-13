@@ -1,68 +1,90 @@
-import {NextFunction, Request, Response} from 'express';
-import UserService from './user.service';
-import UpdateUserInput from './dto/updateuser.input';
-import { getFormattedDate } from '../utils/date';
+import {Repository} from 'typeorm';
+import {NotFoundException, ErrorMessage} from '../responses/api.exception';
+import UpdateUserInput from '../requests/updateuser.input';
+import ESNDataSource from '../utils/datasource';
+import {User} from './user.entity';
+import {Body, Delete, Get, Put, Route} from 'tsoa';
 
+@Route('/api/users')
 export default class UserController {
-  userService: UserService;
+  userRepository: Repository<User>;
 
   constructor() {
-    this.userService = new UserService();
+    this.userRepository = ESNDataSource.getRepository(User);
   }
 
-  async updateUser(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const updateUserInput: UpdateUserInput = req.body;
-      const user = await this.userService.updateUser(updateUserInput);
-      user.statusTimeStamp = getFormattedDate();
-      res.send(user);
-    } catch (error) {
-      next(error);
+  /**
+   * Get a user based on userId provided, related rooms are retrieved with the user
+   * @param userId
+   * @returns user entity
+   */
+  @Get('{userId}')
+  async getUser(userId: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      relations: {
+        rooms: true,
+        speedtests: true,
+      },
+      where: {
+        id: userId,
+      },
+    });
+
+    if (user === null) {
+      throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
     }
+
+    return user;
   }
 
-  async getUser(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const userId = Number(req.params.userId);
-      const user = await this.userService.getUser(userId);
-      res.send(user);
-    } catch (error) {
-      next(error);
-    }
+  /**
+   * Get a user based on userId provided
+   * @param userId
+   * @returns user entity
+   */
+  @Get()
+  async getUsers(): Promise<User[]> {
+    const users = await this.userRepository.find({
+      order: {
+        onlineStatus: 'ASC',
+        username: 'ASC',
+      },
+    });
+
+    return users;
   }
 
-  async getUsers(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const users = await this.userService.getUsers();
-      res.send(users);
-    } catch (error) {
-      next(error);
+  /**
+   * Update the states of an user based on state provieded
+   * @param updateUserInput
+   * @returns user entity
+   */
+  @Put()
+  async updateUser(@Body() updateUserInput: UpdateUserInput): Promise<User> {
+    const user = await this.userRepository.findOneBy({id: updateUserInput.id});
+
+    if (!user) {
+      throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
     }
+    user.role = updateUserInput.role ? updateUserInput.role : user.role;
+    user.status = updateUserInput.status ? updateUserInput.status : user.status;
+    user.onlineStatus = updateUserInput.onlineStatus
+      ? updateUserInput.onlineStatus
+      : user.onlineStatus;
+
+    return await this.userRepository.save(user);
   }
 
-  async deleteUser(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      const userId = Number(req.params.userId);
-      await this.userService.deleteUser(userId);
-      res.sendStatus(200);
-    } catch (error) {
-      next(error);
-    }
+  /**
+   * Delete an user from the system
+   * @param userId
+   * @returns true
+   */
+  @Delete('{userId}')
+  async deleteUser(userId: string): Promise<boolean> {
+    const user = await this.getUser(userId);
+
+    await this.userRepository.delete({id: user.id});
+    return true;
   }
 }

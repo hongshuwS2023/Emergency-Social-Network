@@ -1,5 +1,5 @@
 export interface CreateSpeedTestInput {
-  adminId: number;
+  adminId: string;
   interval: number;
   duration: number;
 }

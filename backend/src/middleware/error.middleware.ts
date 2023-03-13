@@ -1,11 +1,18 @@
-import {Request, Response} from 'express';
-import {ApiException} from '../exceptions/api.exception';
+import {Request, Response, NextFunction} from 'express';
+import {ApiException} from '../responses/api.exception';
 
-export const errorHandler = (err: Error, req: Request, res: Response) => {
+export const errorHandler = (
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   res.status(200);
+
   if (err instanceof ApiException) {
     res.send((err as ApiException).toJson());
   } else {
-    console.log(err.message);
+    res.send(err.message);
   }
+  next();
 };

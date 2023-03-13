@@ -1,5 +1,5 @@
 import express from 'express';
-import {createServer} from 'http';
+import {createServer, IncomingMessage, Server, ServerResponse} from 'http';
 import 'reflect-metadata';
 import cors from 'cors';
 import AuthRoute from './auth/auth.route';
@@ -9,26 +9,27 @@ import ESNDataSource from './utils/datasource';
 import {errorHandler} from './middleware/error.middleware';
 import * as swaggerDocument from '../public/swagger.json';
 import MessageRoute from './message/message.route';
-import {SocketServer} from './utils/socketServer';
 import swaggerUi from 'swagger-ui-express';
 import RoomRoute from './room/room.route';
+import {SocketServer} from './utils/socketServer';
 import {SpeedTestMiddleware} from './middleware/speedtest.middleware';
 import SpeedTestRoute from './speedtest/speedtest.route';
 
 export default class App {
   private app: express.Application;
   private port: number;
-  private httpServer;
+  private httpServer: Server<typeof IncomingMessage, typeof ServerResponse>;
   private socketServer: SocketServer;
 
   private constructor() {
     this.app = express();
     this.httpServer = createServer(this.app);
     this.port = 3000;
-    this.socketServer = new SocketServer(this.httpServer);
+    this.socketServer = SocketServer.getInstance();
+    this.socketServer.attach(this.httpServer);
   }
 
-  private registerConfigs() {
+  private registerConfigs(): void {
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(express.urlencoded({extended: true}));
@@ -36,7 +37,7 @@ export default class App {
     this.app.use(SpeedTestMiddleware.getInstance().handleSpeedTest);
   }
 
-  private registerRoutes() {
+  private registerRoutes(): void {
     this.app.use(
       '/api/docs',
       swaggerUi.serve,
@@ -49,11 +50,11 @@ export default class App {
     this.app.use('/api/speedtests', new SpeedTestRoute().getRouter());
   }
 
-  private registerMiddlewares() {
+  private registerMiddlewares(): void {
     this.app.use(errorHandler);
   }
 
-  private async startServer() {
+  private async startServer(): Promise<void> {
     try {
       await ESNDataSource.initialize();
 
@@ -65,7 +66,7 @@ export default class App {
     }
   }
 
-  static start() {
+  static start(): void {
     const appServer = new App();
     appServer.registerConfigs();
     appServer.registerRoutes();

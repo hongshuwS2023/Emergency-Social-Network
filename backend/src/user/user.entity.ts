@@ -1,10 +1,10 @@
 import {
+  PrimaryColumn,
   Column,
   Entity,
   JoinTable,
   ManyToMany,
   OneToMany,
-  PrimaryGeneratedColumn,
 } from 'typeorm';
 import {Message} from '../message/message.entity';
 import {Room} from '../room/room.entity';
@@ -24,14 +24,14 @@ export enum OnlineStatus {
 export enum Status {
   OK,
   HELP,
-  Emergency,
-  Undefined,
+  EMERGENCY,
+  UNDEFINED,
 }
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryColumn()
+  id!: string;
 
   @Column()
   username!: string;
@@ -48,13 +48,10 @@ export class User {
   @Column()
   onlineStatus!: OnlineStatus;
 
-  @Column()
-  statusTimeStamp!: string;
-
-  @OneToMany(() => Message, message => message.user)
+  @OneToMany(() => Message, message => message.sender)
   messages!: Message[];
 
-  @ManyToMany(() => Room)
+  @ManyToMany(() => Room, room => room.users)
   @JoinTable()
   rooms!: Room[];
 
