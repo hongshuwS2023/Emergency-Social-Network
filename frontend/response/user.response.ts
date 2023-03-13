@@ -39,8 +39,8 @@ export function parseStatus(status: Status) {
 
 export const getFormattedDate = () => {
     // YYYY-MM-DD HH:MM:SS
+    const date = new Date().toISOString();
     return (
-      new Date().toISOString().split('T')[0] +
-      new Date().toLocaleString().split(',')[1]
+        date.split('T')[0] + date.split(',')[1]
     );
-  };
+};

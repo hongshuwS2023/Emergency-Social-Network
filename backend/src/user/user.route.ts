@@ -28,7 +28,7 @@ export default class UserRoute {
       try {
         const updateUserInput: UpdateUserInput = req.body;
         res.send(await this.userController.updateUser(updateUserInput));
-        SocketServer.getInstance().broadcastUserStatus();
+        SocketServer.getInstance().broadcastUsers();
       } catch (error) {
         next(error);
       }

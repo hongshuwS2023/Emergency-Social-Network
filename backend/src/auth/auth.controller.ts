@@ -90,7 +90,7 @@ export default class AuthController {
       }
     );
 
-    await this.socketServer.broadcastOnlineUsers();
+    await this.socketServer.broadcastUsers();
 
     return new TokenResponse(user.id, token, this.expiresIn);
   }
@@ -133,7 +133,7 @@ export default class AuthController {
       }
     );
 
-    await this.socketServer.broadcastOnlineUsers();
+    await this.socketServer.broadcastUsers();
 
     return new TokenResponse(user.id, token, this.expiresIn);
   }
@@ -152,7 +152,7 @@ export default class AuthController {
     user.onlineStatus = OnlineStatus.OFFLINE;
     await this.authRepository.save(user);
 
-    await this.socketServer.broadcastOnlineUsers();
+    await this.socketServer.broadcastUsers();
 
     return new TokenResponse('', '', '');
   }

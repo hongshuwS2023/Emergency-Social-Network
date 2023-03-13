@@ -61,18 +61,39 @@ const html = `
 <div id="status-modal" class="absolute modal hidden fixed">
     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
         <div class="flex h-screen">
-            <div class="p-0 m-auto w-3/5 h-2/5 overflow-auto rounded-lg bg-gray-300 bg-opacity-100 border-2">
+            <div class="p-0 m-auto w-3/5 h-3/5 overflow-auto rounded-lg bg-gray-300 bg-opacity-100 border-2">
                 <div class="modal-content flex flex-col justify-between h-full">
-                    <div class="mt-8 text-center text-2xl">
-                        <button id="status-ok" class="text-esn-red">OK</button>
+                    <div class="mt-8">
+                        <button id="status-ok" class="ml-auto mr-auto text-2xl text-esn-red flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7 mr-2 stroke-white stroke-width-2 fill-green-600 bg-green-600">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                            </svg>
+                        OK</button>
+                        <div class="text-xs text-center">
+                            I am OK: I do not need help.
+                        </div>
                     </div>
         
-                    <div class="mt-4 text-center text-2xl">
-                        <button id="status-emergency" class="text-esn-red">Emergency</button>
+                    <div class="mt-4 text-center">       
+                        <button id="status-help" class="text-esn-red ml-auto mr-auto text-2xl flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  class="w-7 h-7 mr-2 stroke-white stroke-width-2 fill-yellow-600 bg-yellow-600">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                            </svg>    
+                        Help</button>
+                        <div class="text-xs text-center">
+                            I need help, but this is not a life threatening emergency.
+                        </div>
                     </div>
         
                     <div class="mt-4 mb-8 text-center">
-                        <button id="status-help" class="text-esn-red text-2xl">Help</button>
+                        <button id="status-emergency" class="ml-auto mr-auto text-2xl text-esn-red flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7 mr-2 stroke-white stroke-width-1 bg-red-600 inline">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg> 
+                        Emergency</button>
+                        <div class="text-xs text-center">
+                            I need help now: this is a life threatening emergency!
+                         </div>
                     </div>
                 </div>
             </div>
