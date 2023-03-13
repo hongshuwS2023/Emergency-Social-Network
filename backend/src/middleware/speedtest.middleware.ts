@@ -1,6 +1,9 @@
 import {NextFunction, Request, Response} from 'express';
 import {ErrorMessage, UnauthorizedException} from '../responses/api.exception';
 
+interface ISpeedtestRequest extends Request {
+  userId: string;
+}
 export class SpeedTestMiddleware {
   private userId: string;
   private numPostRequests: number;

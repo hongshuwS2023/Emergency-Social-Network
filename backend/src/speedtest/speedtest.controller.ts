@@ -60,7 +60,6 @@ export default class SpeedtestService {
     await this.speedTestRepository.save(speedTest);
 
     SpeedTestMiddleware.getInstance().setUserId(user.id);
-
     return new CreateSpeedTestResponse(speedTest.id, room.id);
   }
 
