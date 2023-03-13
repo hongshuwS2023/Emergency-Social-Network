@@ -16,9 +16,9 @@ const messageContentClass = 'class="ml-1 mb-1"';
 
 send.addEventListener('click', async function handleClick(event) {
     const messageBody = {
-        userId: Number(localStorage.getItem('id')),
+        userId: (localStorage.getItem('id')),
         content: (document.getElementById('input') as HTMLInputElement).value,
-        roomName: localStorage.getItem("room")
+        roomId: localStorage.getItem("room")
     }
 
     if (messageBody.content.trim().length) {
@@ -37,7 +37,7 @@ send.addEventListener('click', async function handleClick(event) {
 });
 
 socket.on('connect', () => {
-    socket.on('public message', (msg: MessageResponse) => {
+    socket.on('chat message', (msg: MessageResponse) => {
         displayMessage(msg.username, msg.status, msg.content, msg.time);
     });
 });
@@ -66,9 +66,9 @@ async function getHistory() {
     }).then(response => {
         return response.json();
     })
-    res.messages.forEach(msg => {
-        displayMessage(msg.user.username, msg.user.status, msg.content, msg.time);
-    });
+    // console.log(res);
+    // res.messages.forEach(msg => {
+    //     displayMessage(msg.sender.username, msg.sender.status, msg.content, msg.time);
+    // });
 }
-
 getHistory();

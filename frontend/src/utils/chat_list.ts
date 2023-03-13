@@ -11,11 +11,12 @@ const history = document.getElementById("chat-history");
 const header = document.getElementById("chat-history")?.innerHTML || "";
 
 interface Room {
-  id: number;
-  name: string;
+  id: string;
 }
 
 async function getRooms() {
+  console.log(id);
+  
   const userUrl = new URL(user_endpoint + "/" + `${encodeURIComponent(id)}`);
   const res = await fetch(userUrl.toString(), {
     method: "GET",
@@ -25,9 +26,9 @@ async function getRooms() {
     },
   }).then((response) => {
     return response.json();
-  });
-
+  });  
   const rooms: Room[] = res.rooms || [];
+  
   displayRooms(rooms);
 }
 function displayRooms(rooms: Room[]) {
@@ -35,30 +36,30 @@ function displayRooms(rooms: Room[]) {
     const div = document.createElement("div");
     const html = `<div class="mt-4"></div>
                 <div class="flex justify-center mb-4">
-                    <span class="ml-[10%] mr-auto" id="chat-history-${room.name}">
+                    <span class="ml-[10%] mr-auto" id="chat-history-${room.id}">
                         <div class="text-2xl" id="${room.id}">
-                        ${room.name}
+                        ${room.id}
                         </div>
                     </span>
                     <span class="mr-[10%] w-20 h-10 bg-[#C41230] rounded-lg ml-auto flex justify-center">
-                        <button class="justify-items-center text-2xl dark:text-white" id="${room.name}">
+                        <button class="justify-items-center text-2xl dark:text-white" id="join-${room.id}">
                             Join
                         </button>
                     </span></div>`;
     div.innerHTML = html;
     document.querySelector("#room-list")?.appendChild(div);
-    const join = document.getElementById(room.name);
+    const join = document.getElementById("join-"+room.id);
     if (join) {
       join.addEventListener("click", () => {
-        localStorage.setItem("room", room.name);
+        localStorage.setItem("room", room.id);
         window.location.href = "chat.html";
       });
     }
-    getLatestHistory("chat-history-" + room.name);
+    getLatestHistory("chat-history-" + room.id);
   });
 }
-async function getLatestHistory(name: string) {
-  const res = await fetch(room_endpoint + "/" + localStorage.getItem("room"), {
+async function getLatestHistory(room_id: string) {
+  const res = await fetch(room_endpoint + "/" + room_id, {
     method: "GET",
     headers: {
       authorization: formattedToken,
@@ -67,15 +68,15 @@ async function getLatestHistory(name: string) {
   }).then((response) => {
     return response.json();
   });
-  if (res) {
+  if (res.messages) {
     const msg = res.messages.slice(-1)[0];    
     document
-      .querySelector("#"+name)
+      .querySelector("#chat-history-"+room_id)
       ?.append(displayMessage(msg.user.username, msg.content));
   }
 }
 socket.on("connect", () => {
-  socket.on("public message", (msg: MessageResponse) => {
+  socket.on("chat message", (msg: MessageResponse) => {
     if (history) {
       history.innerHTML = header;
       document

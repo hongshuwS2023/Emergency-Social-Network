@@ -30,10 +30,7 @@ export default class RoomController {
   @Get('{roomId}')
   async getRoom(roomId: string): Promise<Room> {
     const room = await this.roomRepository.findOne({
-      relations: {
-        messages: true,
-        users: true,
-      },
+      relations: ['messages', 'messages.sender'],
       where: {
         id: roomId,
       },
@@ -43,7 +40,6 @@ export default class RoomController {
       throw new BadRequestException(ErrorMessage.EMPTYMESSAGE);
     }
 
-    room.messages;
     return room;
   }
 
