@@ -1,6 +1,8 @@
-import { user_endpoint, logout_endpoint } from "../sdk/api";
+import { user_endpoint, logout_endpoint, api_base } from "../sdk/api";
 import { Status } from "../../response/user.response";
 import { getFormattedDate } from "../../response/user.response";
+import { io, Socket } from "socket.io-client";
+
 
 const html = `
 <div class="absolute w-screen h-[5%] bg-cover bottom-0 bg-[#C41230] flex justify-center">
@@ -132,6 +134,21 @@ const statusOK = document.getElementById("status-ok") || new HTMLDivElement();
 const statusEmergency = document.getElementById("status-emergency") || new HTMLDivElement();
 const statusHelp = document.getElementById("status-help") || new HTMLDivElement();
 
+const socket: Socket = io(api_base + `?userid=${id}`, {
+    transports: ["websocket"],
+});
+
+socket.on("connect", () => {
+    socket.on("chat message", (msg) => {
+      const user_list = msg.room.id.split('-');
+      user_list.array.forEach(element => {
+        if(element===id && msg.sender.id!==id){
+            
+        }
+      });
+    });
+  });
+
 if (!id || !token) {
     window.location.href = 'index.html';
 }
@@ -184,7 +201,7 @@ statusOK.onclick = async () => {
             "authorization": formattedToken,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ id: id, status: Status.OK, statusTimeStamp: getFormattedDate() })
+        body: JSON.stringify({ id: id, status: Status.OK, statusTimeStamp: new Date().getTime() })
     })
     console.log(id);
 }
@@ -196,7 +213,7 @@ statusHelp.onclick = async () => {
             "authorization": formattedToken,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ id: id, status: Status.HELP, statusTimeStamp: getFormattedDate() })
+        body: JSON.stringify({ id: id, status: Status.HELP, statusTimeStamp: new Date().getTime() })
     })
 }
 
@@ -207,6 +224,6 @@ statusEmergency.onclick = async () => {
             "authorization": formattedToken,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ id: id, status: Status.EMERGENCY, statusTimeStamp: getFormattedDate() })
+        body: JSON.stringify({ id: id, status: Status.EMERGENCY, statusTimeStamp: new Date().getTime() })
     })
 }

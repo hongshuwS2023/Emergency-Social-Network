@@ -51,6 +51,9 @@ export class User {
   @Column()
   statusTimeStamp!: string;
 
+  @Column({default: ''})
+  logoutTime!: string;
+
   @OneToMany(() => Message, message => message.sender)
   messages!: Message[];
 

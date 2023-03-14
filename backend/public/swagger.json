@@ -101,6 +101,9 @@
 					"statusTimeStamp": {
 						"type": "string"
 					},
+					"logoutTime": {
+						"type": "string"
+					},
 					"messages": {
 						"items": {
 							"$ref": "#/components/schemas/Message"
@@ -128,6 +131,7 @@
 					"status",
 					"onlineStatus",
 					"statusTimeStamp",
+					"logoutTime",
 					"messages",
 					"rooms",
 					"speedtests"

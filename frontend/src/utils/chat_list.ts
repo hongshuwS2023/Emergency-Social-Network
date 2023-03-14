@@ -1,5 +1,4 @@
 import { io, Socket } from "socket.io-client";
-import MessageResponse from "../../response/chat.response";
 import { user_endpoint, api_base, room_endpoint } from "../sdk/api";
 const id = localStorage.getItem("id") || "";
 localStorage.setItem("room", "public");

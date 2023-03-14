@@ -131,4 +131,11 @@ function displayStatus(status: Status){
     }
 }
 
+function checkUnreadMessages(){
+  
+}
+
+
+
 getUsers();
+checkUnreadMessages();

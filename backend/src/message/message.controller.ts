@@ -8,7 +8,6 @@ import {PostMessageInput} from '../requests/postmessage.input';
 import ESNDataSource from '../utils/datasource';
 import {Message} from './message.entity';
 import {User} from '../user/user.entity';
-import {getFormattedDate} from '../utils/date';
 import {Body, Post, Route} from 'tsoa';
 import {Room} from '../room/room.entity';
 import {SocketServer} from '../utils/socketServer';
@@ -55,7 +54,7 @@ export default class MessageController {
       throw new BadRequestException(ErrorMessage.ROOMIDNOTFOUND);
     }
     message.sender = user;
-    message.time = getFormattedDate();
+    message.time = new Date().getTime().toString();
     message.room = room;
     message.id = uuid();
     this.socketServer.broadcastChatMessage(message.room.id, message);

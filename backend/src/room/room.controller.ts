@@ -39,8 +39,8 @@ export default class RoomController {
     if (room === null) {
       throw new BadRequestException(ErrorMessage.EMPTYMESSAGE);
     }
-    room.messages.sort((a: Message, b: Message) =>
-      a.time.localeCompare(b.time)
+    room.messages.sort(
+      (a: Message, b: Message) => Number(a.time) - Number(b.time)
     );
 
     return room;

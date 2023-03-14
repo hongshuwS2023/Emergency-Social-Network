@@ -1,5 +1,5 @@
 import { io, Socket } from "socket.io-client";
-import { Status } from "../../response/user.response";
+import { getFormattedDate, Status } from "../../response/user.response";
 import { parseStatus } from "../../response/user.response";
 import { message_endpoint, api_base, room_endpoint } from "../sdk/api";
 
@@ -87,7 +87,7 @@ async function getHistory() {
       msg.sender.username,
       msg.sender.status,
       msg.content,
-      msg.time
+      getFormattedDate(Number(msg.time))
     );
   });
 }
