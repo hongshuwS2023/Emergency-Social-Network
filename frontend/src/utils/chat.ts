@@ -1,9 +1,10 @@
 import { io, Socket } from "socket.io-client";
-import { Status } from "../../response/chat.response";
-import { parseStatus } from "../../response/chat.response";
+import { Status } from "../../response/user.response";
+import { parseStatus } from "../../response/user.response";
 import { message_endpoint, api_base, room_endpoint } from "../sdk/api";
 
 const id = localStorage.getItem("id") || "";
+const roomId = localStorage.getItem("room") || "";
 const socket: Socket = io(api_base + `/?userid=${id}`, {
   transports: ["websocket"],
 });
@@ -18,9 +19,9 @@ const messageContentClass = 'class="ml-1 mb-1"';
 
 send.addEventListener("click", async function handleClick(event) {
   const messageBody = {
-    userId: localStorage.getItem("id"),
+    userId: id,
     content: (document.getElementById("input") as HTMLInputElement).value,
-    roomId: localStorage.getItem("room"),
+    roomId: roomId,
   };
 
   if (messageBody.content.trim().length) {
@@ -40,7 +41,7 @@ send.addEventListener("click", async function handleClick(event) {
 
 socket.on("connect", () => {
   socket.on("chat message", (msg) => {
-    if (msg.room.id === localStorage.getItem("room")) {
+    if (msg.room.id === roomId) {
       displayMessage(
         msg.sender.username,
         msg.sender.status,
@@ -71,7 +72,7 @@ function displayMessage(
 }
 
 async function getHistory() {
-  const res = await fetch(room_endpoint + "/" + localStorage.getItem("room"), {
+  const res = await fetch(room_endpoint + "/" + roomId, {
     method: "GET",
     headers: {
       authorization: token,
@@ -90,4 +91,12 @@ async function getHistory() {
     );
   });
 }
+
+function setRoomName() {
+  const roomNameDiv = document.createElement("div");
+  roomNameDiv.innerHTML = `<p class="text-black dark:text-white text-4xl">${roomId}</p>`;
+  document.querySelector("#room-name")?.appendChild(roomNameDiv);
+}
+
+setRoomName();
 getHistory();
