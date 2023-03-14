@@ -72,16 +72,16 @@ async function getLatestHistory(room_id: string) {
     const msg = res.messages.slice(-1)[0];    
     document
       .querySelector("#chat-history-"+room_id)
-      ?.append(displayMessage(msg.user.username, msg.content));
+      ?.append(displayMessage(msg.sender.username, msg.content));
   }
 }
 socket.on("connect", () => {
-  socket.on("chat message", (msg: MessageResponse) => {
+  socket.on("chat message", (msg) => {
     if (history) {
       history.innerHTML = header;
       document
         .querySelector("#chat-history")
-        ?.append(displayMessage(msg.username, msg.content));
+        ?.append(displayMessage(msg.sender.username, msg.content));
     }
   });
 });

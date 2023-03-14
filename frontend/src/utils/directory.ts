@@ -1,19 +1,23 @@
-import { io, Socket } from 'socket.io-client';
-import { OnlineStatus, Status,parseStatus } from '../../response/user.response';
-import { api_base, user_endpoint } from '../sdk/api';
+import { io, Socket } from "socket.io-client";
+import { OnlineStatus } from "../../response/user.response";
+import { api_base, room_endpoint, user_endpoint } from "../sdk/api";
+import { Status } from '../../response/user.response';
 
 interface User {
-    id: number;
-    name: string;
-    onlineStatus: OnlineStatus;
-    status:Status;
+  id: string;
+  name: string;
+  onlineStatus: OnlineStatus;
+  status: Status;
 }
 
-const token = "Bearer " + localStorage.getItem('token') as string;
-const id = localStorage.getItem('id') || '';
-const socket: Socket = io(api_base+`/?userid=${id}`, { transports: ['websocket'] });
+const token = ("Bearer " + localStorage.getItem("token")) as string;
+
+const id = localStorage.getItem("id") || "";
+const socket: Socket = io(api_base + `/?userid=${id}`, {
+  transports: ["websocket"],
+});
 const chat_button = `<button class="justify-items-center text-2xl dark:text-white" onclick="myFunction() id="button-chat">Chat</button>`;
-const hakan_button = `<button class="justify-items-center text-2xl dark:text-white" onclick="myFunction() id="button-chat">Me</button>`;
+const hakan_button = `<button class="justify-items-center text-2xl dark:text-white" id="button-me">Me</button>`;
 const greenDot = `<div class="h-7 w-7 rounded-full bg-green-500"></div>`;
 const greyDot = `<div class="h-7 w-7 rounded-full bg-gray-500"></div>`;
 
@@ -53,18 +57,24 @@ socket.on('connect', () => {
     });
 });
 
-function displayUsers(users: User[]) {
-    const userList = document.getElementById('user-list');
-    const userQuery = document.querySelector('#user-list');
-    if (userList) {
-        userList.innerHTML = `<div class="mt-4"></div>`;
-    }
-    users.forEach(user => {
-        const div = document.createElement("div");
-        const html = `
+function create_chat_button(user_id: string) {
+  return `<button class="justify-items-center text-2xl dark:text-white" id="chat-${user_id}" value = "${user_id}">Chat</button>`;
+}
+
+async function displayUsers(users: User[]) {
+  const userList = document.getElementById("user-list");
+  const userQuery = document.querySelector("#user-list");
+  if (userList) {
+    userList.innerHTML = `<div class="mt-4"></div>`;
+  }
+  users.forEach((user) => {
+    const div = document.createElement("div");
+    const html = `
         <div class="flex justify-center mb-4">
             <span class="ml-[10%] mr-auto mt-0.5">
-                ${user.onlineStatus === OnlineStatus.ONLINE ? greenDot : greyDot}
+                ${
+                  user.onlineStatus === OnlineStatus.ONLINE ? greenDot : greyDot
+                }
             </span>
              <span class="ml-[5%] mr-[5%] w-[20%] inline-block overflow-auto">
                 <span class="text-2xl inline-block" id="${user.id}">
@@ -77,12 +87,35 @@ function displayUsers(users: User[]) {
                 </span>
             </span>
             <span class="mr-[10%] w-20 h-8 bg-[#C41230] rounded-lg ml-auto flex justify-center">
-                ${user.id !== Number(id) ? chat_button : hakan_button}
-            </span>
+                ${user.id !== id ? create_chat_button(user.id) : hakan_button}
+             </span>
         </div>`;
-        div.innerHTML = html;
-        userQuery?.appendChild(div);
-    });
+    div.innerHTML = html;
+    userQuery?.appendChild(div);
+    const chat = document.getElementById("chat-" + user.id);
+    
+    if (chat) {
+      chat.addEventListener("click", async () => {
+        const users: string[] = [id, user.id];
+        const messageBody = {
+            idList: users
+        };
+        
+        const res = await fetch(room_endpoint, {
+          method: "POST",
+          headers: {
+            authorization: token,
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify(messageBody),
+        }).then((response) => {
+          return response.json();
+        });
+        localStorage.setItem("room", res.id);
+        window.location.href = "chat.html";
+      });
+    }
+  });
 }
 
 function displayStatus(status: Status){
