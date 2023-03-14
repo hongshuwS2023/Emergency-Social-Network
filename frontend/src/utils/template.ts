@@ -1,3 +1,7 @@
+import { user_endpoint, logout_endpoint } from "../sdk/api";
+import { Status } from "../../response/user.response";
+import { getFormattedDate } from "../../response/user.response";
+
 const html = `
 <div class="absolute w-screen h-[5%] bg-cover bottom-0 bg-[#C41230] flex justify-center">
     <div class="justify-items-start mr-auto ml-1">
@@ -24,14 +28,15 @@ const html = `
     </div>
 </div>
 
-<div id="setting-modal" class="absolute modal hidden fixed">
-    <div class="absolute left-5 top-5 z-50">
-        <div class="w-8 h-8" id="back-button">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="stroke-black dark:stroke-white">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
-            </svg> 
-        </div>
+<div class="absolute left-5 top-5 z-50">
+    <div class="w-8 h-8 hidden" id="back-button">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="stroke-black dark:stroke-white">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+        </svg> 
     </div>
+</div>
+
+<div id="setting-modal" class="absolute modal hidden fixed">
     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
         <div class="flex h-screen">
             <div class="p-0 m-auto w-3/5 h-2/5 overflow-auto rounded-lg bg-gray-300 bg-opacity-100 border-2">
@@ -41,11 +46,54 @@ const html = `
                     </div>
 
                     <div class="mt-4 text-center text-2xl">
-                        <button id="profile-button" class="text-esn-red">Change status</button>
+                        <button id="change-status" class="text-esn-red">Change status</button>
                     </div>
 
                     <div class="mt-4 mb-8 text-center">
                         <button id="logout-button" class="text-esn-red text-2xl font-bold">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="status-modal" class="absolute modal hidden fixed">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
+        <div class="flex h-screen">
+            <div class="p-0 m-auto w-3/5 h-3/5 overflow-auto rounded-lg bg-gray-300 bg-opacity-100 border-2">
+                <div class="modal-content flex flex-col justify-between h-full">
+                    <div class="mt-8">
+                        <button id="status-ok" class="ml-auto mr-auto text-2xl text-esn-red flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7 mr-2 stroke-white stroke-width-2 fill-green-600 bg-green-600">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                            </svg>
+                        OK</button>
+                        <div class="text-xs text-center">
+                            I am OK: I do not need help.
+                        </div>
+                    </div>
+        
+                    <div class="mt-4 text-center">       
+                        <button id="status-help" class="text-esn-red ml-auto mr-auto text-2xl flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  class="w-7 h-7 mr-2 stroke-white stroke-width-2 fill-yellow-600 bg-yellow-600">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                            </svg>    
+                        Help</button>
+                        <div class="text-xs text-center">
+                            I need help, but this is not a life threatening emergency.
+                        </div>
+                    </div>
+        
+                    <div class="mt-4 mb-8 text-center">
+                        <button id="status-emergency" class="ml-auto mr-auto text-2xl text-esn-red flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7 mr-2 stroke-white stroke-width-1 bg-red-600 inline">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg> 
+                        Emergency</button>
+                        <div class="text-xs text-center">
+                            I need help now: this is a life threatening emergency!
+                         </div>
                     </div>
                 </div>
             </div>
@@ -70,29 +118,42 @@ class TemplateElement extends HTMLElement {
 customElements.define('menu-template', TemplateElement);
 
 const id = localStorage.getItem('id') || '';
+const formattedToken = ("Bearer " + localStorage.getItem("token")) as string;
 const token = localStorage.getItem('token') || '';
 const setting = document.getElementById('setting-button') || new HTMLDivElement();
-const modal = document.getElementById("setting-modal") || new HTMLDivElement();
+const menuModal = document.getElementById("setting-modal") || new HTMLDivElement();
+const statusModal = document.getElementById("status-modal") || new HTMLDivElement();
 const back = document.getElementById("back-button") || new HTMLDivElement();
+const changeStatus = document.getElementById("change-status") || new HTMLDivElement();
 const logout = document.getElementById("logout-button") || new HTMLDivElement();
 const chatList = document.getElementById("chat-button") || new HTMLDivElement();
 const directory = document.getElementById("directory-button") || new HTMLDivElement();
-
+const statusOK = document.getElementById("status-ok") || new HTMLDivElement();
+const statusEmergency = document.getElementById("status-emergency") || new HTMLDivElement();
+const statusHelp = document.getElementById("status-help") || new HTMLDivElement();
 
 if (!id || !token) {
     window.location.href = 'index.html';
 }
 
-setting.addEventListener('click', async function handleClick(event) {
-    modal.style.display = "block";
-    back.onclick = function () {
-        modal.style.display = "none";
-    };
-});
+setting.onclick = async () => {
+    menuModal.style.display = "block";
+    back.classList.remove("hidden");
+};
+
+changeStatus.onclick = async () => {
+    statusModal.style.display = "block";
+    menuModal.style.display = "none";
+};
+
+back.onclick = () => {
+    menuModal.style.display = "none";
+    statusModal.style.display = "none";
+    back.classList.add("hidden");
+};
 
 logout.onclick = async () => {
-    const id = localStorage.getItem('id') || '';
-    await fetch('http://localhost:3000/api/auth/logout', {
+    await fetch(logout_endpoint, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json"
@@ -108,10 +169,44 @@ logout.onclick = async () => {
 
 }
 
-chatList.addEventListener('click', () => {
+chatList.onclick = () => {
     window.location.href = 'chat_list.html';
-})
+}
 
-directory.addEventListener('click', () => {
+directory.onclick = () => {
     window.location.href = 'directory.html';
-})
+}
+
+statusOK.onclick = async () => {
+    await fetch(user_endpoint, {
+        method: 'PUT',
+        headers: {
+            "authorization": formattedToken,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: id, status: Status.OK, statusTimeStamp: getFormattedDate() })
+    })
+    console.log(id);
+}
+
+statusHelp.onclick = async () => {
+    await fetch(user_endpoint, {
+        method: 'PUT',
+        headers: {
+            "authorization": formattedToken,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: id, status: Status.HELP, statusTimeStamp: getFormattedDate() })
+    })
+}
+
+statusEmergency.onclick = async () => {
+    await fetch(user_endpoint, {
+        method: 'PUT',
+        headers: {
+            "authorization": formattedToken,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: id, status: Status.EMERGENCY, statusTimeStamp: getFormattedDate() })
+    })
+}

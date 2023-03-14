@@ -16,6 +16,7 @@ import {Room} from '../room/room.entity';
 import LogoutInput from '../requests/logout.input';
 import {SocketServer} from '../utils/socketServer';
 import {v4 as uuid} from 'uuid';
+import {getFormattedDate} from '../utils/date';
 
 @Route('api/auth')
 export default class AuthController {
@@ -63,6 +64,7 @@ export default class AuthController {
     user.role = Role.CITIZEN;
     user.status = Status.UNDEFINED;
     user.onlineStatus = OnlineStatus.ONLINE;
+    user.statusTimeStamp = getFormattedDate();
 
     const room = await this.roomRepository.findOneBy({id: 'public'});
 
@@ -88,7 +90,7 @@ export default class AuthController {
       }
     );
 
-    await this.socketServer.broadcastOnlineUsers();
+    await this.socketServer.broadcastUsers();
 
     return new TokenResponse(user.id, token, this.expiresIn);
   }
@@ -131,7 +133,7 @@ export default class AuthController {
       }
     );
 
-    await this.socketServer.broadcastOnlineUsers();
+    await this.socketServer.broadcastUsers();
 
     return new TokenResponse(user.id, token, this.expiresIn);
   }
@@ -150,7 +152,7 @@ export default class AuthController {
     user.onlineStatus = OnlineStatus.OFFLINE;
     await this.authRepository.save(user);
 
-    await this.socketServer.broadcastOnlineUsers();
+    await this.socketServer.broadcastUsers();
 
     return new TokenResponse('', '', '');
   }
