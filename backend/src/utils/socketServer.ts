@@ -54,7 +54,7 @@ export class SocketServer {
     if (user !== null) {
       user.onlineStatus = OnlineStatus.ONLINE;
       await this.userRepository.save(user);
-      await this.broadcastOnlineUsers();
+      await this.broadcastUsers();
       this.userSocketMap.set(userId, socket.id);
       const previousRooms: Room[] = user.rooms;
       if (previousRooms) {
@@ -72,11 +72,11 @@ export class SocketServer {
       user.onlineStatus = OnlineStatus.OFFLINE;
       await this.userRepository.save(user);
       this.userSocketMap.delete(userId);
-      await this.broadcastOnlineUsers();
+      await this.broadcastUsers();
     }
   }
 
-  async broadcastOnlineUsers() {
+  async broadcastUsers() {
     const users = await this.userRepository.find({
       order: {
         onlineStatus: 'ASC',
@@ -84,7 +84,7 @@ export class SocketServer {
       },
     });
 
-    this.io.emit('online status', users);
+    this.io.emit('all users', users);
   }
 
   async broadcastChatMessage(

@@ -1,5 +1,6 @@
 import {Router} from 'express';
 import UpdateUserInput from '../requests/updateuser.input';
+import {SocketServer} from '../utils/socketServer';
 import UserController from './user.controller';
 
 export default class UserRoute {
@@ -27,6 +28,7 @@ export default class UserRoute {
       try {
         const updateUserInput: UpdateUserInput = req.body;
         res.send(await this.userController.updateUser(updateUserInput));
+        SocketServer.getInstance().broadcastUsers();
       } catch (error) {
         next(error);
       }

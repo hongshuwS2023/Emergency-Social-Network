@@ -5,4 +5,5 @@ export default interface UpdateUserInput {
   role?: Role;
   status?: Status;
   onlineStatus?: OnlineStatus;
+  statusTimeStamp?: string;
 }

@@ -22,10 +22,10 @@ export enum OnlineStatus {
 }
 
 export enum Status {
+  UNDEFINED,
   OK,
   HELP,
   EMERGENCY,
-  UNDEFINED,
 }
 
 @Entity()
@@ -47,6 +47,9 @@ export class User {
 
   @Column()
   onlineStatus!: OnlineStatus;
+
+  @Column()
+  statusTimeStamp!: string;
 
   @OneToMany(() => Message, message => message.sender)
   messages!: Message[];
