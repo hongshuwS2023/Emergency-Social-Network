@@ -54,9 +54,10 @@ export default class MessageController {
       throw new BadRequestException(ErrorMessage.ROOMIDNOTFOUND);
     }
     message.sender = user;
-    message.time = new Date().getTime().toString();
+    message.time = String(new Date().getTime());
     message.room = room;
     message.id = uuid();
+    message.status = user.status;
     this.socketServer.broadcastChatMessage(message.room.id, message);
     await this.messageRepository.save(message);
     return message;

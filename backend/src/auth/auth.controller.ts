@@ -92,7 +92,7 @@ export default class AuthController {
 
     await this.socketServer.broadcastUsers();
 
-    return new TokenResponse(user.id, token, this.expiresIn);
+    return new TokenResponse(user.id, user.username, token, this.expiresIn);
   }
 
   /**
@@ -118,7 +118,6 @@ export default class AuthController {
     }
 
     user.onlineStatus = OnlineStatus.ONLINE;
-    user.logoutTime = '';
 
     await this.authRepository.save(user);
 
@@ -136,7 +135,7 @@ export default class AuthController {
 
     await this.socketServer.broadcastUsers();
 
-    return new TokenResponse(user.id, token, this.expiresIn);
+    return new TokenResponse(user.id, user.username, token, this.expiresIn);
   }
 
   /**
@@ -156,7 +155,7 @@ export default class AuthController {
 
     await this.socketServer.broadcastUsers();
 
-    return new TokenResponse('', '', '');
+    return new TokenResponse('', '', '', '');
   }
 
   private validateUsernameAndPassword(username: string, password: string) {

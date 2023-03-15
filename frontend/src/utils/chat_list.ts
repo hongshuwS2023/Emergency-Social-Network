@@ -14,7 +14,6 @@ interface Room {
 }
 
 async function getRooms() {
-  console.log(id);
   
   const userUrl = new URL(user_endpoint + "/" + `${encodeURIComponent(id)}`);
   const res = await fetch(userUrl.toString(), {

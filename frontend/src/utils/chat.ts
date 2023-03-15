@@ -44,9 +44,9 @@ socket.on("connect", () => {
     if (msg.room.id === roomId) {
       displayMessage(
         msg.sender.username,
-        msg.sender.status,
+        msg.status,
         msg.content,
-        msg.time
+        getFormattedDate(Number(msg.time))
       );
     }
   });
@@ -85,7 +85,7 @@ async function getHistory() {
   res.messages.forEach((msg) => {
     displayMessage(
       msg.sender.username,
-      msg.sender.status,
+      msg.status,
       msg.content,
       getFormattedDate(Number(msg.time))
     );

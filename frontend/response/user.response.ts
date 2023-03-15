@@ -1,44 +1,44 @@
 export enum Status {
-    UNDEFINED,
-    OK,
-    HELP,
-    EMERGENCY,
+  UNDEFINED,
+  OK,
+  HELP,
+  EMERGENCY,
 }
 
 export enum OnlineStatus {
-    ONLINE,
-    OFFLINE,
+  ONLINE,
+  OFFLINE,
 }
 
 export class OnlineStatusResponse {
-    id: number;
-    name: string;
-    status: Status;
-    onlineStatus: boolean;
-    constructor(id: number, name: string, status: Status, onlineStatus: boolean) {
-        this.id = id;
-        this.name = name;
-        this.status = status;
-        this.onlineStatus = onlineStatus;
-    }
+  id: number;
+  name: string;
+  status: Status;
+  onlineStatus: boolean;
+  constructor(id: number, name: string, status: Status, onlineStatus: boolean) {
+    this.id = id;
+    this.name = name;
+    this.status = status;
+    this.onlineStatus = onlineStatus;
+  }
 }
+
 
 export function parseStatus(status: Status) {
-    switch (status) {
-        case Status.OK:
-            return 'OK';
-        case Status.EMERGENCY:
-            return 'Emergency';
-        case Status.HELP:
-            return 'Help';
-        default:
-            return 'Undefined';
-    }
-
+  switch (status) {
+    case Status.OK:
+      return "OK";
+    case Status.EMERGENCY:
+      return "Emergency";
+    case Status.HELP:
+      return "Help";
+    default:
+      return "Undefined";
+  }
 }
 
-export const getFormattedDate = (timeStamp:number) => {
-    // YYYY-MM-DD HH:MM:SS
-    const date = new Date(timeStamp);
-    return date.toISOString().split('T')[0] + date.toLocaleString().split(',')[1];
-  };
+export const getFormattedDate = (timeStamp: number) => {
+  // YYYY-MM-DD HH:MM:SS
+  const date = new Date(timeStamp);
+  return date.toLocaleString();
+};

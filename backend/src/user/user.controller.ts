@@ -71,6 +71,9 @@ export default class UserController {
     user.statusTimeStamp = updateUserInput.statusTimeStamp
       ? updateUserInput.statusTimeStamp
       : user.statusTimeStamp;
+    user.logoutTime = updateUserInput.logoutTime
+      ? updateUserInput.logoutTime
+      : user.logoutTime;
 
     return await this.userRepository.save(user);
   }

@@ -1,6 +1,6 @@
 import {PrimaryColumn, Column, Entity, ManyToOne} from 'typeorm';
 import {Room} from '../room/room.entity';
-import {User} from '../user/user.entity';
+import {Status, User} from '../user/user.entity';
 
 @Entity()
 export class Message {
@@ -15,6 +15,9 @@ export class Message {
 
   @Column()
   time!: string;
+
+  @Column()
+  status!: Status;
 
   @ManyToOne(() => Room)
   room!: Room;
