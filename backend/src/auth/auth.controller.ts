@@ -16,7 +16,6 @@ import {Room} from '../room/room.entity';
 import LogoutInput from '../requests/logout.input';
 import {SocketServer} from '../utils/socketServer';
 import {v4 as uuid} from 'uuid';
-import {getFormattedDate} from '../utils/date';
 
 @Route('api/auth')
 export default class AuthController {
@@ -64,7 +63,8 @@ export default class AuthController {
     user.role = Role.CITIZEN;
     user.status = Status.UNDEFINED;
     user.onlineStatus = OnlineStatus.ONLINE;
-    user.statusTimeStamp = getFormattedDate();
+    user.statusTimeStamp = new Date().getTime().toString();
+    user.logoutTime = '';
 
     const room = await this.roomRepository.findOneBy({id: 'public'});
 
@@ -92,7 +92,7 @@ export default class AuthController {
 
     await this.socketServer.broadcastUsers();
 
-    return new TokenResponse(user.id, token, this.expiresIn);
+    return new TokenResponse(user.id, user.username, token, this.expiresIn);
   }
 
   /**
@@ -135,7 +135,7 @@ export default class AuthController {
 
     await this.socketServer.broadcastUsers();
 
-    return new TokenResponse(user.id, token, this.expiresIn);
+    return new TokenResponse(user.id, user.username, token, this.expiresIn);
   }
 
   /**
@@ -150,11 +150,12 @@ export default class AuthController {
       throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
     }
     user.onlineStatus = OnlineStatus.OFFLINE;
+    user.logoutTime = new Date().getTime().toString();
     await this.authRepository.save(user);
 
     await this.socketServer.broadcastUsers();
 
-    return new TokenResponse('', '', '');
+    return new TokenResponse('', '', '', '');
   }
 
   private validateUsernameAndPassword(username: string, password: string) {

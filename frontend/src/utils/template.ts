@@ -1,8 +1,11 @@
-import { user_endpoint, logout_endpoint } from "../sdk/api";
-import { Status } from "../../response/user.response";
-import { getFormattedDate } from "../../response/user.response";
+import { user_endpoint, logout_endpoint, api_base } from "../sdk/api";
+import { parseStatus, Status } from "../../response/user.response";
+import { io, Socket } from "socket.io-client";
+import { Message } from "./directory";
 
 const html = `
+<div class="absolute top-5 w-full" id="banner">
+</div>
 <div class="absolute w-screen h-[5%] bg-cover bottom-0 bg-[#C41230] flex justify-center">
     <div class="justify-items-start mr-auto ml-1">
         <div class="w-8 h-8" id="directory-button">
@@ -102,111 +105,186 @@ const html = `
 </div>
 `;
 
-const template = document.createElement('template');
+const template = document.createElement("template");
 template.innerHTML = html;
 
 class TemplateElement extends HTMLElement {
-    constructor() {
-        super();
-    }
-    connectedCallback() {
-        this.innerHTML = template.innerHTML;
-    }
-
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.innerHTML = template.innerHTML;
+  }
 }
 
-customElements.define('menu-template', TemplateElement);
+customElements.define("menu-template", TemplateElement);
 
-const id = localStorage.getItem('id') || '';
+const id = localStorage.getItem("id") || "";
 const formattedToken = ("Bearer " + localStorage.getItem("token")) as string;
-const token = localStorage.getItem('token') || '';
-const setting = document.getElementById('setting-button') || new HTMLDivElement();
-const menuModal = document.getElementById("setting-modal") || new HTMLDivElement();
-const statusModal = document.getElementById("status-modal") || new HTMLDivElement();
+const token = localStorage.getItem("token") || "";
+const setting =
+  document.getElementById("setting-button") || new HTMLDivElement();
+const menuModal =
+  document.getElementById("setting-modal") || new HTMLDivElement();
+const statusModal =
+  document.getElementById("status-modal") || new HTMLDivElement();
 const back = document.getElementById("back-button") || new HTMLDivElement();
-const changeStatus = document.getElementById("change-status") || new HTMLDivElement();
+const changeStatus =
+  document.getElementById("change-status") || new HTMLDivElement();
 const logout = document.getElementById("logout-button") || new HTMLDivElement();
 const chatList = document.getElementById("chat-button") || new HTMLDivElement();
-const directory = document.getElementById("directory-button") || new HTMLDivElement();
+const directory =
+  document.getElementById("directory-button") || new HTMLDivElement();
 const statusOK = document.getElementById("status-ok") || new HTMLDivElement();
-const statusEmergency = document.getElementById("status-emergency") || new HTMLDivElement();
-const statusHelp = document.getElementById("status-help") || new HTMLDivElement();
+const statusEmergency =
+  document.getElementById("status-emergency") || new HTMLDivElement();
+const statusHelp =
+  document.getElementById("status-help") || new HTMLDivElement();
+
+const socket: Socket = io(api_base + `?userid=${id}`, {
+  transports: ["websocket"],
+});
+
+export function createNotification(msg: Message) {
+  const messageBackgroundClass =
+    'class="grid bg-gray-300 rounded-lg dark:bg-grey-100 w-4/5 h-[10%] ml-auto mr-auto text-xl duration-300 notification transition ease-in-out"';
+  const messageUsernameClass = 'class="float-left ml-1 mt-1"';
+  const messageContentClass = 'class="ml-1 mb-1"';
+  const div = document.createElement("div");
+  div.id = "notification";
+  div.innerHTML = `
+    <div ${messageBackgroundClass}>
+        <p>
+            <span ${messageUsernameClass}>${msg.sender.username}
+            <span>${parseStatus(msg.sender.status)}</span></span>
+        </p>
+        <p ${messageContentClass}>${msg.content}</p> 
+    </div>`;
+  const banner = document.getElementById("banner") || new HTMLDivElement();
+  banner.innerHTML = "";
+  document.querySelector("#banner")?.appendChild(div);
+  div.addEventListener("click", async () => {
+    localStorage.setItem("room", msg.room.id);
+    document.querySelector("#banner")?.removeChild(div);
+    window.location.href = "chat.html";
+  });
+}
+
+socket.on("connect", () => {
+  socket.on("chat message", (msg) => {
+    const user_list = msg.room.id.split("-");
+    const user_name = localStorage.getItem("username");
+    const url = window.location.href.split("/").slice(-1)[0];
+
+    user_list.forEach((element) => {
+      console.log(element);
+      console.log(msg.sender.id);
+      console.log(window.location.href);
+      if (
+        element === user_name &&
+        msg.sender.id !== id &&
+        url !== "chat.html"
+      ) {
+        createNotification(msg);
+        const notification = document.getElementById("notification");
+        if (notification) {
+          setTimeout(() => {
+            notification.classList.add("hidden");
+          }, 3000);
+        }
+      }
+    });
+  });
+});
 
 if (!id || !token) {
-    window.location.href = 'index.html';
+  window.location.href = "index.html";
 }
 
 setting.onclick = async () => {
-    menuModal.style.display = "block";
-    back.classList.remove("hidden");
+  menuModal.style.display = "block";
+  back.classList.remove("hidden");
 };
 
 changeStatus.onclick = async () => {
-    statusModal.style.display = "block";
-    menuModal.style.display = "none";
+  statusModal.style.display = "block";
+  menuModal.style.display = "none";
 };
 
 back.onclick = () => {
-    menuModal.style.display = "none";
-    statusModal.style.display = "none";
-    back.classList.add("hidden");
+  menuModal.style.display = "none";
+  statusModal.style.display = "none";
+  back.classList.add("hidden");
 };
 
 logout.onclick = async () => {
-    await fetch(logout_endpoint, {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ id: id })
-    }).then(response => {
-        response.json();
-    }).then(() => {
-        localStorage.removeItem('id');
-        localStorage.removeItem('token');
-        location.href = 'index.html';
+  await fetch(logout_endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id: id }),
+  })
+    .then((response) => {
+      response.json();
+    })
+    .then(() => {
+      localStorage.removeItem("id");
+      localStorage.removeItem("token");
+      location.href = "index.html";
     });
-
-}
+};
 
 chatList.onclick = () => {
-    window.location.href = 'chat_list.html';
-}
+  window.location.href = "chat_list.html";
+};
 
 directory.onclick = () => {
-    window.location.href = 'directory.html';
-}
+  window.location.href = "directory.html";
+};
 
 statusOK.onclick = async () => {
-    await fetch(user_endpoint, {
-        method: 'PUT',
-        headers: {
-            "authorization": formattedToken,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ id: id, status: Status.OK, statusTimeStamp: getFormattedDate() })
-    })
-    console.log(id);
-}
+  await fetch(user_endpoint, {
+    method: "PUT",
+    headers: {
+      authorization: formattedToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: id,
+      status: Status.OK,
+      statusTimeStamp: new Date().getTime(),
+    }),
+  });
+  console.log(id);
+};
 
 statusHelp.onclick = async () => {
-    await fetch(user_endpoint, {
-        method: 'PUT',
-        headers: {
-            "authorization": formattedToken,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ id: id, status: Status.HELP, statusTimeStamp: getFormattedDate() })
-    })
-}
+  await fetch(user_endpoint, {
+    method: "PUT",
+    headers: {
+      authorization: formattedToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: id,
+      status: Status.HELP,
+      statusTimeStamp: new Date().getTime(),
+    }),
+  });
+};
 
 statusEmergency.onclick = async () => {
-    await fetch(user_endpoint, {
-        method: 'PUT',
-        headers: {
-            "authorization": formattedToken,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ id: id, status: Status.EMERGENCY, statusTimeStamp: getFormattedDate() })
-    })
-}
+  await fetch(user_endpoint, {
+    method: "PUT",
+    headers: {
+      authorization: formattedToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: id,
+      status: Status.EMERGENCY,
+      statusTimeStamp: new Date().getTime(),
+    }),
+  });
+};

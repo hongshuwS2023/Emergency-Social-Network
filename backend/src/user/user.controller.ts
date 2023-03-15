@@ -21,10 +21,7 @@ export default class UserController {
   @Get('{userId}')
   async getUser(userId: string): Promise<User> {
     const user = await this.userRepository.findOne({
-      relations: {
-        rooms: true,
-        speedtests: true,
-      },
+      relations: ['rooms', 'rooms.messages', 'speedtests'],
       where: {
         id: userId,
       },
@@ -74,6 +71,9 @@ export default class UserController {
     user.statusTimeStamp = updateUserInput.statusTimeStamp
       ? updateUserInput.statusTimeStamp
       : user.statusTimeStamp;
+    user.logoutTime = updateUserInput.logoutTime
+      ? updateUserInput.logoutTime
+      : user.logoutTime;
 
     return await this.userRepository.save(user);
   }

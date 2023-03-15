@@ -11,6 +11,9 @@
 					"user_id": {
 						"type": "string"
 					},
+					"user_name": {
+						"type": "string"
+					},
 					"token": {
 						"type": "string"
 					},
@@ -20,6 +23,7 @@
 				},
 				"required": [
 					"user_id",
+					"user_name",
 					"token",
 					"expires_in"
 				],
@@ -101,6 +105,9 @@
 					"statusTimeStamp": {
 						"type": "string"
 					},
+					"logoutTime": {
+						"type": "string"
+					},
 					"messages": {
 						"items": {
 							"$ref": "#/components/schemas/Message"
@@ -128,6 +135,7 @@
 					"status",
 					"onlineStatus",
 					"statusTimeStamp",
+					"logoutTime",
 					"messages",
 					"rooms",
 					"speedtests"
@@ -149,6 +157,9 @@
 					"time": {
 						"type": "string"
 					},
+					"status": {
+						"$ref": "#/components/schemas/Status"
+					},
 					"room": {
 						"$ref": "#/components/schemas/Room"
 					}
@@ -158,6 +169,7 @@
 					"sender",
 					"content",
 					"time",
+					"status",
 					"room"
 				],
 				"type": "object",
@@ -244,6 +256,9 @@
 						"$ref": "#/components/schemas/OnlineStatus"
 					},
 					"statusTimeStamp": {
+						"type": "string"
+					},
+					"logoutTime": {
 						"type": "string"
 					}
 				},

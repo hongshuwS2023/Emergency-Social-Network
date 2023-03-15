@@ -10,6 +10,7 @@ import {Body, Get, Post, Route} from 'tsoa';
 import {Room} from './room.entity';
 import {JoinRoomInput} from '../requests/joinroom.input';
 import {SocketServer} from '../utils/socketServer';
+import {Message} from '../message/message.entity';
 @Route('/api/rooms')
 export default class RoomController {
   roomRepository: Repository<Room>;
@@ -30,18 +31,17 @@ export default class RoomController {
   @Get('{roomId}')
   async getRoom(roomId: string): Promise<Room> {
     const room = await this.roomRepository.findOne({
-      relations: {
-        messages: true,
-        users: true,
-      },
+      relations: ['messages', 'messages.sender'],
       where: {
         id: roomId,
       },
     });
-
     if (room === null) {
       throw new BadRequestException(ErrorMessage.EMPTYMESSAGE);
     }
+    room.messages.sort(
+      (a: Message, b: Message) => Number(a.time) - Number(b.time)
+    );
 
     return room;
   }
@@ -55,6 +55,7 @@ export default class RoomController {
   async joinRoom(@Body() joinRoomInput: JoinRoomInput): Promise<Room> {
     const users: User[] = [];
     const user_names: string[] = [];
+
     for (const userId of joinRoomInput.idList) {
       const user = await this.userRepository.findOneBy({id: userId});
       if (user === null) {

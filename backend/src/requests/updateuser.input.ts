@@ -6,4 +6,5 @@ export default interface UpdateUserInput {
   status?: Status;
   onlineStatus?: OnlineStatus;
   statusTimeStamp?: string;
+  logoutTime?: string;
 }

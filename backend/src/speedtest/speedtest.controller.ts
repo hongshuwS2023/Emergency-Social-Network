@@ -9,7 +9,6 @@ import {Room} from '../room/room.entity';
 import CreateSpeedTestResponse from '../responses/speedtest.response';
 import {SpeedTestMiddleware} from '../middleware/speedtest.middleware';
 import {v4 as uuid} from 'uuid';
-import {getFormattedDate} from '../utils/date';
 import {Message} from '../message/message.entity';
 
 @Route('/api/speedtests')
@@ -55,7 +54,7 @@ export default class SpeedtestService {
     speedTest.admin = user;
     speedTest.interval = interval;
     speedTest.duration = duration;
-    speedTest.startTime = getFormattedDate();
+    speedTest.startTime = new Date().getTime().toString();
 
     await this.speedTestRepository.save(speedTest);
 
@@ -78,7 +77,7 @@ export default class SpeedtestService {
       throw new NotFoundException(ErrorMessage.SPEEDTESTNOTFOUND);
     }
 
-    speedtest.startTime = new Date().toISOString();
+    speedtest.startTime = new Date().getTime().toString();
 
     return await this.speedTestRepository.save(speedtest);
   }
