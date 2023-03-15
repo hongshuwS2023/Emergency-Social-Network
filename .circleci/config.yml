@@ -20,6 +20,10 @@ jobs:
           name: Lint backend   
       - run:
           working_directory: ~/s23-EN-SB1/backend
+          command: yarn test
+          name: Unit test  
+      - run:
+          working_directory: ~/s23-EN-SB1/backend
           command: yarn build
           name: Build backend
 
