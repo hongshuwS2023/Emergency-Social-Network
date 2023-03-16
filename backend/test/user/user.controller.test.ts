@@ -126,11 +126,11 @@ describe('updateUser', () => {
 
 describe('deleteUser', () => {
   it('Should delete the user from database', async () => {
-    await userController.deleteUser('test_id');
-
     const userRepository = ESNDataSource.getRepository(User);
+    
+    await userController.deleteUser('test_id');
+    
     const user = await userRepository.findOneBy({id: 'test_id'});
-
     expect(user).toBeNull();
   });
 });
