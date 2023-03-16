@@ -39,16 +39,16 @@ export class User {
   @Column({select: false})
   password!: string;
 
-  @Column()
+  @Column({default: Role.CITIZEN})
   role!: Role;
 
-  @Column()
+  @Column({default: Status.UNDEFINED})
   status!: Status;
 
-  @Column()
+  @Column({default: OnlineStatus.ONLINE})
   onlineStatus!: OnlineStatus;
 
-  @Column()
+  @Column({default: ''})
   statusTimeStamp!: string;
 
   @Column({default: ''})

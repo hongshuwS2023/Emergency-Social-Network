@@ -21,7 +21,7 @@ export default class UserController {
   @Get('{userId}')
   async getUser(userId: string): Promise<User> {
     const user = await this.userRepository.findOne({
-      relations: ['rooms', 'rooms.messages', 'speedtests'],
+      relations: ['rooms', 'speedtests'],
       where: {
         id: userId,
       },

@@ -37,7 +37,7 @@ export default class RoomController {
       },
     });
     if (room === null) {
-      throw new BadRequestException(ErrorMessage.EMPTYMESSAGE);
+      throw new BadRequestException(ErrorMessage.ROOMIDNOTFOUND);
     }
     room.messages.sort(
       (a: Message, b: Message) => Number(a.time) - Number(b.time)
