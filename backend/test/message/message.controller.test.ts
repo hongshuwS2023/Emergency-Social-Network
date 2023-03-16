@@ -1,7 +1,6 @@
-import AuthController from '../../src/auth/auth.controller';
 import MessageController from '../../src/message/message.controller';
 import {ApiException, ErrorMessage} from '../../src/responses/api.exception';
-import { Room } from '../../src/room/room.entity';
+import {Room} from '../../src/room/room.entity';
 import {User} from '../../src/user/user.entity';
 import ESNDataSource from '../../src/utils/datasource';
 
@@ -14,11 +13,7 @@ beforeEach(async () => {
   user.id = 'test_id';
   user.username = 'test_username';
   user.password = 'test_password';
-  user.role = 0;
-  user.status = 0;
-  user.onlineStatus = 0;
   user.statusTimeStamp = new Date().getTime().toString();
-  user.logoutTime = '';
   await userRepository.save(user);
   const roomRepository = ESNDataSource.getRepository(Room);
   const room = roomRepository.create();
@@ -43,7 +38,6 @@ describe('postMessage', () => {
   });
 
   it('Should not send messages if input is invalid', async () => {
-
     // Case user id is invalid
     const invalidUserIdMessageInput = {
       userId: 'invalid id',

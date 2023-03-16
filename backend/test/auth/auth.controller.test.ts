@@ -18,20 +18,19 @@ afterEach(async () => {
 describe('registerUser', () => {
   it('Should successfully register for the user when all the fields are valid', async () => {
     const authUserInput = {
-      username: 'hakan',
-      password: '12345',
+      username: 'test_username',
+      password: 'test_password',
     };
     // Create another user for room initialization
     const secondAuthUserInput = {
-      username: 'hakan2',
-      password: '12345',
+      username: 'test_username_2',
+      password: 'test_password',
     };
     const roomRepository = ESNDataSource.getRepository(Room);
     const userRepository = ESNDataSource.getRepository(User);
-    const room =
-      (await roomRepository.findOneBy({
-        id: 'public',
-      })) || new Room();
+    const room = await roomRepository.create();
+    room.id = 'public';
+    await roomRepository.save(room);
 
     const tokenResponse = await authController.registerUser(authUserInput);
     await authController.registerUser(secondAuthUserInput);
@@ -50,7 +49,7 @@ describe('registerUser', () => {
     // Case that username is reversed
     const reservedUserInput = {
       username: 'about',
-      password: '12345',
+      password: 'test_password',
     };
 
     try {
@@ -64,7 +63,7 @@ describe('registerUser', () => {
     // Case username not long enough
     const shortUserInput = {
       username: 'ab',
-      password: '12345',
+      password: 'test_password',
     };
 
     try {
@@ -91,8 +90,8 @@ describe('registerUser', () => {
 
     // Case register duplicate user
     const authUserInput = {
-      username: 'hakan',
-      password: '12345',
+      username: 'test_username',
+      password: 'test_password',
     };
     await authController.registerUser(authUserInput);
 
@@ -109,8 +108,8 @@ describe('registerUser', () => {
 describe('loginUser', () => {
   it('Should successfully login for the user when all the fields are valid', async () => {
     const authUserInput = {
-      username: 'hakan',
-      password: '12345',
+      username: 'test_username',
+      password: 'test_password',
     };
     await authController.registerUser(authUserInput);
 
@@ -124,11 +123,11 @@ describe('loginUser', () => {
   it('Should failed to login for the user when any of the field is invalid', async () => {
     // Case wrong password
     const authUserInput = {
-      username: 'hakan',
-      password: '12345',
+      username: 'test_username',
+      password: 'test_password',
     };
     const wrongPassInput = {
-      username: 'hakan',
+      username: 'test_username',
       password: '123',
     };
     await authController.registerUser(authUserInput);
@@ -143,8 +142,8 @@ describe('loginUser', () => {
 
     // Case user not exist
     const wrongUserInput = {
-      username: 'hakan1',
-      password: '12345',
+      username: 'test_username_1',
+      password: 'test_password',
     };
     try {
       await authController.loginUser(wrongUserInput);
@@ -159,8 +158,8 @@ describe('loginUser', () => {
 describe('logoutUser', () => {
   it('Should successfully logout for the user', async () => {
     const authUserInput = {
-      username: 'hakan',
-      password: '12345',
+      username: 'test_username',
+      password: 'test_password',
     };
     await authController.registerUser(authUserInput);
     const userRepository = ESNDataSource.getRepository(User);
@@ -179,8 +178,8 @@ describe('logoutUser', () => {
 
   it('Should fail to logout if the logout input is invalid', async () => {
     const authUserInput = {
-      username: 'hakan',
-      password: '12345',
+      username: 'test_username',
+      password: 'test_password',
     };
     const lougoutUserInput = {
       id: 'invalid id',

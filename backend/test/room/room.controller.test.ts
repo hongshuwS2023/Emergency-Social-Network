@@ -73,24 +73,23 @@ describe('joinRoom', () => {
 });
 
 describe('getRoom', () => {
-    it('Should successfully get the room', async () => {
-        const roomRepository = ESNDataSource.getRepository(Room);
-        const room = roomRepository.create();
-        room.id = 'test_username';
-        await roomRepository.save(room);
-        const getRoom = await roomController.getRoom('test_username');
-        expect(getRoom.id).toBe(room.id);
-    });
-
-    it('Should fail to get the room if the room id is invalid', async () => {
-        // Case room id is invalid
-        try {
-          await roomController.getRoom('invalid_room_id');
-        } catch (error) {
-          expect((<ApiException>error).error_message).toBe(
-            ErrorMessage.ROOMIDNOTFOUND
-          );
-        }
-      });
-
+  it('Should successfully get the room', async () => {
+    const roomRepository = ESNDataSource.getRepository(Room);
+    const room = roomRepository.create();
+    room.id = 'test_username';
+    await roomRepository.save(room);
+    const getRoom = await roomController.getRoom('test_username');
+    expect(getRoom.id).toBe(room.id);
   });
+
+  it('Should fail to get the room if the room id is invalid', async () => {
+    // Case room id is invalid
+    try {
+      await roomController.getRoom('invalid_room_id');
+    } catch (error) {
+      expect((<ApiException>error).error_message).toBe(
+        ErrorMessage.ROOMIDNOTFOUND
+      );
+    }
+  });
+});
