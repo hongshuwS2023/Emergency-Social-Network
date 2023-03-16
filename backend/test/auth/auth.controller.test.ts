@@ -106,7 +106,7 @@ describe('registerUser', () => {
   });
 });
 
-describe('Test AuthController login method', () => {
+describe('loginUser', () => {
   it('Should successfully login for the user when all the fields are valid', async () => {
     const authUserInput = {
       username: 'hakan',
@@ -156,7 +156,7 @@ describe('Test AuthController login method', () => {
   });
 });
 
-describe('Test AuthController logout method', () => {
+describe('logoutUser', () => {
   it('Should successfully logout for the user', async () => {
     const authUserInput = {
       username: 'hakan',
