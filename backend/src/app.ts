@@ -14,6 +14,7 @@ import RoomRoute from './room/room.route';
 import {SocketServer} from './utils/socketServer';
 import {SpeedTestMiddleware} from './middleware/speedtest.middleware';
 import SpeedTestRoute from './speedtest/speedtest.route';
+import SearchRoute from './search/search.route';
 
 export default class App {
   private app: express.Application;
@@ -48,6 +49,7 @@ export default class App {
     this.app.use('/api/messages', new MessageRoute().getRouter());
     this.app.use('/api/rooms', new RoomRoute().getRouter());
     this.app.use('/api/speedtests', new SpeedTestRoute().getRouter());
+    this.app.use('/api/search', new SearchRoute().getRouter());
   }
 
   private registerMiddlewares(): void {
