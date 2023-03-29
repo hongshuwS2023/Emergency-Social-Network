@@ -5,27 +5,15 @@
     <title>FSE Emergency Social Network</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <script src="../utils/directory.ts" type="module"></script>
-    <script src="../utils/template.ts" type="module"></script>
+    <script type="module" src="../components/directory.ts"></script>
+    <script type="module" src="../components/template.ts"></script>
     <link href="../css/index.css" rel="stylesheet" />
 </head>
 
 <body>
     <div class="w-screen h-screen bg-[#DBDBDB] dark:bg-gray-900">
         <menu-template></menu-template>
-        <div class="flex flex-col justify-center w-screen h-screen">
-            <div class="grid justify-items-center text-4xl text-bold text-black dark:text-white">
-                <p class="font-extrabold">ESN Directory</p>
-            </div>
-            <div class="grid justify-items-center w-screen h-4/6 mt-4">
-                <div class="w-11/12">
-                    <div class="flex flex-col bg-[#D9D9D9] h-full max-h-[60vh] w-full rounded-lg dark:bg-grey-100 overflow-auto"
-                        id="user-list">
-                        <div class="mt-4"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <directory-page></directory-page>
     </div>
 
 </body>

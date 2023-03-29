@@ -108,13 +108,19 @@ export default class AuthController {
 
     this.validateUsernameAndPassword(username, password);
 
+    const authUser = await this.authRepository.findOneBy({
+      username: username,
+    });
+    if (!authUser) {
+      throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
+    }
+
     const user = await this.authRepository.findOneBy({
       username: username,
       password: this.encodePassword(password),
     });
-
-    if (user === null) {
-      throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
+    if (!user) {
+      throw new BadRequestException(ErrorMessage.WRONGPASSWORD);
     }
 
     user.onlineStatus = OnlineStatus.ONLINE;

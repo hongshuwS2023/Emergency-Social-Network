@@ -17,9 +17,8 @@ if (process.env.NODE_ENV === 'test') {
     entities: [User, Message, Room, SpeedTest],
     synchronize: true,
     logging: false,
-  })
-}
-else {
+  });
+} else {
   ESNDataSource = new DataSource({
     type: 'mysql',
     host: process.env.DB_HOST,

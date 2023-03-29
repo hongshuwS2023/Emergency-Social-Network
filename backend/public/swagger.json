@@ -304,7 +304,18 @@
 				"additionalProperties": false
 			},
 			"CreateSpeedTestResponse": {
-				"properties": {},
+				"properties": {
+					"speedtest_id": {
+						"type": "string"
+					},
+					"room_id": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"speedtest_id",
+					"room_id"
+				],
 				"type": "object",
 				"additionalProperties": false
 			},
