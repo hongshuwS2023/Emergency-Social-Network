@@ -4,6 +4,7 @@ import {User} from '../user/user.entity';
 import {Message} from '../message/message.entity';
 import {Room} from '../room/room.entity';
 import {SpeedTest} from '../speedtest/speedtest.entity';
+import {HistoryStatus} from '../status/status.entity';
 
 const env = `.env.${process.env.NODE_ENV}`;
 dotenv.config({path: env});
@@ -14,12 +15,11 @@ if (process.env.NODE_ENV === 'test') {
     type: 'sqlite',
     database: ':memory:',
     dropSchema: true,
-    entities: [User, Message, Room, SpeedTest],
+    entities: [User, Message, Room, SpeedTest, HistoryStatus],
     synchronize: true,
     logging: false,
-  })
-}
-else {
+  });
+} else {
   ESNDataSource = new DataSource({
     type: 'mysql',
     host: process.env.DB_HOST,
@@ -27,7 +27,7 @@ else {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    entities: [User, Message, Room, SpeedTest],
+    entities: [User, Message, Room, SpeedTest, HistoryStatus],
     dropSchema: process.env.NODE_ENV === 'prod' ? false : true,
     logging: process.env.NODE_ENV === 'prod' ? false : true,
     synchronize: true,

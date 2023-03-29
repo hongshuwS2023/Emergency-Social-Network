@@ -125,6 +125,12 @@
 							"$ref": "#/components/schemas/SpeedTest"
 						},
 						"type": "array"
+					},
+					"historyStatus": {
+						"items": {
+							"$ref": "#/components/schemas/HistoryStatus"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
@@ -138,7 +144,8 @@
 					"logoutTime",
 					"messages",
 					"rooms",
-					"speedtests"
+					"speedtests",
+					"historyStatus"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -237,6 +244,30 @@
 					"startTime",
 					"postRate",
 					"getRate"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"HistoryStatus": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"status": {
+						"$ref": "#/components/schemas/Status"
+					},
+					"timeStamp": {
+						"type": "string"
+					},
+					"user": {
+						"$ref": "#/components/schemas/User"
+					}
+				},
+				"required": [
+					"id",
+					"status",
+					"timeStamp",
+					"user"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -371,13 +402,17 @@
 					"criteria": {
 						"type": "string"
 					},
+					"user_id": {
+						"type": "string"
+					},
 					"room_id": {
 						"type": "string"
 					}
 				},
 				"required": [
 					"context",
-					"criteria"
+					"criteria",
+					"user_id"
 				],
 				"type": "object",
 				"additionalProperties": false

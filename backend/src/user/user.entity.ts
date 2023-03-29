@@ -9,6 +9,7 @@ import {
 import {Message} from '../message/message.entity';
 import {Room} from '../room/room.entity';
 import {SpeedTest} from '../speedtest/speedtest.entity';
+import {HistoryStatus} from '../status/status.entity';
 
 export enum Role {
   ADMIN,
@@ -63,4 +64,7 @@ export class User {
 
   @OneToMany(() => SpeedTest, speedtest => speedtest.admin)
   speedtests!: SpeedTest[];
+
+  @OneToMany(() => HistoryStatus, status => status.user)
+  historyStatus!: HistoryStatus[];
 }

@@ -16,12 +16,14 @@ import {Room} from '../room/room.entity';
 import LogoutInput from '../requests/logout.input';
 import {SocketServer} from '../utils/socketServer';
 import {v4 as uuid} from 'uuid';
+import {HistoryStatus} from '../status/status.entity';
 
 @Route('api/auth')
 export default class AuthController {
   private socketServer: SocketServer;
   private authRepository: Repository<User>;
   private roomRepository: Repository<Room>;
+  private statusRepository: Repository<HistoryStatus>;
   private jwtSecret: string;
   private expiresIn: string;
   private salt: string;
@@ -30,6 +32,7 @@ export default class AuthController {
     this.socketServer = SocketServer.getInstance();
     this.authRepository = ESNDataSource.getRepository(User);
     this.roomRepository = ESNDataSource.getRepository(Room);
+    this.statusRepository = ESNDataSource.getRepository(HistoryStatus);
     this.jwtSecret = process.env.JWT_SECRET as string;
     this.expiresIn = process.env.EXPIRES_IN as string;
     this.salt = process.env.SALT as string;
@@ -76,8 +79,14 @@ export default class AuthController {
     } else {
       user.rooms = [room];
     }
-
     await this.authRepository.save(user);
+    const status = this.statusRepository.create();
+    status.user = user;
+    status.id = uuid();
+    status.status = user.status;
+    status.timeStamp = String(new Date().getTime());
+    await this.statusRepository.save(status);
+
     const token = jwt.sign(
       {
         id: user.id,
