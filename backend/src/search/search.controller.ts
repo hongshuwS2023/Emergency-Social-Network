@@ -2,12 +2,12 @@ import {ILike, Repository} from 'typeorm';
 import ESNDataSource from '../utils/datasource';
 import {Message} from '../message/message.entity';
 import {User, Status} from '../user/user.entity';
-import {Get,Route} from 'tsoa';
+import {Get, Route} from 'tsoa';
 import SearchInput from '../requests/search.input';
 import {Context} from '../requests/search.input';
-import searchResponse from '../responses/search.response';
 import {BadRequestException, ErrorMessage} from '../responses/api.exception';
 import {HistoryStatus} from '../status/status.entity';
+import { RESERVED_CRITERIA } from './reserved-criteria';
 
 @Route('/api/search')
 export default class SearchController {
@@ -27,7 +27,10 @@ export default class SearchController {
    * @returns searchResponse
    */
   @Get()
-  async search(searchInput: SearchInput): Promise<searchResponse> {
+  async search(searchInput: SearchInput): Promise<string> {
+    if(RESERVED_CRITERIA.indexOf(searchInput.criteria) !== -1){
+      return 'stop words';
+    }
     let response = '';
     switch (searchInput.context) {
       case Context.CITIZENNAME:
@@ -63,7 +66,7 @@ export default class SearchController {
         break;
     }
 
-    return new searchResponse(response);
+    return response;
   }
 
   async searchUserName(criteria: string): Promise<User[]> {
