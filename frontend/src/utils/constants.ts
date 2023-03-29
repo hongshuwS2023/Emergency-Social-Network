@@ -1,13 +1,71 @@
-import { user_endpoint, logout_endpoint, api_base } from "../sdk/api";
-import { parseStatus, Status } from "../../response/user.response";
-import { io, Socket } from "socket.io-client";
-import { Message } from "./directory";
+export const loginBannerHTML = `<div class="grid w-screen h-1/12 justify-items-center">
+<div class="w-9/12 h-9/12 text-4xl text-bold text-esn-red leading-tight">
+  <p class="font-extrabold">FSE</p>
+  <p class="inline font-extrabold">E<p class="inline text-black dark:text-white">mergency</p>
+  </p>
+  <p class="inline font-extrabold">S<p class="inline text-black dark:text-white">ocial</p>
+  <p class="inline font-extrabold">N<p class="inline text-black dark:text-white">etwork</p>
+  </p>
+</div>
+</div>`
 
-const html = `
+export const authformHTML = `<div class="mt-4">
+    <div class="grid w-screen h-1/12 mt-8 justify-items-center">
+      <div class="w-9/12">
+        <label class="text-2xl text-black dark:text-white">Username</label>
+        <input class="text-2xl w-full rounded-lg dark:bg-gray-300" id="username" />
+      </div>
+    </div>
+    <div class="grid w-screen h-1/12 mt-3 justify-items-center">
+      <div class="w-9/12">
+        <label class="text-2xl text-black dark:text-white">Password</label>
+        <input type="password" class="text-2xl w-full rounded-lg dark:bg-gray-300" id="password" />
+      </div>
+    </div>
+    <div class="grid w-screen h-1/12 mt-3 justify-items-center" id="confirm-message"></div>
+    <div class="grid w-screen h-10 mt-5 justify-items-center" id="button-class">
+      <button class="w-4/12 h-8 bg-[#C41230] rounded-lg text-2xl dark:text-white" id="button">Join</button>
+      <button class="w-4/12 h-8 bg-[#C41230] rounded-lg text-2xl dark:text-white invisible"
+        id="confirm-button">Confirm</button>
+    </div>
+    <div class="grid w-screen h-1/12 mt-3 justify-items-center" id="error-message"></div>`
+
+export const directoryHTML = `
+<div class="flex flex-col justify-center w-screen h-screen">
+    <div class="grid justify-items-center text-4xl text-bold text-black dark:text-white">
+        <p class="font-extrabold">ESN Directory</p>
+    </div>
+    <div class="grid justify-items-center w-screen h-4/6 mt-4">
+        <div class="w-11/12">
+            <div class="flex flex-col bg-[#D9D9D9] h-full max-h-[60vh] w-full rounded-lg dark:bg-grey-100 overflow-auto"
+                id="user-list">
+                <div class="mt-4"></div>
+            </div>
+        </div>
+    </div>
+</div>`;
+
+export const chatListHTML = `
+<div class="flex flex-col justify-center w-screen h-screen">
+  <div class="grid justify-items-center text-4xl text-bold text-esn-red">
+      <p class="font-extrabold">FSE ESN</p>
+  </div>
+  <div class="grid justify-items-center w-screen h-4/6 mt-4">
+    <div class="w-11/12">
+      <div
+        class="flex flex-col bg-[#D9D9D9] h-full max-h-[60vh] w-full rounded-lg dark:bg-grey-100 overflow-auto"
+        id="room-list"
+      ></div>
+    </div>
+  </div>
+</div>
+`;
+
+export const templateHTML = `
 <div class="absolute top-5 w-full" id="banner">
 </div>
 <div class="absolute w-screen h-[5%] bg-cover bottom-0 bg-[#C41230] flex justify-center">
-    <div class="justify-items-start mr-auto ml-1">
+    <div class="justify-items-start mr-auto ml-1 mt-auto mb-auto">
         <div class="w-8 h-8" id="directory-button">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -21,7 +79,7 @@ const html = `
              </svg>
         </div>
     </div>
-    <div class=" justify-items-end justify-center ml-auto mr-1">
+    <div class=" justify-items-end justify-center ml-auto mr-1 mt-auto mb-auto">
         <div class="w-8 h-8" id="setting-button">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
@@ -105,186 +163,55 @@ const html = `
 </div>
 `;
 
-const template = document.createElement("template");
-template.innerHTML = html;
+export const chatHTML  =`      
+<div class="flex flex-col justify-center w-screen h-screen pb-7">
+  <div class="grid pb-5 justify-items-center" id="room-name">
+    </div>
+    <div class="grid w-screen h-4/6 justify-items-center">
+      <div class="w-10/12">
+          <div class="flex flex-col bg-white h-full max-h-[60vh] w-full rounded-lg dark:bg-grey-100 overflow-auto"
+              id="history">
+              <div class="mt-4"></div>
+          </div>
+      </div>
+    </div>
+    <div class="grid w-screen h-2/12 justify-items-center">
+      <div class="w-10/12">
+          <input class="text-2xl w-full h-full rounded-lg dark:bg-grey-100" id="input" />
+      </div>
+    </div>
+    <div class="grid pt-5 justify-items-center">
+      <div class="w-7/12 h-1/12">
+          <button class="w-full h-full bg-[#C41230] rounded-lg text-2xl dark:text-white"
+              id="send-button">Send</button>
+      </div>
+  </div>
+</div>`;
 
-class TemplateElement extends HTMLElement {
-  constructor() {
-    super();
-  }
-  connectedCallback() {
-    this.innerHTML = template.innerHTML;
-  }
-}
 
-customElements.define("menu-template", TemplateElement);
+export const okSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7 stroke-white stroke-width-2 fill-green-600 bg-green-600">
+<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+</svg>`;
+export const emergencySvg = ` <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7 stroke-white stroke-width-1 bg-red-600 inline">
+<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+</svg>`;
+export const helpSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  class="w-7 h-7 stroke-white stroke-width-2 fill-yellow-600 bg-yellow-600">
+<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+</svg>`;
+export const undefinedSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7 stroke-white stroke-width-2 bg-black">
+<path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+</svg>`;
 
-const id = localStorage.getItem("id") || "";
-const formattedToken = ("Bearer " + localStorage.getItem("token")) as string;
-const token = localStorage.getItem("token") || "";
-const setting =
-  document.getElementById("setting-button") || new HTMLDivElement();
-const menuModal =
-  document.getElementById("setting-modal") || new HTMLDivElement();
-const statusModal =
-  document.getElementById("status-modal") || new HTMLDivElement();
-const back = document.getElementById("back-button") || new HTMLDivElement();
-const changeStatus =
-  document.getElementById("change-status") || new HTMLDivElement();
-const logout = document.getElementById("logout-button") || new HTMLDivElement();
-const chatList = document.getElementById("chat-button") || new HTMLDivElement();
-const directory =
-  document.getElementById("directory-button") || new HTMLDivElement();
-const statusOK = document.getElementById("status-ok") || new HTMLDivElement();
-const statusEmergency =
-  document.getElementById("status-emergency") || new HTMLDivElement();
-const statusHelp =
-  document.getElementById("status-help") || new HTMLDivElement();
+export const selfButton = `<button class="justify-items-center text-2xl dark:text-white" id="button-me">Me</button>`;
+export const greenDot = `<div class="h-7 w-7 rounded-full bg-green-500"></div>`;
+export const greyDot = `<div class="h-7 w-7 rounded-full bg-gray-500"></div>`;
 
-const socket: Socket = io(api_base + `?userid=${id}`, {
-  transports: ["websocket"],
-});
+export const messageBackgroundClass =
+'class="grid bg-gray-300 rounded-lg dark:bg-grey-100 w-4/5 h-[10%] ml-auto mr-auto text-xl duration-300 notification transition ease-in-out"';
+export const messageUsernameClass = 'class="float-left ml-1 mt-1"';
+export const messageContentClass = 'class="ml-1 mb-1"';
+export const chatMessageBackgroundClass =
+'class="grid bg-gray-300 rounded-lg dark:bg-grey-100 w-4/5 h-auto ml-auto mr-auto mb-4 text-xs"';
+export const messageTimeClass = 'class="float-right ml-1 mt-1 mr-1"';
 
-export function createNotification(msg: Message) {
-  const messageBackgroundClass =
-    'class="grid bg-gray-300 rounded-lg dark:bg-grey-100 w-4/5 h-[10%] ml-auto mr-auto text-xl duration-300 notification transition ease-in-out"';
-  const messageUsernameClass = 'class="float-left ml-1 mt-1"';
-  const messageContentClass = 'class="ml-1 mb-1"';
-  const div = document.createElement("div");
-  div.id = "notification";
-  div.innerHTML = `
-    <div ${messageBackgroundClass}>
-        <p>
-            <span ${messageUsernameClass}>${msg.sender.username}
-            <span>${parseStatus(msg.sender.status)}</span></span>
-        </p>
-        <p ${messageContentClass}>${msg.content}</p> 
-    </div>`;
-  const banner = document.getElementById("banner") || new HTMLDivElement();
-  banner.innerHTML = "";
-  document.querySelector("#banner")?.appendChild(div);
-  div.addEventListener("click", async () => {
-    localStorage.setItem("room", msg.room.id);
-    document.querySelector("#banner")?.removeChild(div);
-    window.location.href = "chat.html";
-  });
-}
-
-socket.on("connect", () => {
-  socket.on("chat message", (msg) => {
-    const user_list = msg.room.id.split("-");
-    const user_name = localStorage.getItem("username");
-    const url = window.location.href.split("/").slice(-1)[0];
-
-    user_list.forEach((element) => {
-      console.log(element);
-      console.log(msg.sender.id);
-      console.log(window.location.href);
-      if (
-        element === user_name &&
-        msg.sender.id !== id &&
-        url !== "chat.html"
-      ) {
-        createNotification(msg);
-        const notification = document.getElementById("notification");
-        if (notification) {
-          setTimeout(() => {
-            notification.classList.add("hidden");
-          }, 3000);
-        }
-      }
-    });
-  });
-});
-
-if (!id || !token) {
-  window.location.href = "index.html";
-}
-
-setting.onclick = async () => {
-  menuModal.style.display = "block";
-  back.classList.remove("hidden");
-};
-
-changeStatus.onclick = async () => {
-  statusModal.style.display = "block";
-  menuModal.style.display = "none";
-};
-
-back.onclick = () => {
-  menuModal.style.display = "none";
-  statusModal.style.display = "none";
-  back.classList.add("hidden");
-};
-
-logout.onclick = async () => {
-  await fetch(logout_endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ id: id }),
-  })
-    .then((response) => {
-      response.json();
-    })
-    .then(() => {
-      localStorage.removeItem("id");
-      localStorage.removeItem("token");
-      location.href = "index.html";
-    });
-};
-
-chatList.onclick = () => {
-  window.location.href = "chat_list.html";
-};
-
-directory.onclick = () => {
-  window.location.href = "directory.html";
-};
-
-statusOK.onclick = async () => {
-  await fetch(user_endpoint, {
-    method: "PUT",
-    headers: {
-      authorization: formattedToken,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      id: id,
-      status: Status.OK,
-      statusTimeStamp: new Date().getTime(),
-    }),
-  });
-  console.log(id);
-};
-
-statusHelp.onclick = async () => {
-  await fetch(user_endpoint, {
-    method: "PUT",
-    headers: {
-      authorization: formattedToken,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      id: id,
-      status: Status.HELP,
-      statusTimeStamp: new Date().getTime(),
-    }),
-  });
-};
-
-statusEmergency.onclick = async () => {
-  await fetch(user_endpoint, {
-    method: "PUT",
-    headers: {
-      authorization: formattedToken,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      id: id,
-      status: Status.EMERGENCY,
-      statusTimeStamp: new Date().getTime(),
-    }),
-  });
-};
+export const defaultLogoutTime = "-1";

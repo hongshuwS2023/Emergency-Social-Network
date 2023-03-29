@@ -4,6 +4,7 @@
   "description": "fse esn frontend",
   "license": "MIT",
   "devDependencies": {
+    "@parcel/core": "^2.8.3",
     "autoprefixer": "^10.4.13",
     "buffer": "^5.5.0",
     "parcel": "^2.0.0",
@@ -19,5 +20,6 @@
   },
   "dependencies": {
     "socket.io-client": "^4.6.0"
-  }
+  },
+  "packageManager": "yarn@3.5.0"
 }

@@ -5,36 +5,14 @@
     <title>FSE Emergency Social Network</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <script src="../utils/chat.ts" type="module"></script>
-    <script src="../utils/template.ts" type="module"></script>
+    <script type="module" src="../components/chat.ts"></script>
+    <script type="module" src="../components/template.ts" ></script>
     <link href="../css/index.css" rel="stylesheet" />
 </head>
 
 <body>
     <div class="w-screen h-screen bg-[#DBDBDB] dark:bg-gray-900">
         <menu-template></menu-template>
-        <div class="flex flex-col justify-center w-screen h-screen pb-7">
-            <div class="grid pb-5 justify-items-center" id="room-name">
-            </div>
-            <div class="grid w-screen h-4/6 justify-items-center">
-                <div class="w-10/12">
-                    <div class="flex flex-col bg-white h-full max-h-[60vh] w-full rounded-lg dark:bg-grey-100 overflow-auto"
-                        id="history">
-                        <div class="mt-4"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="grid w-screen h-2/12 justify-items-center">
-                <div class="w-10/12">
-                    <input class="text-2xl w-full h-full rounded-lg dark:bg-grey-100" id="input" />
-                </div>
-            </div>
-            <div class="grid pt-5 justify-items-center">
-                <div class="w-7/12 h-1/12">
-                    <button class="w-full h-full bg-[#C41230] rounded-lg text-2xl dark:text-white"
-                        id="send-button">Send</button>
-                </div>
-            </div>
-        </div>
+        <chat-page></chat-page>
     </div>
 </body>
