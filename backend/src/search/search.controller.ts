@@ -7,7 +7,7 @@ import SearchInput from '../requests/search.input';
 import {Context} from '../requests/search.input';
 import {BadRequestException, ErrorMessage} from '../responses/api.exception';
 import {HistoryStatus} from '../status/status.entity';
-import { RESERVED_CRITERIA } from './reserved-criteria';
+import {RESERVED_CRITERIA} from './reserved-criteria';
 
 @Route('/api/search')
 export default class SearchController {
@@ -28,8 +28,8 @@ export default class SearchController {
    */
   @Get()
   async search(searchInput: SearchInput): Promise<string> {
-    if(RESERVED_CRITERIA.indexOf(searchInput.criteria) !== -1){
-      return 'stop words';
+    if (RESERVED_CRITERIA.indexOf(searchInput.criteria) !== -1) {
+      throw new BadRequestException(ErrorMessage.BADSEARCHCRITERIA);
     }
     let response = '';
     switch (searchInput.context) {
@@ -94,7 +94,7 @@ export default class SearchController {
     } else if (status === 'UNDEFINED') {
       return Status.UNDEFINED;
     } else {
-      throw new BadRequestException(ErrorMessage.WRONGUSERNAME);
+      throw new BadRequestException(ErrorMessage.WRONGSTATUS);
     }
   }
 
