@@ -2,8 +2,7 @@ import {ILike, Repository} from 'typeorm';
 import ESNDataSource from '../utils/datasource';
 import {Message} from '../message/message.entity';
 import {User, Status} from '../user/user.entity';
-import {Get, Queries, Route} from 'tsoa';
-import SearchInput from '../requests/search.input';
+import {Get, Query, Route} from 'tsoa';
 import {Context} from '../requests/search.input';
 import {BadRequestException, ErrorMessage} from '../responses/api.exception';
 import {HistoryStatus} from '../status/status.entity';
@@ -33,42 +32,50 @@ export default class SearchController {
    * @returns searchResponse
    */
   @Get()
-  async search(@Queries() searchInput: SearchInput): Promise<SearchResult> {
-    if (RESERVED_CRITERIA.indexOf(searchInput.criteria) !== -1) {
+  async search(
+    @Query() criteria: string,
+    @Query() context: Context,
+    @Query() user_id: string,
+    @Query() search_number: number,
+    @Query() room_id?: string
+  ): Promise<SearchResult> {
+    if (RESERVED_CRITERIA.indexOf(criteria) !== -1) {
       throw new BadRequestException(ErrorMessage.BADSEARCHCRITERIA);
     }
     const response: SearchResult = {};
-    switch (searchInput.context) {
+    switch (context) {
       case Context.CITIZENNAME:
-        response.users = await this.searchUserName(searchInput.criteria);
+        response.users = await this.searchUserName(criteria);
         break;
       case Context.CITIZENSTATUS:
-        response.users = await this.searchUserStatus(searchInput.criteria);
+        response.users = await this.searchUserStatus(criteria);
         break;
       case Context.PUBLICCHAT:
         response.messages = await this.searchMessage(
-          searchInput.criteria,
-          'public'
+          criteria,
+          'public',
+          search_number
         );
         break;
       case Context.PRIVATECHAT:
-        if (searchInput.criteria === 'status') {
+        if (criteria === 'status') {
           const history_status: HistoryStatus[] = await this.searchStatus(
-            searchInput.criteria,
-            searchInput.room_id ? searchInput.room_id : '',
-            searchInput.user_id ? searchInput.user_id : ''
+            criteria,
+            room_id ? room_id : '',
+            user_id ? user_id : '',
+            search_number
           );
           response.historyStatus = history_status;
         } else {
           const private_messages: Message[] = await this.searchMessage(
-            searchInput.criteria,
-            searchInput.room_id ? searchInput.room_id : ''
+            criteria,
+            room_id ? room_id : '',
+            search_number
           );
           response.messages = private_messages;
         }
         break;
     }
-    console.log(response);
     return response;
   }
 
@@ -115,7 +122,11 @@ export default class SearchController {
     return users;
   }
 
-  async searchMessage(criteria: string, room_id: string): Promise<Message[]> {
+  async searchMessage(
+    criteria: string,
+    room_id: string,
+    search_number: number
+  ): Promise<Message[]> {
     const messages = await this.messageRepository.find({
       relations: {
         room: true,
@@ -130,6 +141,8 @@ export default class SearchController {
       order: {
         time: 'DESC',
       },
+      skip: 10 * (search_number - 1),
+      take: 10,
     });
     return messages;
   }
@@ -137,7 +150,8 @@ export default class SearchController {
   async searchStatus(
     criteria: string,
     room_id: string,
-    user_id: string
+    user_id: string,
+    search_number: number
   ): Promise<HistoryStatus[]> {
     const user = await this.userRepository.findOneBy({id: user_id});
     if (user === null) {
@@ -162,6 +176,7 @@ export default class SearchController {
       order: {
         timeStamp: 'DESC',
       },
+      skip: 10 * (search_number - 1),
       take: 10,
     });
     return statusHistory;

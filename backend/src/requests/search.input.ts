@@ -11,4 +11,5 @@ export default interface SearchInput {
   criteria: string;
   user_id: string;
   room_id?: string;
+  search_number: number;
 }

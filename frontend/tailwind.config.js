@@ -95,6 +95,7 @@ module.exports = {
     'notification', 
     'transition', 
     'ease-in-out',
+    'max-h-[50vh]',
     'pt-2'
   ],
   plugins: [],

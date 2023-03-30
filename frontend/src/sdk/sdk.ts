@@ -135,8 +135,8 @@ export const updateStatus = async (token: string, id: string, status: Status) =>
     });
 }
 
-export const searchInformation = async (token: string, searchInput: SearchInput) => {
-    const res = await fetch(search_endpoint + `?context=${searchInput.context}&criteria=${searchInput.criteria}&user_id=${searchInput.user_id}&room_id=${searchInput.room_id}`, {
+export const searchInformation = async (token: string, searchInput: SearchInput, page: number) => {
+    const res = await fetch(search_endpoint + `?context=${searchInput.context}&criteria=${searchInput.criteria}&user_id=${searchInput.user_id}&room_id=${searchInput.room_id}&page=${page}`, {
         method: "GET",
         headers: {
             authorization: token,
