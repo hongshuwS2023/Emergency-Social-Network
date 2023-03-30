@@ -2,7 +2,7 @@ import {ILike, Repository} from 'typeorm';
 import ESNDataSource from '../utils/datasource';
 import {Message} from '../message/message.entity';
 import {User, Status} from '../user/user.entity';
-import {Get, Route} from 'tsoa';
+import {Get, Queries, Route} from 'tsoa';
 import SearchInput from '../requests/search.input';
 import {Context} from '../requests/search.input';
 import {BadRequestException, ErrorMessage} from '../responses/api.exception';
@@ -33,7 +33,7 @@ export default class SearchController {
    * @returns searchResponse
    */
   @Get()
-  async search(searchInput: SearchInput): Promise<SearchResult> {
+  async search(@Queries() searchInput: SearchInput): Promise<SearchResult> {
     if (RESERVED_CRITERIA.indexOf(searchInput.criteria) !== -1) {
       throw new BadRequestException(ErrorMessage.BADSEARCHCRITERIA);
     }
