@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import {User} from '../user/user.entity';
 import {Message} from '../message/message.entity';
 import {Room} from '../room/room.entity';
-import {SpeedTest} from '../speedtest/speedtest.entity';
+import {HistoryStatus} from '../status/status.entity';
 
 dotenv.config();
 
@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === 'test') {
     type: 'sqlite',
     database: ':memory:',
     dropSchema: true,
-    entities: [User, Message, Room, SpeedTest],
+    entities: [User, Message, Room, HistoryStatus],
     synchronize: true,
     logging: false,
   });
@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === 'test') {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    entities: [User, Message, Room, SpeedTest],
+    entities: [User, Message, Room, HistoryStatus],
     dropSchema: process.env.NODE_ENV === 'prod' ? false : true,
     logging: process.env.NODE_ENV === 'prod' ? false : true,
     synchronize: true,

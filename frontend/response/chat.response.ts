@@ -1,4 +1,4 @@
-import { Status } from "./user.response";
+import { Status } from "../src/utils/enum";
 
 export default class MessageResponse {
     username: string;

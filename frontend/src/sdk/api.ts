@@ -5,3 +5,4 @@ export const message_endpoint = api_base+'/api/messages';
 export const register_endpoint = api_base+'/api/auth/register';
 export const login_endpoint = api_base+'/api/auth/login';
 export const logout_endpoint = api_base+'/api/auth/logout';
+export const search_endpoint = api_base+'/api/search';
