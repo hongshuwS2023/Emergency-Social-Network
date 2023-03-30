@@ -5,7 +5,6 @@ import SearchController from '../../src/search/search.controller';
 import {Message} from '../../src/message/message.entity';
 import {HistoryStatus} from '../../src/status/status.entity';
 import {ApiException, ErrorMessage} from '../../src/responses/api.exception';
-import { Context } from '../../src/requests/search.input';
 
 const searchController = new SearchController();
 const userRepository = ESNDataSource.getRepository(User);
@@ -79,20 +78,18 @@ afterEach(async () => {
 
 describe('searchInformation', () => {
   it('should get the user by its name', async () => {
-    const res = await searchController.search('user1',1,'user1_id');
+    const res = await searchController.search('user1', 1, 'user1_id', 0);
     expect(res.users).not.toBeNull();
-    console.log(res);
-    res.users = res.users?res.users:[];
-    console.log(res.users);
-    
+    res.users = res.users ? res.users : [];
+
     expect(res.users[0].id).toBe('user1_id');
     expect(res.users[0].username).toBe('user1');
   });
 
   it('should get the user by its status', async () => {
-    const res = await searchController.search('UNDEFINED',2,'user1_id');
+    const res = await searchController.search('UNDEFINED', 2, 'user1_id', 0);
     expect(res.users).not.toBeNull();
-    res.users = res.users?res.users:[];
+    res.users = res.users ? res.users : [];
     expect(res.users[0].id).toBe('user1_id');
     expect(res.users[0].username).toBe('user1');
   });
@@ -100,7 +97,7 @@ describe('searchInformation', () => {
   it('should throw an exception if the criteria of status name is wrong', async () => {
     // Case status criteria is invalid
     try {
-      await searchController.search('badstatus', 1, 'user1_id', 'room');
+      await searchController.search('badstatus', 1, 'user1_id', 0, 'room');
     } catch (error) {
       expect((<ApiException>error).error_message).toBe(
         ErrorMessage.WRONGSTATUS
@@ -109,33 +106,57 @@ describe('searchInformation', () => {
   });
 
   it('should get the public message by the content', async () => {
-    const res = await searchController.search('public test message', 3, 'user1_id', 'room');
+    const res = await searchController.search(
+      'public test message',
+      3,
+      'user1_id',
+      0,
+      'room'
+    );
     expect(res.messages).not.toBeNull();
-    res.messages = res.messages?res.messages:[];
+    res.messages = res.messages ? res.messages : [];
     expect(res.messages[0].id).toBe('public-message');
     expect(res.messages[0].content).toBe('public test message');
   });
 
   it('should get the private message by the content', async () => {
-    const res = await searchController.search('private test message', 4, 'user1_id', 'user1-user2');
+    const res = await searchController.search(
+      'private test message',
+      4,
+      'user1_id',
+      0,
+      'user1-user2'
+    );
     expect(res.messages).not.toBeNull();
-    res.messages = res.messages?res.messages:[];
+    res.messages = res.messages ? res.messages : [];
     expect(res.messages[0].id).toBe('private-message');
     expect(res.messages[0].content).toBe('private test message');
   });
 
   it('should get the private message by the content', async () => {
-    const res = await searchController.search('private test message', 4,'user1_id', 'user1-user2' );
+    const res = await searchController.search(
+      'private test message',
+      4,
+      'user1_id',
+      0,
+      'user1-user2'
+    );
     expect(res.messages).not.toBeNull();
-    res.messages = res.messages?res.messages:[];
+    res.messages = res.messages ? res.messages : [];
     expect(res.messages[0].id).toBe('private-message');
     expect(res.messages[0].content).toBe('private test message');
   });
 
   it('should get the status of the other user by using criteria status in the private chat', async () => {
-    const res = await searchController.search('status', 4,'user2_id',  'user1-user2');
+    const res = await searchController.search(
+      'status',
+      4,
+      'user2_id',
+      0,
+      'user1-user2'
+    );
     expect(res.historyStatus).not.toBeNull();
-    res.historyStatus = res.historyStatus?res.historyStatus:[];
+    res.historyStatus = res.historyStatus ? res.historyStatus : [];
     expect(res.historyStatus[0].status).toBe(0);
     expect(res.historyStatus[0].user.id).toBe('user1_id');
   });
@@ -143,7 +164,7 @@ describe('searchInformation', () => {
   it('should throw an exception if the user_id in search private chat status is wrong', async () => {
     // Case user id is invalid
     try {
-      await searchController.search('status', 4, 'badUser','user1-user2' );
+      await searchController.search('status', 4, 'badUser', 0, 'user1-user2');
     } catch (error) {
       expect((<ApiException>error).error_message).toBe(
         ErrorMessage.WRONGUSERNAME
@@ -154,7 +175,7 @@ describe('searchInformation', () => {
   it('should throw an exception if the room_id in search private chat status is wrong', async () => {
     // Case room id is invalid
     try {
-      await searchController.search('status', 4, 'user2_id','bad room' );
+      await searchController.search('status', 4, 'user2_id', 0, 'bad room');
     } catch (error) {
       expect((<ApiException>error).error_message).toBe(
         ErrorMessage.ROOMIDNOTFOUND
@@ -164,7 +185,7 @@ describe('searchInformation', () => {
   it('should throw an error if the criteria in search is in stop words list', async () => {
     // Case criteria is a stop words
     try {
-      await searchController.search('able', 0, 'user2_id', 'room');
+      await searchController.search('able', 0, 'user2_id', 0, 'room');
     } catch (error) {
       expect((<ApiException>error).error_message).toBe(
         ErrorMessage.BADSEARCHCRITERIA

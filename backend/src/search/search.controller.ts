@@ -36,8 +36,8 @@ export default class SearchController {
     @Query() criteria: string,
     @Query() context: Context,
     @Query() user_id: string,
-    @Query() room_id?: string,
-    @Query() search_number?: number
+    @Query() search_number: number,
+    @Query() room_id?: string
   ): Promise<SearchResult> {
     if (RESERVED_CRITERIA.indexOf(criteria) !== -1) {
       throw new BadRequestException(ErrorMessage.BADSEARCHCRITERIA);
@@ -51,7 +51,11 @@ export default class SearchController {
         response.users = await this.searchUserStatus(criteria);
         break;
       case Context.PUBLICCHAT:
-        response.messages = await this.searchMessage(criteria, 'public', search_number);
+        response.messages = await this.searchMessage(
+          criteria,
+          'public',
+          search_number
+        );
         break;
       case Context.PRIVATECHAT:
         if (criteria === 'status') {
@@ -65,9 +69,9 @@ export default class SearchController {
         } else {
           const private_messages: Message[] = await this.searchMessage(
             criteria,
-            room_id ? room_id : ''
+            room_id ? room_id : '',
             search_number
-s          );
+          );
           response.messages = private_messages;
         }
         break;
@@ -76,8 +80,6 @@ s          );
   }
 
   async searchUserName(criteria: string): Promise<User[]> {
-    console.log(criteria);
-    
     const users = await this.userRepository.find({
       where: {
         username: ILike(`%${criteria}%`),
@@ -87,8 +89,7 @@ s          );
         username: 'ASC',
       },
     });
-    
-    
+
     return users;
   }
 

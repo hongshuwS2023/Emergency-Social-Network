@@ -666,8 +666,17 @@
 					},
 					{
 						"in": "query",
-						"name": "room_id",
+						"name": "search_number",
 						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "query",
+						"name": "room_id",
+						"required": false,
 						"schema": {
 							"type": "string"
 						}

@@ -15,10 +15,12 @@ export default class SearchRoute {
   private setRoute(): void {
     this.router.get('/', async (req, res, next) => {
       try {
-        const criteria = req.query.criteria!.toString();
+        const criteria = String(req.query.criteria!);
         const context = req.query.context;
-        const user_id = req.query.user_id!.toString();
-        const search_number = Number(req.query.page!.toString());
+        const user_id = String(req.query.user_id!);
+        const search_number = Number(req.query.page!);
+        console.log(search_number);
+
         let room_id = '';
         if (req.query.room_id) {
           room_id = req.query.room_id.toString();
@@ -27,6 +29,7 @@ export default class SearchRoute {
           criteria,
           Number(context),
           user_id,
+          Number(search_number),
           room_id
         );
         res.send(response);

@@ -180,6 +180,12 @@ async function changePage() {
 }
 
 nextPage!.onclick = async () => {
+
+    const criteria =
+      (document.getElementById("search-input") as HTMLInputElement).value || "";
+    if(criteria.toLowerCase()==='status'){
+      return;
+    }
   const resultLength = searchResult?.childNodes?.length || 0;
   if (resultLength <= 10) {
     const res = await changePage();
