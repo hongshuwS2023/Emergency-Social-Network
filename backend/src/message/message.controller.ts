@@ -11,7 +11,10 @@ import {User} from '../user/user.entity';
 import {Body, Post, Route} from 'tsoa';
 import {Room} from '../room/room.entity';
 import {SocketServer} from '../utils/socketServer';
-import {v4 as uuid} from 'uuid';
+import {
+  PublicMessageFactory,
+  PrivateMessageFactory,
+} from '../factory/factory.message';
 
 @Route('/api/messages')
 export default class MessageController {
@@ -19,12 +22,16 @@ export default class MessageController {
   messageRepository: Repository<Message>;
   userRepository: Repository<User>;
   roomRepository: Repository<Room>;
+  publicMessageFactory: PublicMessageFactory;
+  privateMessageFactory: PrivateMessageFactory;
 
   constructor() {
     this.socketServer = SocketServer.getInstance();
     this.messageRepository = ESNDataSource.getRepository(Message);
     this.userRepository = ESNDataSource.getRepository(User);
     this.roomRepository = ESNDataSource.getRepository(Room);
+    this.publicMessageFactory = new PublicMessageFactory();
+    this.privateMessageFactory = new PrivateMessageFactory();
   }
 
   /**
@@ -42,8 +49,6 @@ export default class MessageController {
     if (user === null) {
       throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
     }
-    const message = this.messageRepository.create();
-    message.content = postMessageInput.content;
     if (postMessageInput.content.trim().length <= 0) {
       throw new BadRequestException(ErrorMessage.EMPTYMESSAGE);
     }
@@ -53,11 +58,20 @@ export default class MessageController {
     if (room === null) {
       throw new BadRequestException(ErrorMessage.ROOMIDNOTFOUND);
     }
-    message.sender = user;
-    message.time = String(new Date().getTime());
-    message.room = room;
-    message.id = uuid();
-    message.status = user.status;
+    let message;
+    if (room.id === 'public') {
+      message = this.publicMessageFactory.createMessage(
+        postMessageInput.content,
+        room,
+        user
+      );
+    } else {
+      message = this.privateMessageFactory.createMessage(
+        postMessageInput.content,
+        room,
+        user
+      );
+    }
     this.socketServer.broadcastChatMessage(message.room.id, message);
     await this.messageRepository.save(message);
     return message;

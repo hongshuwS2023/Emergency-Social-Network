@@ -5,8 +5,7 @@ import {Message} from '../message/message.entity';
 import {Room} from '../room/room.entity';
 import {SpeedTest} from '../speedtest/speedtest.entity';
 
-const env = `.env.${process.env.NODE_ENV}`;
-dotenv.config({path: env});
+dotenv.config();
 
 let ESNDataSource: DataSource;
 if (process.env.NODE_ENV === 'test') {

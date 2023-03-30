@@ -70,6 +70,7 @@ export class SocketServer {
     const user = await this.userRepository.findOneBy({id: userId});
     if (user !== null) {
       user.onlineStatus = OnlineStatus.OFFLINE;
+      user.logoutTime = new Date().getTime().toString();
       await this.userRepository.save(user);
       this.userSocketMap.delete(userId);
       await this.broadcastUsers();

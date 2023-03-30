@@ -7,13 +7,12 @@ RUN yarn build
 FROM node:18-slim
 WORKDIR /app
 COPY --from=build-stage /app/dist ./dist
-COPY --from=build-stage /app/.env.prod ./
+COPY --from=build-stage /app/.env ./
 COPY --from=build-stage /app/.pnp.cjs ./
 COPY --from=build-stage /app/.yarn/cache/ .yarn/cache/
 COPY --from=build-stage /app/.yarn/releases/ .yarn/releases/
 COPY --from=build-stage /app/.yarn/unplugged/ .yarn/unplugged/
 
 EXPOSE 3000
-ENV NODE_ENV=prod
 CMD ["node", "-r", "./.pnp.cjs", "./dist/index.js"]
 

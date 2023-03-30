@@ -16,6 +16,8 @@ services:
   api:
     container_name: esn-api
     image: esn-api
+    environment:
+      - DB_HOST=esn-db
     build:
       context: ./backend
       dockerfile: Dockerfile-api
@@ -31,7 +33,7 @@ services:
     image: esn-web
     build:
       context: ./frontend
-      dockerfile: Dockerfile-frontend
+      dockerfile: Dockerfile-web
     restart: always
     networks:
       - esn

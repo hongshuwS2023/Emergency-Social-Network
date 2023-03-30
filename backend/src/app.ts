@@ -58,7 +58,7 @@ export default class App {
     try {
       await ESNDataSource.initialize();
 
-      this.httpServer.listen(this.port, () => {
+      this.httpServer.listen(this.port, '0.0.0.0', () => {
         console.log(`server started at http://localhost:${this.port}`);
       });
     } catch (err) {

@@ -56,7 +56,6 @@ confirmButton!.onclick = async () => {
   const res = await register(username, password);
 
   if (res.token) {
-    console.log('create success');
     replaceConfirmButton();
     modal!.style.display = "block";
     const localStorageInfo: LocalStorageInfo = {

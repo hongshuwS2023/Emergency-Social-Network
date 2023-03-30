@@ -150,7 +150,6 @@ async function checkUnreadMessages() {
     const rooms: Room[] = user.rooms || [];
     const messages: Message[] = [];
     const msg = await getLatestMessage(messages, rooms);
-    console.log(messages.length);
     if (msg) {
         if (user.logoutTime !== defaultLogoutTime) {
             if (BigInt(msg.time) > BigInt(user!.logoutTime)) {

@@ -64,7 +64,7 @@ export default class AuthController {
     user.status = Status.UNDEFINED;
     user.onlineStatus = OnlineStatus.ONLINE;
     user.statusTimeStamp = new Date().getTime().toString();
-    user.logoutTime = '';
+    user.logoutTime = '-1';
 
     const room = await this.roomRepository.findOneBy({id: 'public'});
 
@@ -124,7 +124,6 @@ export default class AuthController {
     }
 
     user.onlineStatus = OnlineStatus.ONLINE;
-
     await this.authRepository.save(user);
 
     const token = jwt.sign(
