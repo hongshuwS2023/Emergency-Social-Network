@@ -9,6 +9,12 @@ import {BadRequestException, ErrorMessage} from '../responses/api.exception';
 import {HistoryStatus} from '../status/status.entity';
 import {RESERVED_CRITERIA} from './reserved-criteria';
 
+export interface SearchResult {
+  users?: User[];
+  messages?: Message[];
+  historyStatus?: HistoryStatus[];
+}
+
 @Route('/api/search')
 export default class SearchController {
   messageRepository: Repository<Message>;
@@ -27,25 +33,22 @@ export default class SearchController {
    * @returns searchResponse
    */
   @Get()
-  async search(searchInput: SearchInput): Promise<string> {
+  async search(searchInput: SearchInput): Promise<SearchResult> {
     if (RESERVED_CRITERIA.indexOf(searchInput.criteria) !== -1) {
       throw new BadRequestException(ErrorMessage.BADSEARCHCRITERIA);
     }
-    let response = '';
+    const response: SearchResult = {};
     switch (searchInput.context) {
       case Context.CITIZENNAME:
-        response = JSON.stringify(
-          await this.searchUserName(searchInput.criteria)
-        );
+        response.users = await this.searchUserName(searchInput.criteria);
         break;
       case Context.CITIZENSTATUS:
-        response = JSON.stringify(
-          await this.searchUserStatus(searchInput.criteria)
-        );
+        response.users = await this.searchUserStatus(searchInput.criteria);
         break;
       case Context.PUBLICCHAT:
-        response = JSON.stringify(
-          await this.searchMessage(searchInput.criteria, 'public')
+        response.messages = await this.searchMessage(
+          searchInput.criteria,
+          'public'
         );
         break;
       case Context.PRIVATECHAT:
@@ -55,17 +58,17 @@ export default class SearchController {
             searchInput.room_id ? searchInput.room_id : '',
             searchInput.user_id ? searchInput.user_id : ''
           );
-          response = JSON.stringify(history_status);
+          response.historyStatus = history_status;
         } else {
           const private_messages: Message[] = await this.searchMessage(
             searchInput.criteria,
             searchInput.room_id ? searchInput.room_id : ''
           );
-          response = JSON.stringify(private_messages);
+          response.messages = private_messages;
         }
         break;
     }
-
+    console.log(response);
     return response;
   }
 

@@ -8,7 +8,6 @@ import {
 } from 'typeorm';
 import {Message} from '../message/message.entity';
 import {Room} from '../room/room.entity';
-import {SpeedTest} from '../speedtest/speedtest.entity';
 import {HistoryStatus} from '../status/status.entity';
 
 export enum Role {
@@ -61,9 +60,6 @@ export class User {
   @ManyToMany(() => Room, room => room.users)
   @JoinTable()
   rooms!: Room[];
-
-  @OneToMany(() => SpeedTest, speedtest => speedtest.admin)
-  speedtests!: SpeedTest[];
 
   @OneToMany(() => HistoryStatus, status => status.user)
   historyStatus!: HistoryStatus[];

@@ -1,7 +1,8 @@
-import { ErrorMessage, parseError } from "../../response/exception.response";
+import { parseError } from "../../response/exception.response";
 import { authformHTML } from "../utils/constants";
 import { login, register } from "../sdk/sdk";
 import { LocalStorageInfo } from "../utils/entity";
+import { ErrorMessage } from "../utils/enum";
 
 class AuthForm extends HTMLElement {
   constructor() {

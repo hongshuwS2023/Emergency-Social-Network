@@ -12,8 +12,6 @@ import MessageRoute from './message/message.route';
 import swaggerUi from 'swagger-ui-express';
 import RoomRoute from './room/room.route';
 import {SocketServer} from './utils/socketServer';
-import {SpeedTestMiddleware} from './middleware/speedtest.middleware';
-import SpeedTestRoute from './speedtest/speedtest.route';
 import SearchRoute from './search/search.route';
 
 export default class App {
@@ -35,7 +33,6 @@ export default class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({extended: true}));
     this.app.use(restVerifyToken);
-    this.app.use(SpeedTestMiddleware.getInstance().handleSpeedTest);
   }
 
   private registerRoutes(): void {
@@ -48,7 +45,6 @@ export default class App {
     this.app.use('/api/auth', new AuthRoute().getRouter());
     this.app.use('/api/messages', new MessageRoute().getRouter());
     this.app.use('/api/rooms', new RoomRoute().getRouter());
-    this.app.use('/api/speedtests', new SpeedTestRoute().getRouter());
     this.app.use('/api/search', new SearchRoute().getRouter());
   }
 

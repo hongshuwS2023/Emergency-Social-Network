@@ -1,14 +1,4 @@
-export enum Status {
-  UNDEFINED,
-  OK,
-  HELP,
-  EMERGENCY,
-}
-
-export enum OnlineStatus {
-  ONLINE,
-  OFFLINE,
-}
+import { Status } from "../src/utils/enum";
 
 export class OnlineStatusResponse {
   id: number;

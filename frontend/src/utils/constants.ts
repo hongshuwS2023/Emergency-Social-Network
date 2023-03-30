@@ -97,6 +97,14 @@ export const templateHTML = `
     </div>
 </div>
 
+<div class="absolute right-5 top-5 z-50">
+  <div class="w-8 h-8" id="search-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="stroke-black dark:stroke-white">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+    </svg>
+  </div>
+</div>
+
 <div id="setting-modal" class="absolute modal hidden fixed">
     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
         <div class="flex h-screen">
@@ -165,26 +173,25 @@ export const templateHTML = `
 
 export const chatHTML  =`      
 <div class="flex flex-col justify-center w-screen h-screen pb-7">
-  <div class="grid pb-5 justify-items-center" id="room-name">
+  <div class="grid pb-5 justify-items-center" id="room-name"></div>
+  <div class="grid w-screen h-4/6 justify-items-center">
+    <div class="w-10/12">
+        <div class="flex flex-col bg-white h-full max-h-[60vh] w-full rounded-lg dark:bg-grey-100 overflow-auto"
+            id="history">
+            <div class="mt-4"></div>
+        </div>
     </div>
-    <div class="grid w-screen h-4/6 justify-items-center">
-      <div class="w-10/12">
-          <div class="flex flex-col bg-white h-full max-h-[60vh] w-full rounded-lg dark:bg-grey-100 overflow-auto"
-              id="history">
-              <div class="mt-4"></div>
-          </div>
-      </div>
+  </div>
+  <div class="grid w-screen h-2/12 justify-items-center">
+    <div class="w-10/12">
+        <input class="text-2xl w-full h-full rounded-lg dark:bg-grey-100" id="input" />
     </div>
-    <div class="grid w-screen h-2/12 justify-items-center">
-      <div class="w-10/12">
-          <input class="text-2xl w-full h-full rounded-lg dark:bg-grey-100" id="input" />
-      </div>
+  </div>
+  <div class="grid pt-5 justify-items-center">
+    <div class="w-7/12 h-1/12">
+        <button class="w-full h-full bg-[#C41230] rounded-lg text-2xl dark:text-white"
+            id="send-button">Send</button>
     </div>
-    <div class="grid pt-5 justify-items-center">
-      <div class="w-7/12 h-1/12">
-          <button class="w-full h-full bg-[#C41230] rounded-lg text-2xl dark:text-white"
-              id="send-button">Send</button>
-      </div>
   </div>
 </div>`;
 

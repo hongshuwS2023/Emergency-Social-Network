@@ -1,6 +1,6 @@
-import { login_endpoint, logout_endpoint, message_endpoint, register_endpoint, room_endpoint, user_endpoint } from "./api";
-import { MessageBody} from "../utils/entity";
-import { Status } from "../../response/user.response";
+import { login_endpoint, logout_endpoint, message_endpoint, register_endpoint, room_endpoint, search_endpoint, user_endpoint } from "./api";
+import { MessageBody, SearchInput} from "../utils/entity";
+import { Status } from "../utils/enum";
 
 export const login = async (username: string, password: string) => {
     const loginUserRequest = {
@@ -133,4 +133,15 @@ export const updateStatus = async (token: string, id: string, status: Status) =>
             statusTimeStamp: new Date().getTime(),
         }),
     });
+}
+
+export const searchInformation = async (token: string, searchInput: SearchInput) => {
+    const res = await fetch(search_endpoint + `?context=${searchInput.context}&criteria=${searchInput.criteria}&user_id=${searchInput.user_id}&room_id=${searchInput.room_id}`, {
+        method: "GET",
+        headers: {
+            authorization: token,
+            "Content-type": "application/json",
+        },
+    });
+    return res.json();
 }

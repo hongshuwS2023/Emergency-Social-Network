@@ -4,7 +4,7 @@ import {Room} from '../../src/room/room.entity';
 import SearchController from '../../src/search/search.controller';
 import {Message} from '../../src/message/message.entity';
 import {HistoryStatus} from '../../src/status/status.entity';
-import { ApiException, ErrorMessage } from '../../src/responses/api.exception';
+import {ApiException, ErrorMessage} from '../../src/responses/api.exception';
 
 const searchController = new SearchController();
 const userRepository = ESNDataSource.getRepository(User);

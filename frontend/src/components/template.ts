@@ -1,9 +1,10 @@
-import { user_endpoint, logout_endpoint, api_base } from "../sdk/api";
-import { parseStatus, Status } from "../../response/user.response";
+import { api_base } from "../sdk/api";
+import { parseStatus } from "../../response/user.response";
 import { io, Socket } from "socket.io-client";
 import { LocalStorageInfo, Message } from "../utils/entity";
 import { messageBackgroundClass, messageContentClass, messageUsernameClass, templateHTML } from "../utils/constants";
 import { logout, updateStatus } from "../sdk/sdk";
+import { Status } from "../utils/enum";
 
 class TemplateElement extends HTMLElement {
   constructor() {
@@ -30,6 +31,7 @@ const menuModal =
 const statusModal =
   document.getElementById("status-modal");
 const back = document.getElementById("back-button");
+const search = document.getElementById("search-icon");
 const changeStatus =
   document.getElementById("change-status");
 const logoutButton = document.getElementById("logout-button");
@@ -41,6 +43,7 @@ const statusEmergency =
   document.getElementById("status-emergency");
 const statusHelp =
   document.getElementById("status-help");
+const options = document.getElementById("options");
 
 const socket: Socket = io(api_base + `?userid=${localStorageInfo.id}`, {
   transports: ["websocket"],
@@ -51,6 +54,19 @@ function clickNotification(msg: Message, div: HTMLElement) {
   document.querySelector("#banner")?.removeChild(div);
   window.location.href = "chat.html";
 }
+
+function displaySearchButton(){
+  const url = window.location.href.split('/');
+  const href = url[url.length-1]
+  console.log(href);
+  if(href == 'chat_list.html' || href == 'search.html'){
+    search?.classList.add('hidden');
+  }
+  else{
+    search?.classList.remove('hidden');
+  }
+}
+displaySearchButton();
 
 export function createNotification(msg: Message) {
   const div = document.createElement("div");
@@ -106,6 +122,7 @@ if (!localStorageInfo.id || !localStorageInfo.token) {
 function displayMenu(){
   menuModal!.style.display = "block";
   back!.classList.remove("hidden");
+  options?.classList.add("hidden");
 }
 
 function selectStatus(){
@@ -131,6 +148,13 @@ changeStatus!.onclick = async () => {
 back!.onclick = () => {
   clickBack();
 };
+
+search!.onclick = () => {
+  const url = window.location.href.split('/');
+  const href = url[url.length-1]
+  localStorage.setItem('searchCriteria', href.replace('.html', ''));
+  window.location.href = "search.html";
+}
 
 logoutButton!.onclick = async () => {
   await logout(localStorageInfo.id);

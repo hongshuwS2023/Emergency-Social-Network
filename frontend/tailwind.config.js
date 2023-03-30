@@ -94,7 +94,8 @@ module.exports = {
     'duration-300',
     'notification', 
     'transition', 
-    'ease-in-out'
+    'ease-in-out',
+    'pt-2'
   ],
   plugins: [],
 }

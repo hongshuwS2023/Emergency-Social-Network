@@ -1,9 +1,9 @@
 export enum Context {
+  UNKNOWN,
   CITIZENNAME,
   CITIZENSTATUS,
-  ANNOUNCEMENT,
   PUBLICCHAT,
-  PRIVATECHAT,
+  PRIVATECHAT
 }
 
 export default interface SearchInput {
