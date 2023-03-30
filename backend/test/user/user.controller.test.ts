@@ -36,7 +36,7 @@ describe('getUser', () => {
   it('Should return the correct user', async () => {
     const userRepository = ESNDataSource.getRepository(User);
     const user = await userRepository.findOne({
-      relations: ['rooms', 'speedtests'],
+      relations: ['rooms'],
       where: {
         id: 'test_id',
       },

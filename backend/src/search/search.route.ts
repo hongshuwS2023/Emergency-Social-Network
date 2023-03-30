@@ -1,6 +1,5 @@
 import {Router} from 'express';
 import SearchController from './search.controller';
-import SearchInput from '../requests/search.input';
 
 export default class SearchRoute {
   router: Router;
@@ -23,13 +22,12 @@ export default class SearchRoute {
         if (req.query.room_id) {
           room_id = req.query.room_id.toString();
         }
-        const searchInput: SearchInput = {
-          criteria: criteria,
-          context: Number(context),
-          user_id: user_id,
-          room_id: room_id.toString(),
-        };
-        const response = await this.searchController.search(searchInput);
+        const response = await this.searchController.search(
+          criteria,
+          Number(context),
+          user_id,
+          room_id
+        );
         res.send(response);
       } catch (err) {
         next(err);
