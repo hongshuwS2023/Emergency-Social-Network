@@ -33,9 +33,9 @@ export default class AuthController {
     this.authRepository = ESNDataSource.getRepository(User);
     this.roomRepository = ESNDataSource.getRepository(Room);
     this.statusRepository = ESNDataSource.getRepository(HistoryStatus);
-    this.jwtSecret = process.env.JWT_SECRET as string;
-    this.expiresIn = process.env.EXPIRES_IN as string;
-    this.salt = process.env.SALT as string;
+    this.jwtSecret = process.env.JWT_SECRET || "secret";
+    this.expiresIn = process.env.EXPIRES_IN || "3600s";
+    this.salt = process.env.SALT || "salt";
   }
 
   /**
