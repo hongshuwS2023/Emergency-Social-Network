@@ -48,7 +48,8 @@ export default class SearchController {
       case Context.PUBLICCHAT:
         response.messages = await this.searchMessage(
           searchInput.criteria,
-          'public'
+          'public',
+          searchInput.search_number
         );
         break;
       case Context.PRIVATECHAT:
@@ -56,13 +57,15 @@ export default class SearchController {
           const history_status: HistoryStatus[] = await this.searchStatus(
             searchInput.criteria,
             searchInput.room_id ? searchInput.room_id : '',
-            searchInput.user_id ? searchInput.user_id : ''
+            searchInput.user_id ? searchInput.user_id : '',
+            searchInput.search_number
           );
           response.historyStatus = history_status;
         } else {
           const private_messages: Message[] = await this.searchMessage(
             searchInput.criteria,
-            searchInput.room_id ? searchInput.room_id : ''
+            searchInput.room_id ? searchInput.room_id : '',
+            searchInput.search_number
           );
           response.messages = private_messages;
         }
@@ -115,7 +118,11 @@ export default class SearchController {
     return users;
   }
 
-  async searchMessage(criteria: string, room_id: string): Promise<Message[]> {
+  async searchMessage(
+    criteria: string,
+    room_id: string,
+    search_number: number
+  ): Promise<Message[]> {
     const messages = await this.messageRepository.find({
       relations: {
         room: true,
@@ -130,6 +137,8 @@ export default class SearchController {
       order: {
         time: 'DESC',
       },
+      skip: 10 * (search_number - 1),
+      take: 10,
     });
     return messages;
   }
@@ -137,7 +146,8 @@ export default class SearchController {
   async searchStatus(
     criteria: string,
     room_id: string,
-    user_id: string
+    user_id: string,
+    search_number: number
   ): Promise<HistoryStatus[]> {
     const user = await this.userRepository.findOneBy({id: user_id});
     if (user === null) {
@@ -162,6 +172,7 @@ export default class SearchController {
       order: {
         timeStamp: 'DESC',
       },
+      skip: 10 * (search_number - 1),
       take: 10,
     });
     return statusHistory;

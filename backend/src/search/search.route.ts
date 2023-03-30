@@ -19,6 +19,7 @@ export default class SearchRoute {
         const criteria = req.query.criteria!.toString();
         const context = req.query.context;
         const user_id = req.query.user_id!.toString();
+        const search_number = Number(req.query.page!.toString());
         let room_id = '';
         if (req.query.room_id) {
           room_id = req.query.room_id.toString();
@@ -28,6 +29,7 @@ export default class SearchRoute {
           context: Number(context),
           user_id: user_id,
           room_id: room_id.toString(),
+          search_number: search_number,
         };
         const response = await this.searchController.search(searchInput);
         res.send(response);
