@@ -34,6 +34,26 @@ beforeEach(async () => {
   user2.statusTimeStamp = new Date().getTime().toString();
   user2.logoutTime = '';
   await userRepository.save(user2);
+  const user3 = userRepository.create();
+  user3.id = 'user3_id';
+  user3.username = 'user3';
+  user3.password = 'user3_password';
+  user3.role = 0;
+  user3.status = 1;
+  user3.onlineStatus = 0;
+  user3.statusTimeStamp = new Date().getTime().toString();
+  user3.logoutTime = '';
+  await userRepository.save(user3);
+  const user4 = userRepository.create();
+  user4.id = 'user4_id';
+  user4.username = 'user4';
+  user4.password = 'user4_password';
+  user4.role = 0;
+  user4.status = 3;
+  user4.onlineStatus = 0;
+  user4.statusTimeStamp = new Date().getTime().toString();
+  user4.logoutTime = '';
+  await userRepository.save(user4);
   const publicRoom = roomRepository.create();
   publicRoom.users = [user1, user2];
   publicRoom.id = 'public';
@@ -92,12 +112,30 @@ describe('searchInformation', () => {
     res.users = res.users ? res.users : [];
     expect(res.users[0].id).toBe('user1_id');
     expect(res.users[0].username).toBe('user1');
+
+    const res2 = await searchController.search('HELP', 2, 'user2_id', 0);
+    expect(res2.users).not.toBeNull();
+    res2.users = res2.users ? res2.users : [];
+    expect(res2.users[0].id).toBe('user2_id');
+    expect(res2.users[0].username).toBe('user2');
+
+    const res3 = await searchController.search('OK', 2, 'user3_id', 0);
+    expect(res3.users).not.toBeNull();
+    res3.users = res3.users ? res3.users : [];
+    expect(res3.users[0].id).toBe('user3_id');
+    expect(res3.users[0].username).toBe('user3');
+
+    const res4 = await searchController.search('EMERGENCY', 2, 'user4_id', 0);
+    expect(res4.users).not.toBeNull();
+    res4.users = res4.users ? res4.users : [];
+    expect(res4.users[0].id).toBe('user4_id');
+    expect(res4.users[0].username).toBe('user4');
   });
 
   it('should throw an exception if the criteria of status name is wrong', async () => {
     // Case status criteria is invalid
     try {
-      await searchController.search('badstatus', 1, 'user1_id', 0, 'room');
+      await searchController.search('badstatus', 2, 'user1_id', 0);
     } catch (error) {
       expect((<ApiException>error).error_message).toBe(
         ErrorMessage.WRONGSTATUS

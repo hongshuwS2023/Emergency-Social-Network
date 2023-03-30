@@ -121,22 +121,36 @@ describe('loginUser', () => {
   });
 
   it('Should failed to login for the user when any of the field is invalid', async () => {
-    // Case wrong password
+    // Case bad password
     const authUserInput = {
       username: 'test_username',
       password: 'test_password',
     };
-    const wrongPassInput = {
+    const badPassInput = {
       username: 'test_username',
       password: '123',
     };
     await authController.registerUser(authUserInput);
 
     try {
-      await authController.loginUser(wrongPassInput);
+      await authController.loginUser(badPassInput);
     } catch (error) {
       expect((<ApiException>error).error_message).toBe(
         ErrorMessage.BADPASSWORDREQ
+      );
+    }
+
+    // Case bad password
+    const wrongPassInput = {
+      username: 'test_username',
+      password: '12345',
+    };
+
+    try {
+      await authController.loginUser(wrongPassInput);
+    } catch (error) {
+      expect((<ApiException>error).error_message).toBe(
+        ErrorMessage.WRONGPASSWORD
       );
     }
 
