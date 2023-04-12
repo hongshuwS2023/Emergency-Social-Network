@@ -10,17 +10,15 @@ import SearchRoute from '../../src/search/search.route';
 import MessageRoute from '../../src/message/message.route';
 import {errorHandler} from '../../src/middleware/error.middleware';
 import EmergencyRoute from '../../src/emergency/emergency.route';
-import { RedisServer } from '../../src/utils/redisServer';
+import {RedisServer} from '../../src/utils/redisServer';
 import request from 'supertest';
 
 const app = express();
 const httpServer = createServer(app);
 
-jest
-  .spyOn(RedisServer, 'getInstance').mockImplementation(() => {
-    return null as any;
-  });
-
+jest.spyOn(RedisServer, 'getInstance').mockImplementation(() => {
+  return <RedisServer>(<unknown>null);
+});
 
 beforeAll(async () => {
   app.use(express.json());
@@ -35,7 +33,6 @@ beforeAll(async () => {
   app.use(errorHandler);
   const port = 3001;
   try {
-
     httpServer.listen(port, '0.0.0.0', () => {
       console.log(`server started at http://localhost:${port}`);
     });
@@ -118,7 +115,6 @@ describe('Can update a user', () => {
   });
 });
 
-
 describe('Can create an emergency words', () => {
   it('Create an emergency words using POST /api/emergency', async () => {
     const postUserRes = await request(httpServer)
@@ -156,9 +152,11 @@ describe('Can get an emergency words', () => {
         timeout: 1,
         content: '111',
       });
-    
+
     const res = await request(httpServer)
-      .get('/api/emergency/?userid=' + userId + '&username=' + testUser.username)
+      .get(
+        '/api/emergency/?userid=' + userId + '&username=' + testUser.username
+      )
       .set('authorization', 'Token ' + postUserRes.body.token)
       .send();
 
@@ -183,7 +181,6 @@ describe('Can delete an emergency words', () => {
         timeout: 1,
         content: '111',
       });
-    
     const res = await request(httpServer)
       .delete('/api/emergency/:' + words.body.id)
       .set('authorization', 'Token ' + postUserRes.body.token)
@@ -209,7 +206,6 @@ describe('Can update an emergency words', () => {
         timeout: 1,
         content: '111',
       });
-    
     const res = await request(httpServer)
       .put('/api/emergency')
       .set('authorization', 'Token ' + postUserRes.body.token)

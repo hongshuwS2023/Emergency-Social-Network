@@ -29,6 +29,7 @@ const socket: Socket = io(api_base + `?userid=${localStorageInfo.id}`, {
 });
 
 socket.on('last-words-change', async () => {
+  wordList!.innerHTML = '';
   await onLoad();
 })
 

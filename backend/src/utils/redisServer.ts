@@ -64,7 +64,7 @@ export class RedisServer {
         const emergency: EmergencyWordsTransit = JSON.parse(words);
         await this.client.zRem('emergency_words', words);
 
-        if (emergency.email && emergency.email !== "") {
+        if (emergency.email && emergency.email !== '') {
           const mailOption = {
             from: process.env.MAIL_ACC,
             to: emergency.email,

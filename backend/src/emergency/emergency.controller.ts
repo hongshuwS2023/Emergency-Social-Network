@@ -173,10 +173,13 @@ export default class EmergencyWordsController {
 
     await this.removeEmergencyWords(transit);
 
-    emergencyWords.contact = updateEmergencyWordsInput.contact || emergencyWords.contact;
-    emergencyWords.content = updateEmergencyWordsInput.content || emergencyWords.content;
+    emergencyWords.contact =
+      updateEmergencyWordsInput.contact || emergencyWords.contact;
+    emergencyWords.content =
+      updateEmergencyWordsInput.content || emergencyWords.content;
     emergencyWords.email = updateEmergencyWordsInput.email || '';
-    emergencyWords.timeout = updateEmergencyWordsInput.timeout! || emergencyWords.timeout;
+    emergencyWords.timeout =
+      updateEmergencyWordsInput.timeout! || emergencyWords.timeout;
     emergencyWords.time_created = Date.now().toString();
     emergencyWords.time_to_send = String(
       Number(emergencyWords.time_created) +
@@ -204,6 +207,7 @@ export default class EmergencyWordsController {
 
     if (emergencyWords.contact === 'all') {
       await this.emergencyRepository.delete(emergencyWords);
+      this.broadcastEmergencyWords();
       return;
     }
 

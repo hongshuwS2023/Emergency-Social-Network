@@ -1,7 +1,13 @@
 import EmergencyWordsController from '../../src/emergency/emergency.controller';
 import {EmergencyWords} from '../../src/emergency/emergency.entity';
-import {PostEmergencyWordsInput, UpdateEmergencyWordsInput} from '../../src/requests/emergencywords.input';
-import { BadRequestException, NotFoundException } from '../../src/responses/api.exception';
+import {
+  PostEmergencyWordsInput,
+  UpdateEmergencyWordsInput,
+} from '../../src/requests/emergencywords.input';
+import {
+  BadRequestException,
+  NotFoundException,
+} from '../../src/responses/api.exception';
 import {User} from '../../src/user/user.entity';
 import ESNDataSource from '../../src/utils/datasource';
 
@@ -11,12 +17,12 @@ const userRepository = ESNDataSource.getRepository(User);
 
 const removeSpy = jest
   .spyOn(emergencyWordsController, 'removeEmergencyWords')
-  .mockImplementation(async (..._:any) => {
+  .mockImplementation(async () => {
     return;
   });
 const setSpy = jest
   .spyOn(emergencyWordsController, 'setEmergencyWords')
-  .mockImplementation(async (..._:any) => {
+  .mockImplementation(async () => {
     return;
   });
 const broadCastSpy = jest
@@ -147,8 +153,7 @@ describe('postEmergencyWords', () => {
 
     try {
       await emergencyWordsController.postEmergencyWords(words);
-    }
-    catch (err) {
+    } catch (err) {
       expect(err).toBeInstanceOf(NotFoundException);
     }
 
@@ -170,8 +175,7 @@ describe('postEmergencyWords', () => {
 
     try {
       await emergencyWordsController.postEmergencyWords(words);
-    }
-    catch (err) {
+    } catch (err) {
       expect(err).toBeInstanceOf(BadRequestException);
     }
 
@@ -187,13 +191,11 @@ describe('postEmergencyWords', () => {
 
     try {
       await emergencyWordsController.postEmergencyWords(words);
-    }
-    catch (err) {
+    } catch (err) {
       expect(err).toBeInstanceOf(BadRequestException);
     }
   });
 });
-
 
 describe('updateEmergencyWords', () => {
   it('Should successfully update the words when the inputs are valid', async () => {
@@ -213,10 +215,10 @@ describe('updateEmergencyWords', () => {
     };
 
     const res = await emergencyWordsController.postEmergencyWords(words);
-    
+
     let body: UpdateEmergencyWordsInput = {
       id: res.id,
-      user_id: user.id
+      user_id: user.id,
     };
 
     let updated = await emergencyWordsController.updateEmergencyWords(body);
@@ -227,7 +229,7 @@ describe('updateEmergencyWords', () => {
     body = {
       id: res.id,
       user_id: 'x',
-      contact: 'all'
+      contact: 'all',
     };
 
     updated = await emergencyWordsController.updateEmergencyWords(body);
@@ -256,29 +258,27 @@ describe('updateEmergencyWords', () => {
     };
 
     const res = await emergencyWordsController.postEmergencyWords(words);
-    
+
     let body: UpdateEmergencyWordsInput = {
       id: 'x',
-      user_id: user.id
+      user_id: user.id,
     };
 
     try {
       await emergencyWordsController.updateEmergencyWords(body);
-    }
-    catch (err) {
+    } catch (err) {
       expect(err).toBeInstanceOf(NotFoundException);
     }
 
     body = {
       id: res.id,
       user_id: 'x',
-      contact: 'x'
+      contact: 'x',
     };
 
     try {
       await emergencyWordsController.updateEmergencyWords(body);
-    }
-    catch (err) {
+    } catch (err) {
       expect(err).toBeInstanceOf(BadRequestException);
     }
   });
@@ -302,16 +302,15 @@ describe('deleteEmergencyWords', () => {
     };
 
     let res = await emergencyWordsController.postEmergencyWords(words);
-    
+
     await emergencyWordsController.deleteEmergencyWords(res.id);
-    
+
     let empty = await emergencyRepository.findOneBy({id: res.id});
 
     expect(empty).toBeNull();
 
     expect(removeSpy).toBeCalled();
     expect(broadCastSpy).toBeCalled();
-   
     words = {
       user_id: 'test_id',
       contact: 'test_username',
@@ -321,16 +320,15 @@ describe('deleteEmergencyWords', () => {
     };
 
     res = await emergencyWordsController.postEmergencyWords(words);
-    
+
     const body = {
       id: res.id,
       user_id: 'test_id',
-      contact: 'all'
+      contact: 'all',
     };
 
     await emergencyWordsController.updateEmergencyWords(body);
     await emergencyWordsController.deleteEmergencyWords(res.id);
-    
     empty = await emergencyRepository.findOneBy({id: res.id});
 
     expect(empty).toBeNull();
@@ -344,7 +342,7 @@ describe('deleteEmergencyWords', () => {
     user.statusTimeStamp = new Date().getTime().toString();
 
     await userRepository.save(user);
-    let words: PostEmergencyWordsInput = {
+    const words: PostEmergencyWordsInput = {
       user_id: 'test_id',
       contact: 'test_username',
       email: '',
@@ -353,12 +351,11 @@ describe('deleteEmergencyWords', () => {
     };
 
     await emergencyWordsController.postEmergencyWords(words);
-    
+
     try {
       await emergencyWordsController.deleteEmergencyWords('x');
-    }  
-    catch (err) {
+    } catch (err) {
       expect(err).toBeInstanceOf(NotFoundException);
     }
-  })
+  });
 });
