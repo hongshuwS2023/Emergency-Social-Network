@@ -13,12 +13,15 @@ import swaggerUi from 'swagger-ui-express';
 import RoomRoute from './room/room.route';
 import {SocketServer} from './utils/socketServer';
 import SearchRoute from './search/search.route';
+import {RedisServer} from './utils/redisServer';
+import EmergencyRoute from './emergency/emergency.route';
 
 export default class App {
   private app: express.Application;
   private port: number;
   private httpServer: Server<typeof IncomingMessage, typeof ServerResponse>;
   private socketServer: SocketServer;
+  private redisServer: RedisServer;
 
   private constructor() {
     this.app = express();
@@ -26,6 +29,7 @@ export default class App {
     this.port = 3000;
     this.socketServer = SocketServer.getInstance();
     this.socketServer.attach(this.httpServer);
+    this.redisServer = RedisServer.getInstance();
   }
 
   private registerConfigs(): void {
@@ -46,6 +50,7 @@ export default class App {
     this.app.use('/api/messages', new MessageRoute().getRouter());
     this.app.use('/api/rooms', new RoomRoute().getRouter());
     this.app.use('/api/search', new SearchRoute().getRouter());
+    this.app.use('/api/emergency', new EmergencyRoute().getRouter());
   }
 
   private registerMiddlewares(): void {
@@ -64,11 +69,12 @@ export default class App {
     }
   }
 
-  static start(): void {
+  static async start(): Promise<void> {
     const appServer = new App();
     appServer.registerConfigs();
     appServer.registerRoutes();
     appServer.registerMiddlewares();
     appServer.startServer();
+    appServer.redisServer.startListening();
   }
 }

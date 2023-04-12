@@ -1,4 +1,4 @@
-import { login_endpoint, logout_endpoint, message_endpoint, register_endpoint, room_endpoint, search_endpoint, user_endpoint } from "./api";
+import { emergency_endpoint, login_endpoint, logout_endpoint, message_endpoint, register_endpoint, room_endpoint, search_endpoint, user_endpoint } from "./api";
 import { MessageBody, SearchInput} from "../utils/entity";
 import { Status } from "../utils/enum";
 
@@ -144,4 +144,54 @@ export const searchInformation = async (token: string, searchInput: SearchInput,
         },
     });
     return res.json();
+}
+
+export const getLastWords = async(localStorageInfo) => {
+    const res = await fetch(emergency_endpoint + '?userid=' + localStorageInfo.id + '&username=' + localStorageInfo.username, {
+        method: "GET",
+        headers: {
+            authorization: localStorageInfo.token,
+            "Content-Type": "application/json",
+        },
+    });
+
+    return await res.json();
+}
+
+export const dismissLastWords = async(token: string, id: string) => {
+    const res = await fetch(emergency_endpoint + '/' + id, {
+        method: "DELETE",
+        headers: {
+            authorization: token,
+            "Content-Type": "application/json",
+        },
+    });
+
+    return await res.text();
+}
+
+export const postLastWords = async(token: string, messageBody) => {
+    const res = await fetch(emergency_endpoint, {
+        method: "POST",
+        headers: {
+            authorization: token,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(messageBody),
+    });
+
+    return await res.json();
+}
+
+export const updateLastWords = async(token: string, messageBody) => {
+    const res = await fetch(emergency_endpoint, {
+        method: "PUT",
+        headers: {
+            authorization: token,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(messageBody),
+    });
+
+    return await res.json();
 }

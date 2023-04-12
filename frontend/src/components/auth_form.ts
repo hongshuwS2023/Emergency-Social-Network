@@ -1,6 +1,6 @@
 import { parseError } from "../../response/exception.response";
 import { authformHTML } from "../utils/constants";
-import { login, register } from "../sdk/sdk";
+import { getLastWords, login, register, updateLastWords } from "../sdk/sdk";
 import { LocalStorageInfo } from "../utils/entity";
 import { ErrorMessage } from "../utils/enum";
 
@@ -37,6 +37,12 @@ join!.onclick = async () => {
       room: ""
     }
     saveTokenAndRedirect(localStorageInfo, "directory.html");
+    const lastWords = await getLastWords(localStorageInfo);
+
+    if (lastWords.unsent) {
+      await updateLastWords(localStorageInfo.token, lastWords.unsent);
+    }
+
   }
   else if (res.message != ErrorMessage.WRONGUSERNAME) {
     createErrorMessage(res.message);

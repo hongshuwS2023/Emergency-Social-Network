@@ -9,10 +9,19 @@ import RoomRoute from '../../src/room/room.route';
 import SearchRoute from '../../src/search/search.route';
 import MessageRoute from '../../src/message/message.route';
 import {errorHandler} from '../../src/middleware/error.middleware';
-const request = require('supertest');
+import EmergencyRoute from '../../src/emergency/emergency.route';
+import { RedisServer } from '../../src/utils/redisServer';
+import request from 'supertest';
 
 const app = express();
 const httpServer = createServer(app);
+
+jest
+  .spyOn(RedisServer, 'getInstance').mockImplementation(() => {
+    return null as any;
+  });
+
+
 beforeAll(async () => {
   app.use(express.json());
   app.use(express.urlencoded({extended: true}));
@@ -22,10 +31,10 @@ beforeAll(async () => {
   app.use('/api/messages', new MessageRoute().getRouter());
   app.use('/api/rooms', new RoomRoute().getRouter());
   app.use('/api/search', new SearchRoute().getRouter());
+  app.use('/api/emergency', new EmergencyRoute().getRouter());
   app.use(errorHandler);
   const port = 3001;
   try {
-    //await ESNDataSource.initialize();
 
     httpServer.listen(port, '0.0.0.0', () => {
       console.log(`server started at http://localhost:${port}`);
@@ -37,11 +46,9 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await ESNDataSource.initialize();
-  //httpServer.close();
 });
 afterEach(async () => {
   await ESNDataSource.destroy();
-  //httpServer.close();
 });
 afterAll(async () => {
   httpServer.close();
@@ -73,9 +80,7 @@ describe('Can post a new user', () => {
 
 describe('Can login a user', () => {
   it('Can login a user', async () => {
-    await request(httpServer)
-      .post('/api/auth/register')
-      .send(testUser);
+    await request(httpServer).post('/api/auth/register').send(testUser);
 
     const postUserRes = await request(httpServer)
       .post('/api/auth/login')
@@ -110,5 +115,109 @@ describe('Can update a user', () => {
     const user = getUserRes.body;
 
     expect(user.status).toBe(1);
+  });
+});
+
+
+describe('Can create an emergency words', () => {
+  it('Create an emergency words using POST /api/emergency', async () => {
+    const postUserRes = await request(httpServer)
+      .post('/api/auth/register')
+      .send(testUser);
+    const userId = postUserRes.body.user_id;
+    const postEmergencyWords = await request(httpServer)
+      .post('/api/emergency')
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send({
+        user_id: userId,
+        contact: testUser.username,
+        email: '',
+        timeout: 1,
+        content: '111',
+      });
+    expect(postEmergencyWords.status).toEqual(200);
+    expect(postEmergencyWords.body.id).not.toBeNull();
+  });
+});
+
+describe('Can get an emergency words', () => {
+  it('Get an emergency words using GET /api/emergency', async () => {
+    const postUserRes = await request(httpServer)
+      .post('/api/auth/register')
+      .send(testUser);
+    const userId = postUserRes.body.user_id;
+    await request(httpServer)
+      .post('/api/emergency')
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send({
+        user_id: userId,
+        contact: testUser.username,
+        email: '',
+        timeout: 1,
+        content: '111',
+      });
+    
+    const res = await request(httpServer)
+      .get('/api/emergency/?userid=' + userId + '&username=' + testUser.username)
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send();
+
+    expect(res.status).toEqual(200);
+    expect(res.body.unsent).not.toBeNull();
+  });
+});
+
+describe('Can delete an emergency words', () => {
+  it('Delete an emergency words using Delete /api/emergency/:id', async () => {
+    const postUserRes = await request(httpServer)
+      .post('/api/auth/register')
+      .send(testUser);
+    const userId = postUserRes.body.user_id;
+    const words = await request(httpServer)
+      .post('/api/emergency')
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send({
+        user_id: userId,
+        contact: testUser.username,
+        email: '',
+        timeout: 1,
+        content: '111',
+      });
+    
+    const res = await request(httpServer)
+      .delete('/api/emergency/:' + words.body.id)
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send();
+
+    expect(res.status).toEqual(200);
+  });
+});
+
+describe('Can update an emergency words', () => {
+  it('Update an emergency words using PUT /api/emergency', async () => {
+    const postUserRes = await request(httpServer)
+      .post('/api/auth/register')
+      .send(testUser);
+    const userId = postUserRes.body.user_id;
+    const words = await request(httpServer)
+      .post('/api/emergency')
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send({
+        user_id: userId,
+        contact: testUser.username,
+        email: '',
+        timeout: 1,
+        content: '111',
+      });
+    
+    const res = await request(httpServer)
+      .put('/api/emergency')
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send({
+        id: words.body.id,
+        user_id: userId,
+      });
+
+    expect(res.status).toEqual(200);
   });
 });

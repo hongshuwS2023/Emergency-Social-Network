@@ -1,5 +1,5 @@
 import { io, Socket } from "socket.io-client";
-import { user_endpoint, api_base, room_endpoint } from "../sdk/api";
+import { user_endpoint, api_base } from "../sdk/api";
 import { getRoom, getUser } from "../sdk/sdk";
 import { chatListHTML } from "../utils/constants";
 import { LocalStorageInfo, Room } from "../utils/entity";

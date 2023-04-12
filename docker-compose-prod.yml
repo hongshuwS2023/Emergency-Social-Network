@@ -13,11 +13,20 @@ services:
       MYSQL_DATABASE: 'fse'
       MYSQL_USER: 'esnbackend'
       MYSQL_PASSWORD: 's23-esn-s2023'
+  esn-redis:
+    container_name: esn-redis
+    image: redis:alpine
+    networks:
+      - esn
+    ports:
+      - 6379:6379
+    restart: always
   esn-api:
     container_name: esn-api
     image: jyang285/esn-api:latest
     environment:
       - DB_HOST=esn-db
+      - REDIS_HOST=esn-redis
     expose:
       - 3000
     ports:

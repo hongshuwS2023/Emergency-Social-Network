@@ -36,6 +36,7 @@ const changeStatus =
   document.getElementById("change-status");
 const logoutButton = document.getElementById("logout-button");
 const chatList = document.getElementById("chat-button");
+const lastword = document.getElementById("emergency-button");
 const directory =
   document.getElementById("directory-button");
 const statusOK = document.getElementById("status-ok");
@@ -163,6 +164,10 @@ logoutButton!.onclick = async () => {
 chatList!.onclick = () => {
   window.location.href = "chat_list.html";
 };
+
+lastword!.onclick = () => {
+  window.location.href = "last_words.html";
+}
 
 directory!.onclick = () => {
   window.location.href = "directory.html";

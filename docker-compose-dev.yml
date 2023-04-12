@@ -13,11 +13,20 @@ services:
       MYSQL_DATABASE: 'fse'
       MYSQL_USER: 'esnbackend'
       MYSQL_PASSWORD: 's23-esn-s2023'
+  redis:
+    container_name: esn-redis
+    image: redis:alpine
+    networks:
+      - esn
+    ports:
+      - 6379:6379
+    restart: always
   api:
     container_name: esn-api
     image: esn-api
     environment:
       - DB_HOST=esn-db
+      - REDIS_HOST=esn-redis
     build:
       context: ./backend
       dockerfile: Dockerfile-api
@@ -25,6 +34,7 @@ services:
       - 3000:3000
     depends_on:
       - db
+      - redis
     restart: always
     networks:
       - esn
@@ -38,7 +48,6 @@ services:
     networks:
       - esn
     depends_on:
-      - db
       - api
     ports:
       - 2333:80

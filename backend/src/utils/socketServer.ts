@@ -108,4 +108,8 @@ export class SocketServer {
       }
     }
   }
+
+  sendEmergencyWordsChange(): void {
+    this.io.emit('last-words-change', {});
+  }
 }

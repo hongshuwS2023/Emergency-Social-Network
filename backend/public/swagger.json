@@ -320,6 +320,129 @@
 					4
 				],
 				"type": "number"
+			},
+			"EmergencyWords": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"sender": {
+						"type": "string"
+					},
+					"contact": {
+						"type": "string"
+					},
+					"content": {
+						"type": "string"
+					},
+					"time_created": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"timeout": {
+						"type": "number",
+						"format": "double"
+					},
+					"time_to_send": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"sender",
+					"contact",
+					"content",
+					"time_created",
+					"email",
+					"timeout",
+					"time_to_send"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GetEmergencyWordsResponse": {
+				"properties": {
+					"availables": {
+						"items": {
+							"$ref": "#/components/schemas/EmergencyWords"
+						},
+						"type": "array"
+					},
+					"unsent": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/EmergencyWords"
+							}
+						],
+						"nullable": true
+					}
+				},
+				"required": [
+					"availables",
+					"unsent"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PostEmergencyWordsInput": {
+				"properties": {
+					"user_id": {
+						"type": "string"
+					},
+					"contact": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"timeout": {
+						"type": "number",
+						"format": "double"
+					},
+					"content": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"user_id",
+					"contact",
+					"email",
+					"timeout",
+					"content"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UpdateEmergencyWordsInput": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"user_id": {
+						"type": "string"
+					},
+					"contact": {
+						"type": "string"
+					},
+					"content": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"timeout": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id",
+					"user_id"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -677,6 +800,121 @@
 						"in": "query",
 						"name": "room_id",
 						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/emergency": {
+			"get": {
+				"operationId": "GetEmergencyWords",
+				"responses": {
+					"200": {
+						"description": "words",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GetEmergencyWordsResponse"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all emergency messages",
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "userid",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "username",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "PostEmergencyWords",
+				"responses": {
+					"200": {
+						"description": "words",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/EmergencyWords"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a new emergency words",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/PostEmergencyWordsInput"
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"operationId": "UpdateEmergencyWords",
+				"responses": {
+					"200": {
+						"description": "words",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/EmergencyWords"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update an emergency words",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateEmergencyWordsInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/emergency/{id}": {
+			"delete": {
+				"operationId": "DeleteEmergencyWords",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"description": "Delete an emergency words",
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "id",
+						"required": true,
 						"schema": {
 							"type": "string"
 						}
