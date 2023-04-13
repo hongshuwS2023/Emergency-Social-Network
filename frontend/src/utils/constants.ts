@@ -92,6 +92,7 @@ export const lastWordsHTML = `
   Emergency Contact to notify (email)
 </div>
   <input
+    type="email"
     class="text-2xl w-full bg-gray-300 h-8 w-full rounded-lg overflow-auto"
     id="email-input"
   >

@@ -85,6 +85,14 @@ const timeout = document.getElementById("timeout-input") as HTMLInputElement;
 const content = document.getElementById("content-input") as HTMLInputElement;
 
 send!.onclick = async () => {
+  if (Number.isNaN(Number(timeout.value)) || Number(timeout.value) <= 0.0001) {
+    alert('timeout must be a positive number');
+    return;
+  }
+  if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email.value)) {
+    alert('email malformed');
+    return;
+  }
   if (!unsentLastWords) {
     const messageBody = {
       user_id: localStorageInfo.id,
@@ -98,6 +106,9 @@ send!.onclick = async () => {
 
     if (res.status_code) {
       alert(res.message);
+    }
+    else {
+      alert('Emergency Words updated');
     }
     return;
   }

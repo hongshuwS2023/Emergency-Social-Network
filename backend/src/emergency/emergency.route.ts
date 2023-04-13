@@ -13,16 +13,12 @@ export default class EmergencyRoute {
   }
 
   private setRoute(): void {
-    this.router.get('/', async (req, res, next) => {
-      try {
-        const messages = await this.emergencyController.getEmergencyWords(
-          req.query.userid! as string,
-          req.query.username! as string
-        );
-        res.send(messages);
-      } catch (err) {
-        next(err);
-      }
+    this.router.get('/', async (req, res) => {
+      const messages = await this.emergencyController.getEmergencyWords(
+        req.query.userid! as string,
+        req.query.username! as string
+      );
+      res.send(messages);
     });
 
     this.router.delete('/:id', async (req, res, next) => {

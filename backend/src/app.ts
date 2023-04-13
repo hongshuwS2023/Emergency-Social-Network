@@ -50,7 +50,7 @@ export default class App {
     this.app.use('/api/messages', new MessageRoute().getRouter());
     this.app.use('/api/rooms', new RoomRoute().getRouter());
     this.app.use('/api/search', new SearchRoute().getRouter());
-    this.app.use('/api/emergency', new EmergencyRoute().getRouter());
+    this.app.use('/api/emergencywords', new EmergencyRoute().getRouter());
   }
 
   private registerMiddlewares(): void {
@@ -65,11 +65,11 @@ export default class App {
         console.log(`server started at http://localhost:${this.port}`);
       });
     } catch (err) {
-      console.log(err);
+      throw (err);
     }
   }
 
-  static async start(): Promise<void> {
+  static start(): void {
     const appServer = new App();
     appServer.registerConfigs();
     appServer.registerRoutes();

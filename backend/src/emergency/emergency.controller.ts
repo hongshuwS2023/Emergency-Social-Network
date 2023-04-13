@@ -18,7 +18,7 @@ import {RedisServer} from '../utils/redisServer';
 import {SocketServer} from '../utils/socketServer';
 import {GetEmergencyWordsResponse} from '../responses/emergencywords.response';
 
-@Route('/api/emergency')
+@Route('/api/emergencywords')
 export default class EmergencyWordsController {
   emergencyRepository: Repository<EmergencyWords>;
   userRepository: Repository<User>;
