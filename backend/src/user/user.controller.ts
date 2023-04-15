@@ -2,7 +2,7 @@ import {Repository} from 'typeorm';
 import {NotFoundException, ErrorMessage} from '../responses/api.exception';
 import UpdateUserInput from '../requests/updateuser.input';
 import ESNDataSource from '../utils/datasource';
-import {User} from './user.entity';
+import {AccountStatus, User} from './user.entity';
 import {Body, Delete, Get, Put, Route} from 'tsoa';
 import {HistoryStatus} from '../status/status.entity';
 import {v4 as uuid} from 'uuid';
@@ -28,6 +28,7 @@ export default class UserController {
       relations: ['rooms'],
       where: {
         id: userId,
+        accountStatus: AccountStatus.ACTIVE,
       },
     });
 
@@ -50,6 +51,9 @@ export default class UserController {
         onlineStatus: 'ASC',
         username: 'ASC',
       },
+      where: {
+        accountStatus: AccountStatus.ACTIVE,
+      },
     });
 
     return users;
@@ -62,7 +66,10 @@ export default class UserController {
    */
   @Put()
   async updateUser(@Body() updateUserInput: UpdateUserInput): Promise<User> {
-    const user = await this.userRepository.findOneBy({id: updateUserInput.id});
+    const user = await this.userRepository.findOneBy({
+      id: updateUserInput.id,
+      accountStatus: AccountStatus.ACTIVE,
+    });
 
     if (!user) {
       throw new NotFoundException(ErrorMessage.WRONGUSERNAME);

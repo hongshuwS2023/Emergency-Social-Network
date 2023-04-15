@@ -1,7 +1,7 @@
 import {ILike, Repository} from 'typeorm';
 import ESNDataSource from '../utils/datasource';
 import {Message} from '../message/message.entity';
-import {User, Status} from '../user/user.entity';
+import {User, Status, AccountStatus} from '../user/user.entity';
 import {Get, Query, Route} from 'tsoa';
 import {Context} from '../requests/search.input';
 import {BadRequestException, ErrorMessage} from '../responses/api.exception';
@@ -83,6 +83,7 @@ export default class SearchController {
     const users = await this.userRepository.find({
       where: {
         username: ILike(`%${criteria}%`),
+        accountStatus: AccountStatus.ACTIVE,
       },
       order: {
         onlineStatus: 'ASC',
@@ -113,6 +114,7 @@ export default class SearchController {
     const users = await this.userRepository.find({
       where: {
         status: searchStatus,
+        accountStatus: AccountStatus.ACTIVE,
       },
       order: {
         onlineStatus: 'ASC',
@@ -137,6 +139,9 @@ export default class SearchController {
           id: room_id,
         },
         content: ILike(`%${criteria}%`),
+        sender: {
+          accountStatus: AccountStatus.ACTIVE,
+        },
       },
       order: {
         time: 'DESC',
@@ -171,6 +176,7 @@ export default class SearchController {
       where: {
         user: {
           username: otherUser,
+          accountStatus: AccountStatus.ACTIVE,
         },
       },
       order: {

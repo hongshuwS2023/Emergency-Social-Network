@@ -62,7 +62,8 @@ export interface LocalStorageInfo {
     id: string,
     username: string,
     token: string,
-    room: string
+    room: string,
+    role?: number
 }
 
 export interface MessageBody {

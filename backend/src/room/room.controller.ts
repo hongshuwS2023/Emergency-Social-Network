@@ -5,7 +5,7 @@ import {
   BadRequestException,
 } from '../responses/api.exception';
 import ESNDataSource from '../utils/datasource';
-import {User} from '../user/user.entity';
+import {AccountStatus, User} from '../user/user.entity';
 import {Body, Get, Post, Put, Route} from 'tsoa';
 import {Room} from './room.entity';
 import {JoinRoomInput} from '../requests/joinroom.input';
@@ -59,6 +59,9 @@ export default class RoomController {
       relations: ['messages', 'messages.sender', 'users'],
       where: {
         type: Not(RoomType.UNDEFINED),
+        users: {
+          accountStatus: AccountStatus.ACTIVE,
+        },
       },
     });
     rooms.sort((a: Room, b: Room) => a.id.localeCompare(b.id));
@@ -79,6 +82,7 @@ export default class RoomController {
     for (const userId of joinRoomInput.idList) {
       const user = await this.userRepository.findOneBy({
         id: userId,
+        accountStatus: AccountStatus.ACTIVE,
       });
       if (user === null) {
         throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
@@ -114,6 +118,7 @@ export default class RoomController {
     const users: User[] = [];
     const user = await this.userRepository.findOneBy({
       id: createChatGroupInput.userId,
+      accountStatus: AccountStatus.ACTIVE,
     });
     if (user === null) {
       throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
@@ -143,6 +148,9 @@ export default class RoomController {
       relations: ['users'],
       where: {
         id: roomId,
+        users: {
+          accountStatus: AccountStatus.ACTIVE,
+        },
       },
     });
     if (room === null) {

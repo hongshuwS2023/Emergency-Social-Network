@@ -7,3 +7,4 @@ export const login_endpoint = api_base+'/api/auth/login';
 export const logout_endpoint = api_base+'/api/auth/logout';
 export const search_endpoint = api_base+'/api/search';
 export const emergency_endpoint = api_base + '/api/emergencywords';
+export const profile_endpoint = api_base + '/api/profiles';

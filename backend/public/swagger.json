@@ -125,6 +125,9 @@
 							"$ref": "#/components/schemas/HistoryStatus"
 						},
 						"type": "array"
+					},
+					"accountStatus": {
+						"$ref": "#/components/schemas/AccountStatus"
 					}
 				},
 				"required": [
@@ -138,7 +141,8 @@
 					"logoutTime",
 					"messages",
 					"rooms",
-					"historyStatus"
+					"historyStatus",
+					"accountStatus"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -238,6 +242,13 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"AccountStatus": {
+				"enum": [
+					0,
+					1
+				],
+				"type": "number"
 			},
 			"UpdateUserInput": {
 				"properties": {
@@ -490,6 +501,30 @@
 				"required": [
 					"id",
 					"user_id"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AdminChangeInput": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"accountStatus": {
+						"$ref": "#/components/schemas/AccountStatus"
+					},
+					"role": {
+						"$ref": "#/components/schemas/Role"
+					},
+					"username": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -945,7 +980,7 @@
 				]
 			}
 		},
-		"/api/emergency": {
+		"/api/emergencywords": {
 			"get": {
 				"operationId": "GetEmergencyWords",
 				"responses": {
@@ -1038,7 +1073,7 @@
 				}
 			}
 		},
-		"/api/emergency/{id}": {
+		"/api/emergencywords/{id}": {
 			"delete": {
 				"operationId": "DeleteEmergencyWords",
 				"responses": {
@@ -1058,6 +1093,65 @@
 						}
 					}
 				]
+			}
+		},
+		"/api/profile/{userId}": {
+			"get": {
+				"operationId": "GetProfileByUserId",
+				"responses": {
+					"200": {
+						"description": "User",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get Profile by userId",
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/profile": {
+			"put": {
+				"operationId": "UpdateUserProfile",
+				"responses": {
+					"200": {
+						"description": "User",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update user account status/role/username/password",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AdminChangeInput"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

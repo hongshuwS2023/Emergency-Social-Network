@@ -15,6 +15,7 @@ import {SocketServer} from './utils/socketServer';
 import SearchRoute from './search/search.route';
 import {RedisServer} from './utils/redisServer';
 import EmergencyRoute from './emergency/emergency.route';
+import ProfileRoute from './profile/profile.route';
 
 export default class App {
   private app: express.Application;
@@ -51,6 +52,7 @@ export default class App {
     this.app.use('/api/rooms', new RoomRoute().getRouter());
     this.app.use('/api/search', new SearchRoute().getRouter());
     this.app.use('/api/emergencywords', new EmergencyRoute().getRouter());
+    this.app.use('/api/profiles', new ProfileRoute().getRouter());
   }
 
   private registerMiddlewares(): void {
@@ -58,15 +60,11 @@ export default class App {
   }
 
   private async startServer(): Promise<void> {
-    try {
-      await ESNDataSource.initialize();
+    await ESNDataSource.initialize();
 
-      this.httpServer.listen(this.port, '0.0.0.0', () => {
-        console.log(`server started at http://localhost:${this.port}`);
-      });
-    } catch (err) {
-      throw (err);
-    }
+    this.httpServer.listen(this.port, '0.0.0.0', () => {
+      console.log(`server started at http://localhost:${this.port}`);
+    });
   }
 
   static start(): void {

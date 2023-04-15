@@ -1,4 +1,4 @@
-import { emergency_endpoint, login_endpoint, logout_endpoint, message_endpoint, register_endpoint, room_endpoint, search_endpoint, user_endpoint } from "./api";
+import { emergency_endpoint, login_endpoint, logout_endpoint, message_endpoint, profile_endpoint, register_endpoint, room_endpoint, search_endpoint, user_endpoint } from "./api";
 import { CreateChatGroupInput, MessageBody, SearchInput, UpdateChatGroupInput} from "../utils/entity";
 import { Status } from "../utils/enum";
 
@@ -238,6 +238,18 @@ export const updateLastWords = async(token: string, messageBody) => {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(messageBody),
+    });
+
+    return await res.json();
+}
+
+export const getUserProfile = async(token: string, userId: string) => {
+    const res = await fetch(profile_endpoint + '/' + userId, {
+        method: "GET",
+        headers: {
+            authorization: token,
+            "Content-Type": "application/json",
+        },
     });
 
     return await res.json();

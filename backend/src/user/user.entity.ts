@@ -28,6 +28,11 @@ export enum Status {
   EMERGENCY,
 }
 
+export enum AccountStatus {
+  ACTIVE,
+  INACTIVE,
+}
+
 @Entity()
 export class User {
   @PrimaryColumn()
@@ -63,4 +68,7 @@ export class User {
 
   @OneToMany(() => HistoryStatus, status => status.user)
   historyStatus!: HistoryStatus[];
+
+  @Column({default: AccountStatus.ACTIVE})
+  accountStatus!: AccountStatus;
 }

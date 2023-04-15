@@ -10,7 +10,7 @@ import {
   ErrorMessage,
   NotFoundException,
 } from '../responses/api.exception';
-import {User} from '../user/user.entity';
+import {AccountStatus, User} from '../user/user.entity';
 import ESNDataSource from '../utils/datasource';
 import {EmergencyWords} from './emergency.entity';
 import {v4 as uuid} from 'uuid';
@@ -35,6 +35,14 @@ export default class EmergencyWordsController {
   async getUnsentEmergencyWordsByUserId(
     userId: string
   ): Promise<EmergencyWords | null> {
+    const user = await this.userRepository.findOneBy({
+      id: userId,
+      accountStatus: AccountStatus.ACTIVE,
+    });
+
+    if (!user) {
+      return null;
+    }
     return await this.emergencyRepository.findOneBy({
       sender: userId,
       time_to_send: MoreThan(Date.now().toString()),
@@ -63,6 +71,15 @@ export default class EmergencyWordsController {
       },
     });
 
+    availables.filter(async words => {
+      const sender = await this.userRepository.findOneBy({
+        id: words.sender,
+        accountStatus: AccountStatus.ACTIVE,
+      });
+
+      return sender !== null;
+    });
+
     const unsent = await this.getUnsentEmergencyWordsByUserId(userid);
 
     return {availables: availables, unsent: unsent};
@@ -83,6 +100,7 @@ export default class EmergencyWordsController {
 
     const contact = await this.userRepository.findOneBy({
       username: postEmergencyWordsInput.contact,
+      accountStatus: AccountStatus.ACTIVE,
     });
 
     if (user === null || contact === null) {
@@ -162,6 +180,7 @@ export default class EmergencyWordsController {
 
     const contact = await this.userRepository.findOneBy({
       username: emergencyWords.contact,
+      accountStatus: AccountStatus.ACTIVE,
     });
 
     const transit: EmergencyWordsTransit = {

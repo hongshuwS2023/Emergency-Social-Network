@@ -3,7 +3,7 @@ import { parseStatus } from "../../response/user.response";
 import { api_base, user_endpoint } from "../sdk/api";
 import { defaultLogoutTime, emergencySvg, greenDot, greyDot, selfButton, helpSvg, messageBackgroundClass, messageContentClass, messageUsernameClass, okSvg, undefinedSvg } from "../utils/constants";
 import { User, Message, Room, LocalStorageInfo } from "../utils/entity";
-import { allUsers, getRoom, getUser, newRoom, updateUser } from "../sdk/sdk";
+import { allUsers, getRoom, getUser, getUserProfile, newRoom, updateUser } from "../sdk/sdk";
 
 import { directoryHTML } from "../utils/constants";
 import { OnlineStatus, Status } from "../utils/enum";
@@ -25,7 +25,8 @@ const localStorageInfo: LocalStorageInfo = {
     id: localStorage.getItem("id") || "",
     username: localStorage.getItem("username") || "",
     token: ("Bearer " + localStorage.getItem("token")) as string,
-    room: localStorage.getItem("room") || ""
+    room: localStorage.getItem("room") || "",
+    role: Number(localStorage.getItem("role")) || 2
 }
 
 const socket: Socket = io(api_base + `/?userid=${localStorageInfo.id}`, {
@@ -83,6 +84,7 @@ function createUserHTML(user: User) {
                 ${displayStatus(user.status)}
             </span>
         </span>
+        ${localStorageInfo.role === 0 ? createProfileButton(user.id): ''}
         <span class="mr-[10%] w-20 h-8 bg-[#C41230] rounded-lg ml-auto flex justify-center">
             ${user.id !== localStorageInfo.id ? createChatButton(user.id) : selfButton}
          </span>
@@ -107,6 +109,14 @@ async function displayUsers(users: User[]) {
                 const res = await newRoom(localStorageInfo.token, messageBody);
                 storeRoomInfoAndRedirect(res.id);
             };
+        }
+
+        const profile = document.getElementById("profile-" + user.id);
+
+        if (profile) {
+            profile!.onclick = async () => {
+                console.log(await getUserProfile(localStorageInfo.token, user.id));
+            }
         }
     });
 }
@@ -199,3 +209,7 @@ function removeNotificationAndRedirect(room: string, div: HTMLElement) {
 
 getUsers();
 checkUnreadMessages();
+
+function createProfileButton(id: string) {
+    return `<button class="justify-items-center text-2xl dark:text-white" id="profile-${id}">Profile</button>`;
+}
