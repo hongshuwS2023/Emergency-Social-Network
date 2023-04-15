@@ -39,6 +39,7 @@ const chatList = document.getElementById("chat-button");
 const lastword = document.getElementById("emergency-button");
 const directory =
   document.getElementById("directory-button");
+const group =document.getElementById("group-button");
 const statusOK = document.getElementById("status-ok");
 const statusEmergency =
   document.getElementById("status-emergency");
@@ -60,7 +61,7 @@ function displaySearchButton(){
   const url = window.location.href.split('/');
   const href = url[url.length-1]
   console.log(href);
-  if(href == 'chat_list.html' || href == 'search.html'){
+  if(href == 'chat_list.html' || href == 'search.html'||href == 'group.html'||href == 'create_group.html'||href == 'chat.html'||href == 'group_people.html'){
     search?.classList.add('hidden');
   }
   else{
@@ -100,14 +101,15 @@ function displayNotification() {
 
 socket.on("connect", () => {
   socket.on("chat message", (msg) => {
-    const user_list = msg.room.id.split("-");
-    const user_name = localStorage.getItem("username");
+    const user_list = msg.room.users;
+    
+    const user_id = localStorageInfo.id
     const url = window.location.href.split("/").slice(-1)[0];
 
     user_list.forEach((element) => {
       if (
-        element === user_name &&
-        msg.sender.id !== localStorageInfo.id &&
+        element.id === user_id &&
+        msg.sender.id !== user_id &&
         url !== "chat.html"
       ) {
         createNotification(msg);
@@ -121,8 +123,12 @@ if (!localStorageInfo.id || !localStorageInfo.token) {
 }
 
 function displayMenu(){
-  menuModal!.style.display = "block";
+  menuModal!.style.display = "block";  
+  if(back&&back.style&&back.style.zIndex){
+    back.style.zIndex = '100';
+  }
   back!.classList.remove("hidden");
+  
   options?.classList.add("hidden");
 }
 
@@ -171,6 +177,10 @@ lastword!.onclick = () => {
 
 directory!.onclick = () => {
   window.location.href = "directory.html";
+};
+
+group!.onclick = () => {
+  window.location.href = "group.html";
 };
 
 statusOK!.onclick = async () => {

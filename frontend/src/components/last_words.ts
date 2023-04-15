@@ -108,6 +108,7 @@ send!.onclick = async () => {
       alert(res.message);
     }
     else {
+      unsentLastWords = res.body;
       alert('Emergency Words updated');
     }
     return;

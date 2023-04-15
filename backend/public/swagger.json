@@ -143,6 +143,16 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"RoomType": {
+				"enum": [
+					0,
+					1,
+					2,
+					3,
+					4
+				],
+				"type": "number"
+			},
 			"Message": {
 				"properties": {
 					"id": {
@@ -180,6 +190,9 @@
 					"id": {
 						"type": "string"
 					},
+					"type": {
+						"$ref": "#/components/schemas/RoomType"
+					},
 					"messages": {
 						"items": {
 							"$ref": "#/components/schemas/Message"
@@ -195,6 +208,7 @@
 				},
 				"required": [
 					"id",
+					"type",
 					"messages",
 					"users"
 				],
@@ -283,6 +297,42 @@
 				},
 				"required": [
 					"idList"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateChatGroupInput": {
+				"properties": {
+					"roomId": {
+						"type": "string"
+					},
+					"userId": {
+						"type": "string"
+					},
+					"type": {
+						"$ref": "#/components/schemas/RoomType"
+					}
+				},
+				"required": [
+					"roomId",
+					"userId",
+					"type"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UpdateChatGroupInput": {
+				"properties": {
+					"userId": {
+						"type": "string"
+					},
+					"isJoin": {
+						"type": "boolean"
+					}
+				},
+				"required": [
+					"userId",
+					"isJoin"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -713,9 +763,67 @@
 						}
 					}
 				]
+			},
+			"put": {
+				"operationId": "UpdateGroupChat",
+				"responses": {
+					"200": {
+						"description": "Room",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Room"
+								}
+							}
+						}
+					}
+				},
+				"description": "Join or leave a group chat room",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "roomId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateChatGroupInput"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/api/rooms": {
+			"get": {
+				"operationId": "GetChatGroup",
+				"responses": {
+					"200": {
+						"description": "Rooms that are chatGroups",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Room"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Retrieve all the chatGroups from the database",
+				"security": [],
+				"parameters": []
+			},
 			"post": {
 				"operationId": "JoinRoom",
 				"responses": {
@@ -730,7 +838,7 @@
 						}
 					}
 				},
-				"description": "Join a room, if not exist then create",
+				"description": "Create and join a private chat room",
 				"security": [],
 				"parameters": [],
 				"requestBody": {
@@ -739,6 +847,36 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/JoinRoomInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/rooms/chatgroup": {
+			"post": {
+				"operationId": "CreateGroupChat",
+				"responses": {
+					"200": {
+						"description": "Room",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Room"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create a group chat room",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateChatGroupInput"
 							}
 						}
 					}

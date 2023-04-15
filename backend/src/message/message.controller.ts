@@ -52,8 +52,9 @@ export default class MessageController {
     if (postMessageInput.content.trim().length <= 0) {
       throw new BadRequestException(ErrorMessage.EMPTYMESSAGE);
     }
-    const room = await this.roomRepository.findOneBy({
-      id: postMessageInput.roomId,
+    const room = await this.roomRepository.findOne({
+      relations: {users:true},
+      where:{id: postMessageInput.roomId,}
     });
     if (room === null) {
       throw new BadRequestException(ErrorMessage.ROOMIDNOTFOUND);

@@ -1,5 +1,5 @@
 import { emergency_endpoint, login_endpoint, logout_endpoint, message_endpoint, register_endpoint, room_endpoint, search_endpoint, user_endpoint } from "./api";
-import { MessageBody, SearchInput} from "../utils/entity";
+import { CreateChatGroupInput, MessageBody, SearchInput, UpdateChatGroupInput} from "../utils/entity";
 import { Status } from "../utils/enum";
 
 export const login = async (username: string, password: string) => {
@@ -44,6 +44,18 @@ export const allUsers = async () => {
     return await res.json();
 }
 
+export const getRoomUsers = async (token: string, roomId:string) => {
+    const res = await fetch(room_endpoint+"/"+roomId, {
+        method: "GET",
+        headers: {
+            authorization: token,
+            "Content-type": "application/json",
+        },
+    })
+    return await res.json();
+}
+
+
 export const updateUser = async (token: string, id: string, logoutTime: string) => {
     const res = await fetch(user_endpoint, {
         method: "PUT",
@@ -70,6 +82,17 @@ export const newRoom = async (token: string, messageBody: MessageBody) => {
 
 export const getRoom = async (token: string, id: string) => {
     const res = await fetch(room_endpoint + "/" + id, {
+        method: "GET",
+        headers: {
+            authorization: token,
+            "Content-type": "application/json",
+        },
+    });
+    return res.json();
+}
+
+export const getChatGroup = async (token: string) => {
+    const res = await fetch(room_endpoint, {
         method: "GET",
         headers: {
             authorization: token,
@@ -142,6 +165,30 @@ export const searchInformation = async (token: string, searchInput: SearchInput,
             authorization: token,
             "Content-type": "application/json",
         },
+    });
+    return res.json();
+}
+
+export const joinChatGroup = async (token: string, updateInput:UpdateChatGroupInput, roomId: string) => {
+    const res = await fetch(room_endpoint+ "/" + roomId, {
+        method: "PUT",
+        headers: {
+            authorization: token,
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify(updateInput),
+    });
+    return res.json();
+}
+
+export const createChatGroup = async (token: string, createGroupInput:CreateChatGroupInput) => {
+    const res = await fetch(room_endpoint+ "/chatgroup" , {
+        method: "POST",
+        headers: {
+            authorization: token,
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify(createGroupInput),
     });
     return res.json();
 }

@@ -4,7 +4,8 @@ import { parseStatus } from "../../response/user.response";
 import { api_base } from "../sdk/api";
 import { getRoom, sendMessage } from "../sdk/sdk";
 import { chatHTML, chatMessageBackgroundClass, messageContentClass, messageTimeClass, messageUsernameClass } from "../utils/constants";
-import { LocalStorageInfo, MessageBody, MessageContent } from "../utils/entity";
+import { LocalStorageInfo, MessageBody, MessageContent, Room } from "../utils/entity";
+import { RoomType } from "../utils/enum";
 
 class Chat extends HTMLElement {
     constructor() {
@@ -78,6 +79,7 @@ function displayMessage(
 
 async function getHistory() {
     const res = await getRoom(localStorageInfo.token, localStorageInfo.room);
+    checkGroup(res);
     res.messages.forEach((msg) => {
         const messageContent: MessageContent = {
             username: msg.sender.username,
@@ -89,6 +91,24 @@ async function getHistory() {
             messageContent
         );
     });
+}
+
+function checkGroup(room: Room){
+    //console.log(room);
+    const search = document.getElementById("search-icon");
+    const people = document.getElementById("people-icon");
+    if(room.type !== RoomType.UNDEFINED){
+        search?.classList.add('hidden');
+        people?.classList.remove('hidden');
+        if (people) {
+            people.onclick = () => {
+                window.location.href = "group_people.html";
+            };
+          }
+        
+    }else{
+        search?.classList.add('hidden');
+    }
 }
 
 function setRoomName() {

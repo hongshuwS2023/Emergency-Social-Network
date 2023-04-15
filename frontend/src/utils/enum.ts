@@ -10,6 +10,14 @@ export enum Role {
     HELP,
     EMERGENCY,
   }
+
+  export enum RoomType {
+    UNDEFINED,
+    EXCAVATE,
+    SEARCH,
+    RESCUE,
+    MONITOR
+  }
   
   export enum OnlineStatus {
     ONLINE,

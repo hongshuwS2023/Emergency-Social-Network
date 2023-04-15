@@ -109,6 +109,16 @@ export class SocketServer {
     }
   }
 
+  async leaveRoom(user_id: string, room_id: string): Promise<void> {
+    const socketId = this.userSocketMap.get(user_id);
+    if (socketId) {
+      const socket = this.io.sockets.sockets.get(socketId);
+      if (socket) {
+        socket.leave(room_id);
+      }
+    }
+  }
+  
   sendEmergencyWordsChange(): void {
     this.io.emit('last-words-change', {});
   }
