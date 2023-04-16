@@ -60,7 +60,6 @@ export default class SearchController {
       case Context.PRIVATECHAT:
         if (criteria === 'status') {
           const history_status: HistoryStatus[] = await this.searchStatus(
-            criteria,
             room_id ? room_id : '',
             user_id ? user_id : '',
             search_number
@@ -102,8 +101,6 @@ export default class SearchController {
       return Status.EMERGENCY;
     } else if (status === 'HELP') {
       return Status.HELP;
-    } else if (status === 'UNDEFINED') {
-      return Status.UNDEFINED;
     } else {
       throw new BadRequestException(ErrorMessage.WRONGSTATUS);
     }
@@ -153,7 +150,6 @@ export default class SearchController {
   }
 
   async searchStatus(
-    criteria: string,
     room_id: string,
     user_id: string,
     search_number: number

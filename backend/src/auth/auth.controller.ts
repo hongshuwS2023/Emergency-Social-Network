@@ -71,7 +71,7 @@ export default class AuthController {
     user.username = username;
     user.password = encodePassword(password);
     user.role = Role.CITIZEN;
-    user.status = Status.UNDEFINED;
+    user.status = Status.OK;
     user.onlineStatus = OnlineStatus.ONLINE;
     user.statusTimeStamp = new Date().getTime().toString();
     user.logoutTime = '-1';

@@ -23,7 +23,6 @@ export enum OnlineStatus {
 }
 
 export enum Status {
-  UNDEFINED,
   OK,
   HELP,
   EMERGENCY,
@@ -48,7 +47,7 @@ export class User {
   @Column({default: Role.CITIZEN})
   role!: Role;
 
-  @Column({default: Status.UNDEFINED})
+  @Column({default: Status.OK})
   status!: Status;
 
   @Column({default: OnlineStatus.ONLINE})

@@ -107,7 +107,7 @@ describe('searchInformation', () => {
   });
 
   it('should get the user by its status', async () => {
-    const res = await searchController.search('UNDEFINED', 2, 'user1_id', 0);
+    const res = await searchController.search('OK', 2, 'user1_id', 0);
     expect(res.users).not.toBeNull();
     res.users = res.users ? res.users : [];
     expect(res.users[0].id).toBe('user1_id');
@@ -116,20 +116,20 @@ describe('searchInformation', () => {
     const res2 = await searchController.search('HELP', 2, 'user2_id', 0);
     expect(res2.users).not.toBeNull();
     res2.users = res2.users ? res2.users : [];
-    expect(res2.users[0].id).toBe('user2_id');
-    expect(res2.users[0].username).toBe('user2');
+    expect(res2.users[0].id).toBe('user3_id');
+    expect(res2.users[0].username).toBe('user3');
 
     const res3 = await searchController.search('OK', 2, 'user3_id', 0);
     expect(res3.users).not.toBeNull();
     res3.users = res3.users ? res3.users : [];
-    expect(res3.users[0].id).toBe('user3_id');
-    expect(res3.users[0].username).toBe('user3');
+    expect(res3.users[0].id).toBe('user1_id');
+    expect(res3.users[0].username).toBe('user1');
 
     const res4 = await searchController.search('EMERGENCY', 2, 'user4_id', 0);
     expect(res4.users).not.toBeNull();
     res4.users = res4.users ? res4.users : [];
-    expect(res4.users[0].id).toBe('user4_id');
-    expect(res4.users[0].username).toBe('user4');
+    expect(res4.users[0].id).toBe('user2_id');
+    expect(res4.users[0].username).toBe('user2');
   });
 
   it('should throw an exception if the criteria of status name is wrong', async () => {
