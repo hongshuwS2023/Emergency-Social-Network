@@ -64,9 +64,7 @@ export default class App {
   private async startServer(): Promise<void> {
     await ESNDataSource.initialize();
 
-    this.httpServer.listen(this.port, '0.0.0.0', () => {
-      console.log(`server started at http://localhost:${this.port}`);
-    });
+    await this.httpServer.listen(this.port, '0.0.0.0');
   }
 
   static start(): void {
