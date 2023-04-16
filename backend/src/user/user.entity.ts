@@ -72,7 +72,7 @@ export class User {
 
   @Column({default: AccountStatus.ACTIVE})
   accountStatus!: AccountStatus;
-  
+
   @OneToMany(() => Activity, activity => activity.victim)
   activityVictims!: Activity[];
 
