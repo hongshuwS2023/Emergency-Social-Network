@@ -1,4 +1,4 @@
-import { Context, ErrorMessage, OnlineStatus, Role, RoomType, Status, StatusCode } from "./enum";
+import { ActivityStatus, Context, ErrorMessage, OnlineStatus, Role, RoomType, Status, StatusCode } from "./enum";
 
 
 export interface UserEntity {
@@ -64,6 +64,7 @@ export interface LocalStorageInfo {
     token: string,
     room: string,
     role?: number
+    activityId?: string
 }
 
 export interface MessageBody {
@@ -93,6 +94,21 @@ export interface SearchInput {
     room_id?: string;
   }
 
+export interface UpdateActivityInput {
+    id: string;
+    userId: string;
+    name?: string;
+    description?: string;
+    status?: ActivityStatus;
+}
+
+export interface CreateActivityInput {
+    id: string;
+    name?: string;
+    victimName: string;
+    description?: string;
+  }
+
   export interface SearchResult{
     users?: UserEntity[],
     messages?: MessageEntity[],
@@ -110,6 +126,14 @@ export interface AuthResponse {
     expiresIn: number;
 }
 
+export interface Activity {
+    id: string;
+    name: string;
+    victim: UserEntity;
+    description: string;
+    status: ActivityStatus;
+    members: UserEntity[];
+  }
 export interface UpdateChatGroupInput {
     userId: string;
     isJoin: boolean;

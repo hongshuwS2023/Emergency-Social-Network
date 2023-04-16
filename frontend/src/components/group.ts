@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
-import { user_endpoint, api_base, room_endpoint } from "../sdk/api";
-import { getChatGroup, getRoom, getUser, joinChatGroup } from "../sdk/sdk";
+import { api_base } from "../sdk/api";
+import { getChatGroup, getRoom, joinChatGroup } from "../sdk/sdk";
 import { groupChatHTML } from "../utils/constants";
 import { LocalStorageInfo, Room, UpdateChatGroupInput } from "../utils/entity";
 import { RoomType } from "../utils/enum";

@@ -1,5 +1,5 @@
-import { emergency_endpoint, login_endpoint, logout_endpoint, message_endpoint, profile_endpoint, register_endpoint, room_endpoint, search_endpoint, user_endpoint } from "./api";
-import { CreateChatGroupInput, MessageBody, SearchInput, UpdateChatGroupInput} from "../utils/entity";
+import { activity_endpoint, emergency_endpoint, login_endpoint, logout_endpoint, message_endpoint, register_endpoint, room_endpoint, search_endpoint, user_endpoint, profile_endpoint } from "./api";
+import { CreateChatGroupInput, CreateActivityInput, MessageBody, SearchInput, UpdateActivityInput, UpdateChatGroupInput} from "../utils/entity";
 import { Status } from "../utils/enum";
 
 export const login = async (username: string, password: string) => {
@@ -245,6 +245,56 @@ export const updateLastWords = async(token: string, messageBody) => {
 
 export const getUserProfile = async(token: string, userId: string) => {
     const res = await fetch(profile_endpoint + '/' + userId, {
+        method: "GET",
+        headers: {
+            authorization: token,
+            "Content-Type": "application/json",
+        },
+    });
+
+    return res.json();
+}
+
+        
+export const createActivity = async (token: string, createActivityInput: CreateActivityInput) => {
+    const res = await fetch(activity_endpoint, {
+        method: "POST",
+        headers: {
+            authorization: token,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(createActivityInput),
+    });
+
+    return res.json();
+}
+
+export const updateActivity = async (token: string, updateActivityInput: UpdateActivityInput) => {
+    const res = await fetch(activity_endpoint, {
+        method: "PUT",
+        headers: {
+            authorization: token,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateActivityInput),
+    });
+    return res.json();
+}
+
+export const allActivities = async () => {
+    const token = ("Bearer " + localStorage.getItem("token")) as string;
+    const res = await fetch(activity_endpoint, {
+        method: "GET",
+        headers: {
+            authorization: token,
+            "Content-type": "application/json",
+        },
+    })
+    return await res.json();
+}
+
+export const getActivity = async (token: string, activityUrl: string) => {
+    const res = await fetch(activityUrl, {
         method: "GET",
         headers: {
             authorization: token,

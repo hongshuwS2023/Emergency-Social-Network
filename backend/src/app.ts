@@ -13,6 +13,7 @@ import swaggerUi from 'swagger-ui-express';
 import RoomRoute from './room/room.route';
 import {SocketServer} from './utils/socketServer';
 import SearchRoute from './search/search.route';
+import ActivityRoute from './activity/activity.route';
 import {RedisServer} from './utils/redisServer';
 import EmergencyRoute from './emergency/emergency.route';
 import ProfileRoute from './profile/profile.route';
@@ -51,6 +52,7 @@ export default class App {
     this.app.use('/api/messages', new MessageRoute().getRouter());
     this.app.use('/api/rooms', new RoomRoute().getRouter());
     this.app.use('/api/search', new SearchRoute().getRouter());
+    this.app.use('/api/activities', new ActivityRoute().getRouter());
     this.app.use('/api/emergencywords', new EmergencyRoute().getRouter());
     this.app.use('/api/profiles', new ProfileRoute().getRouter());
   }
