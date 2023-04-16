@@ -5738,13 +5738,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"promise-queue@npm:^2.2.5":
-  version: 2.2.5
-  resolution: "promise-queue@npm:2.2.5"
-  checksum: 41dc832a0674ea74f5f9bb4812566769d862eb52a19bdf3773045429f07b2bc433af5d939baaf4930191e37202ea31ec57e43a5a2994c101cb729069fe3eac6a
-  languageName: node
-  linkType: hard
-
 "promise-retry@npm:^2.0.1":
   version: 2.0.1
   resolution: "promise-retry@npm:2.0.1"
@@ -5894,15 +5887,6 @@ __metadata:
   dependencies:
     picomatch: ^2.2.1
   checksum: 1ced032e6e45670b6d7352d71d21ce7edf7b9b928494dcaba6f11fba63180d9da6cd7061ebc34175ffda6ff529f481818c962952004d273178acd70f7059b320
-  languageName: node
-  linkType: hard
-
-"redis-server@npm:^1.2.2":
-  version: 1.2.2
-  resolution: "redis-server@npm:1.2.2"
-  dependencies:
-    promise-queue: ^2.2.5
-  checksum: db7dbc9a20eb0767b063233014ee41349c8ab130431bc7cbff0848517ca0d9c0772109bb5ff3627523e09fb2fefef2abb69115d6a7ef97727973fc660793fb6c
   languageName: node
   linkType: hard
 
@@ -6087,7 +6071,6 @@ __metadata:
     nodemon: ^2.0.20
     prettier: ^2.8.4
     redis: ^4.6.5
-    redis-server: ^1.2.2
     reflect-metadata: ^0.1.13
     socket.io: ^4.6.0
     sqlite3: ^5.1.6

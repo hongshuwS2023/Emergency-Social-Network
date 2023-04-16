@@ -8,3 +8,4 @@ export const logout_endpoint = api_base+'/api/auth/logout';
 export const search_endpoint = api_base+'/api/search';
 export const activity_endpoint = api_base+'/api/activities';
 export const emergency_endpoint = api_base + '/api/emergencywords';
+export const profile_endpoint = api_base + '/api/profiles';

@@ -1,15 +1,19 @@
 import {Repository} from 'typeorm';
 import AuthUserInput from '../requests/authuser.input';
-import {OnlineStatus, Role, Status, User} from '../user/user.entity';
+import {
+  AccountStatus,
+  OnlineStatus,
+  Role,
+  Status,
+  User,
+} from '../user/user.entity';
 import ESNDataSource from '../utils/datasource';
 import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
 import {
   BadRequestException,
   DuplicateResourceException,
   ErrorMessage,
 } from '../responses/api.exception';
-import {RESERVED_USERNAME} from './reserved-username';
 import TokenResponse from '../responses/token.response';
 import {Body, Post, Route} from 'tsoa';
 import {Room} from '../room/room.entity';
@@ -17,6 +21,11 @@ import LogoutInput from '../requests/logout.input';
 import {SocketServer} from '../utils/socketServer';
 import {v4 as uuid} from 'uuid';
 import {HistoryStatus} from '../status/status.entity';
+import {
+  encodePassword,
+  validatePassword,
+  validateUsername,
+} from '../utils/utils';
 
 @Route('api/auth')
 export default class AuthController {
@@ -26,7 +35,6 @@ export default class AuthController {
   private statusRepository: Repository<HistoryStatus>;
   private jwtSecret: string;
   private expiresIn: string;
-  private salt: string;
 
   constructor() {
     this.socketServer = SocketServer.getInstance();
@@ -35,7 +43,6 @@ export default class AuthController {
     this.statusRepository = ESNDataSource.getRepository(HistoryStatus);
     this.jwtSecret = process.env.JWT_SECRET || 'secret';
     this.expiresIn = process.env.EXPIRES_IN || '3600s';
-    this.salt = process.env.SALT || 'salt';
   }
 
   /**
@@ -62,9 +69,9 @@ export default class AuthController {
     const user = this.authRepository.create();
     user.id = uuid();
     user.username = username;
-    user.password = this.encodePassword(password);
+    user.password = encodePassword(password);
     user.role = Role.CITIZEN;
-    user.status = Status.UNDEFINED;
+    user.status = Status.OK;
     user.onlineStatus = OnlineStatus.ONLINE;
     user.statusTimeStamp = new Date().getTime().toString();
     user.logoutTime = '-1';
@@ -126,10 +133,14 @@ export default class AuthController {
 
     const user = await this.authRepository.findOneBy({
       username: username,
-      password: this.encodePassword(password),
+      password: encodePassword(password),
     });
     if (!user) {
       throw new BadRequestException(ErrorMessage.WRONGPASSWORD);
+    }
+
+    if (user.accountStatus === AccountStatus.INACTIVE) {
+      throw new BadRequestException(ErrorMessage.INACTIVEUSER);
     }
 
     user.onlineStatus = OnlineStatus.ONLINE;
@@ -173,20 +184,7 @@ export default class AuthController {
   }
 
   private validateUsernameAndPassword(username: string, password: string) {
-    if (
-      username.length < 3 ||
-      RESERVED_USERNAME.indexOf(username.toLowerCase()) !== -1
-    ) {
-      throw new BadRequestException(ErrorMessage.BADUSERNAMEREQ);
-    }
-    if (password.length < 4) {
-      throw new BadRequestException(ErrorMessage.BADPASSWORDREQ);
-    }
-  }
-
-  private encodePassword(password: string): string {
-    return crypto
-      .pbkdf2Sync(password, this.salt, 1000, 32, 'sha512')
-      .toString('hex');
+    validateUsername(username);
+    validatePassword(password);
   }
 }

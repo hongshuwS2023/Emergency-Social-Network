@@ -1,4 +1,4 @@
-import { activity_endpoint, emergency_endpoint, login_endpoint, logout_endpoint, message_endpoint, register_endpoint, room_endpoint, search_endpoint, user_endpoint } from "./api";
+import { activity_endpoint, emergency_endpoint, login_endpoint, logout_endpoint, message_endpoint, register_endpoint, room_endpoint, search_endpoint, user_endpoint, profile_endpoint } from "./api";
 import { CreateChatGroupInput, CreateActivityInput, MessageBody, SearchInput, UpdateActivityInput, UpdateChatGroupInput} from "../utils/entity";
 import { Status } from "../utils/enum";
 
@@ -243,6 +243,19 @@ export const updateLastWords = async(token: string, messageBody) => {
     return await res.json();
 }
 
+export const getUserProfile = async(token: string, userId: string) => {
+    const res = await fetch(profile_endpoint + '/' + userId, {
+        method: "GET",
+        headers: {
+            authorization: token,
+            "Content-Type": "application/json",
+        },
+    });
+
+    return res.json();
+}
+
+        
 export const createActivity = async (token: string, createActivityInput: CreateActivityInput) => {
     const res = await fetch(activity_endpoint, {
         method: "POST",
@@ -288,5 +301,6 @@ export const getActivity = async (token: string, activityUrl: string) => {
             "Content-Type": "application/json",
         },
     });
-    return res.json();
+
+    return await res.json();
 }

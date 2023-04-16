@@ -23,10 +23,14 @@ export enum OnlineStatus {
 }
 
 export enum Status {
-  UNDEFINED,
   OK,
   HELP,
   EMERGENCY,
+}
+
+export enum AccountStatus {
+  ACTIVE,
+  INACTIVE,
 }
 
 @Entity()
@@ -43,7 +47,7 @@ export class User {
   @Column({default: Role.CITIZEN})
   role!: Role;
 
-  @Column({default: Status.UNDEFINED})
+  @Column({default: Status.OK})
   status!: Status;
 
   @Column({default: OnlineStatus.ONLINE})
@@ -64,6 +68,9 @@ export class User {
 
   @OneToMany(() => HistoryStatus, status => status.user)
   historyStatus!: HistoryStatus[];
+
+  @Column({default: AccountStatus.ACTIVE})
+  accountStatus!: AccountStatus;
 
   @OneToMany(() => Activity, activity => activity.victim)
   activityVictims!: Activity[];

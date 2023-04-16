@@ -8,7 +8,7 @@ import {
   BadRequestException,
   NotFoundException,
 } from '../../src/responses/api.exception';
-import {User} from '../../src/user/user.entity';
+import {AccountStatus, User} from '../../src/user/user.entity';
 import ESNDataSource from '../../src/utils/datasource';
 
 const emergencyWordsController = new EmergencyWordsController();
@@ -33,6 +33,13 @@ const broadCastSpy = jest
 
 beforeEach(async () => {
   await ESNDataSource.initialize();
+  const abcUser = userRepository.create();
+  abcUser.id = 'abc';
+  abcUser.username = 'abc';
+  abcUser.password = 'abc';
+  abcUser.accountStatus = AccountStatus.ACTIVE;
+
+  await userRepository.save(abcUser);
 });
 
 afterEach(async () => {

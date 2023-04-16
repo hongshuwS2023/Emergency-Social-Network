@@ -156,4 +156,15 @@ export class SocketServer {
   sendEmergencyWordsChange(): void {
     this.io.emit('last-words-change', {});
   }
+
+  notifyInactiveUser(userId: string) {
+    const socketId = this.userSocketMap.get(userId);
+    if (socketId) {
+      const socket = this.io.sockets.sockets.get(socketId);
+      if (socket) {
+        socket.emit('inactive-account', {});
+        socket.disconnect(true);
+      }
+    }
+  }
 }

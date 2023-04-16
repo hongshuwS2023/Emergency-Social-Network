@@ -7,7 +7,7 @@ import {
 import {PostMessageInput} from '../requests/postmessage.input';
 import ESNDataSource from '../utils/datasource';
 import {Message} from './message.entity';
-import {User} from '../user/user.entity';
+import {AccountStatus, User} from '../user/user.entity';
 import {Body, Post, Route} from 'tsoa';
 import {Room} from '../room/room.entity';
 import {SocketServer} from '../utils/socketServer';
@@ -45,6 +45,7 @@ export default class MessageController {
   ): Promise<Message> {
     const user = await this.userRepository.findOneBy({
       id: postMessageInput.userId,
+      accountStatus: AccountStatus.ACTIVE,
     });
     if (user === null) {
       throw new NotFoundException(ErrorMessage.WRONGUSERNAME);

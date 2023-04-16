@@ -232,7 +232,7 @@ describe('Can create an activity', () => {
       });
 
     expect(activity.status).toEqual(200);
-    expect(activity.id).not.toBeNull();
+    expect(activity.body.id).not.toBeNull();
   });
 });
 
@@ -256,7 +256,7 @@ describe('Can update an activity', () => {
       .put('/api/activities')
       .set('authorization', 'Token ' + postUserRes.body.token)
       .send({
-        id: activity.id,
+        id: activity.body.id,
         userId: userId,
         name: 'test_activity_1',
         description: 'test_description_1',
