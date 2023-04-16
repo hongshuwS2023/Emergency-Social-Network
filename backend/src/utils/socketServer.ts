@@ -5,17 +5,20 @@ import {Message} from '../message/message.entity';
 import {OnlineStatus, User} from '../user/user.entity';
 import ESNDataSource from './datasource';
 import {Room} from '../room/room.entity';
+import {Activity} from '../activity/activity.entity';
 
 export class SocketServer {
   private static instance: SocketServer;
   private userRepository: Repository<User>;
   private io: Server;
   private userSocketMap: Map<string, string>;
+  private activityRepository: Repository<Activity>;
 
   private constructor() {
     this.io = new Server();
     this.userRepository = ESNDataSource.getRepository(User);
     this.userSocketMap = new Map<string, string>();
+    this.activityRepository = ESNDataSource.getRepository(Activity);
     this.registerEvents();
   }
 
@@ -46,6 +49,7 @@ export class SocketServer {
     const user = await this.userRepository.findOne({
       relations: {
         rooms: true,
+        activities: true,
       },
       where: {
         id: userId,
@@ -55,6 +59,7 @@ export class SocketServer {
       user.onlineStatus = OnlineStatus.ONLINE;
       await this.userRepository.save(user);
       await this.broadcastUsers();
+      await this.broadcastActivity();
       this.userSocketMap.set(userId, socket.id);
       const previousRooms: Room[] = user.rooms;
       if (previousRooms) {
@@ -88,6 +93,35 @@ export class SocketServer {
     this.io.emit('all users', users);
   }
 
+  async broadcastActivity() {
+    const activities = await this.activityRepository.find({
+      order: {
+        status: 'ASC',
+        name: 'ASC',
+      },
+    });
+
+    this.io.emit('all activities', activities);
+  }
+
+  async broadcastActivityMembers(id: string) {
+    const activity = await this.activityRepository.findOne({
+      relations: ['members'],
+      where: {
+        id: id,
+      },
+    });
+
+    this.io.emit('all activity members', activity!.members);
+  }
+
+  async broadcastActivityToVictim(
+    id: string,
+    activity: Activity
+  ): Promise<void> {
+    this.io.to(id).emit('activity victim notification', activity);
+  }
+
   async broadcastChatMessage(
     roomName: string,
     message: Message
@@ -118,7 +152,7 @@ export class SocketServer {
       }
     }
   }
-  
+
   sendEmergencyWordsChange(): void {
     this.io.emit('last-words-change', {});
   }

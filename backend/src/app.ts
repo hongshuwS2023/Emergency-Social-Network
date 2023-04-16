@@ -13,6 +13,7 @@ import swaggerUi from 'swagger-ui-express';
 import RoomRoute from './room/room.route';
 import {SocketServer} from './utils/socketServer';
 import SearchRoute from './search/search.route';
+import ActivityRoute from './activity/activity.route';
 import {RedisServer} from './utils/redisServer';
 import EmergencyRoute from './emergency/emergency.route';
 
@@ -50,6 +51,7 @@ export default class App {
     this.app.use('/api/messages', new MessageRoute().getRouter());
     this.app.use('/api/rooms', new RoomRoute().getRouter());
     this.app.use('/api/search', new SearchRoute().getRouter());
+    this.app.use('/api/activities', new ActivityRoute().getRouter());
     this.app.use('/api/emergencywords', new EmergencyRoute().getRouter());
   }
 
@@ -58,15 +60,11 @@ export default class App {
   }
 
   private async startServer(): Promise<void> {
-    try {
-      await ESNDataSource.initialize();
+    await ESNDataSource.initialize();
 
-      this.httpServer.listen(this.port, '0.0.0.0', () => {
-        console.log(`server started at http://localhost:${this.port}`);
-      });
-    } catch (err) {
-      throw (err);
-    }
+    this.httpServer.listen(this.port, '0.0.0.0', () => {
+      console.log(`server started at http://localhost:${this.port}`);
+    });
   }
 
   static start(): void {

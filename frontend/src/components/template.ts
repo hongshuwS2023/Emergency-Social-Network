@@ -1,9 +1,9 @@
 import { api_base } from "../sdk/api";
 import { parseStatus } from "../../response/user.response";
 import { io, Socket } from "socket.io-client";
-import { LocalStorageInfo, Message } from "../utils/entity";
+import { Activity, LocalStorageInfo, Message, UpdateActivityInput } from "../utils/entity";
 import { messageBackgroundClass, messageContentClass, messageUsernameClass, templateHTML } from "../utils/constants";
-import { logout, updateStatus } from "../sdk/sdk";
+import { logout, updateActivity, updateStatus } from "../sdk/sdk";
 import { Status } from "../utils/enum";
 
 class TemplateElement extends HTMLElement {
@@ -46,6 +46,7 @@ const statusEmergency =
 const statusHelp =
   document.getElementById("status-help");
 const options = document.getElementById("options");
+const activity = document.getElementById("activity-button");
 
 const socket: Socket = io(api_base + `?userid=${localStorageInfo.id}`, {
   transports: ["websocket"],
@@ -61,11 +62,11 @@ function displaySearchButton(){
   const url = window.location.href.split('/');
   const href = url[url.length-1]
   console.log(href);
-  if(href == 'chat_list.html' || href == 'search.html'||href == 'group.html'||href == 'create_group.html'||href == 'chat.html'||href == 'group_people.html'){
-    search?.classList.add('hidden');
+  if(href === 'directory.html' || href === 'chat.html'){
+    search?.classList.remove('hidden');
   }
   else{
-    search?.classList.remove('hidden');
+    search?.classList.add('hidden');
   }
 }
 displaySearchButton();
@@ -99,6 +100,44 @@ function displayNotification() {
   }
 }
 
+function displayActNotification(){
+  const actNotification = document.getElementById("activity-notification");
+  if (actNotification) {
+      setTimeout(() => {
+          actNotification.classList.add("hidden");
+      }, 3000);
+  }
+}
+
+async function createActivityNotification(activity: Activity){
+  const div = document.createElement("div");
+  div.id = "activity-notification";
+  div.innerHTML = `
+  <div ${messageBackgroundClass}>
+      <p ${messageContentClass}>Someone starts a rescue activity for you</p> 
+  </div>`;
+  const banner = document.getElementById("banner");
+  banner!.innerHTML = "";
+  document.querySelector("#banner")?.appendChild(div);
+  displayActNotification();
+  div.onclick = async () => {
+    const joinActivityInput = {
+      id: activity.id,
+      userId: localStorageInfo.id
+    };
+    const res = await updateActivity(localStorageInfo.token, joinActivityInput);
+    localStorage.setItem("activityId", activity.id);
+    document.querySelector("#banner")?.removeChild(div);
+    joinActivityAndRedirect(res.id);
+  };
+}
+
+function joinActivityAndRedirect(activityId: string){
+  localStorage.setItem("activity", activityId);
+  window.location.href = "activity_detail.html";
+
+}
+
 socket.on("connect", () => {
   socket.on("chat message", (msg) => {
     const user_list = msg.room.users;
@@ -116,6 +155,9 @@ socket.on("connect", () => {
       }
     });
   });
+  socket.on("activity victim notification", (activity) => {
+    createActivityNotification(activity);
+});
 });
 
 if (!localStorageInfo.id || !localStorageInfo.token) {
@@ -165,6 +207,10 @@ search!.onclick = () => {
 
 logoutButton!.onclick = async () => {
   await logout(localStorageInfo.id);
+};
+
+activity!.onclick = () => {
+  window.location.href = "activity_list.html";
 };
 
 chatList!.onclick = () => {

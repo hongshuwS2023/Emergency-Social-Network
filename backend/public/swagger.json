@@ -125,6 +125,18 @@
 							"$ref": "#/components/schemas/HistoryStatus"
 						},
 						"type": "array"
+					},
+					"activityVictims": {
+						"items": {
+							"$ref": "#/components/schemas/Activity"
+						},
+						"type": "array"
+					},
+					"activities": {
+						"items": {
+							"$ref": "#/components/schemas/Activity"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
@@ -138,7 +150,9 @@
 					"logoutTime",
 					"messages",
 					"rooms",
-					"historyStatus"
+					"historyStatus",
+					"activityVictims",
+					"activities"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -235,6 +249,49 @@
 					"status",
 					"timeStamp",
 					"user"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ActivityStatus": {
+				"enum": [
+					0,
+					1,
+					2
+				],
+				"type": "number"
+			},
+			"Activity": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"victim": {
+						"$ref": "#/components/schemas/User"
+					},
+					"description": {
+						"type": "string"
+					},
+					"status": {
+						"$ref": "#/components/schemas/ActivityStatus"
+					},
+					"members": {
+						"items": {
+							"$ref": "#/components/schemas/User"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"id",
+					"name",
+					"victim",
+					"description",
+					"status",
+					"members"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -370,6 +427,53 @@
 					4
 				],
 				"type": "number"
+			},
+			"UpdateActivityInput": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"userId": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"status": {
+						"$ref": "#/components/schemas/ActivityStatus"
+					}
+				},
+				"required": [
+					"id",
+					"userId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateActivityInput": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"victimName": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"victimName"
+				],
+				"type": "object",
+				"additionalProperties": false
 			},
 			"EmergencyWords": {
 				"properties": {
@@ -945,7 +1049,115 @@
 				]
 			}
 		},
-		"/api/emergency": {
+		"/api/activities/{activityId}": {
+			"get": {
+				"operationId": "GetActivity",
+				"responses": {
+					"200": {
+						"description": "activity entity",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Activity"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get an activity based on activityId provided",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "activityId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/activities": {
+			"get": {
+				"operationId": "GetActivities",
+				"responses": {
+					"200": {
+						"description": "activity entity",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Activity"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"description": "Get all activities",
+				"security": [],
+				"parameters": []
+			},
+			"put": {
+				"operationId": "UpdateActivity",
+				"responses": {
+					"200": {
+						"description": "activity entity",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Activity"
+								}
+							}
+						}
+					}
+				},
+				"description": "Update the states of an activity based on the information provieded",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateActivityInput"
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"operationId": "CreateActivity",
+				"responses": {
+					"200": {
+						"description": "activity",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Activity"
+								}
+							}
+						}
+					}
+				},
+				"description": "Create an activity in the system",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateActivityInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/emergencywords": {
 			"get": {
 				"operationId": "GetEmergencyWords",
 				"responses": {
@@ -1038,7 +1250,7 @@
 				}
 			}
 		},
-		"/api/emergency/{id}": {
+		"/api/emergencywords/{id}": {
 			"delete": {
 				"operationId": "DeleteEmergencyWords",
 				"responses": {

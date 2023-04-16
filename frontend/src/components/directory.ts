@@ -2,7 +2,7 @@ import { io, Socket } from "socket.io-client";
 import { parseStatus } from "../../response/user.response";
 import { api_base, user_endpoint } from "../sdk/api";
 import { defaultLogoutTime, emergencySvg, greenDot, greyDot, selfButton, helpSvg, messageBackgroundClass, messageContentClass, messageUsernameClass, okSvg, undefinedSvg } from "../utils/constants";
-import { User, Message, Room, LocalStorageInfo } from "../utils/entity";
+import { User, Message, Room, LocalStorageInfo} from "../utils/entity";
 import { allUsers, getRoom, getUser, newRoom, updateUser } from "../sdk/sdk";
 
 import { directoryHTML } from "../utils/constants";

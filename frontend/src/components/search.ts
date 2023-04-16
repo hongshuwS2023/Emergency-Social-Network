@@ -10,6 +10,7 @@ import {
   messageTimeClass,
   messageUsernameClass,
   okSvg,
+  searchHTML,
   undefinedSvg,
 } from "../utils/constants";
 import {
@@ -23,6 +24,17 @@ import {
   UserEntity,
 } from "../utils/entity";
 import { Context, OnlineStatus, Status } from "../utils/enum";
+
+class Search extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.innerHTML = searchHTML;
+  }
+}
+
+customElements.define("search-page", Search);
 
 const localStorageInfo: LocalStorageInfo = {
   id: localStorage.getItem("id") || "",

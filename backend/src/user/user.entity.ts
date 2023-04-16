@@ -6,6 +6,7 @@ import {
   ManyToMany,
   OneToMany,
 } from 'typeorm';
+import {Activity} from '../activity/activity.entity';
 import {Message} from '../message/message.entity';
 import {Room} from '../room/room.entity';
 import {HistoryStatus} from '../status/status.entity';
@@ -63,4 +64,11 @@ export class User {
 
   @OneToMany(() => HistoryStatus, status => status.user)
   historyStatus!: HistoryStatus[];
+
+  @OneToMany(() => Activity, activity => activity.victim)
+  activityVictims!: Activity[];
+
+  @ManyToMany(() => Activity, activity => activity.members)
+  @JoinTable()
+  activities!: Activity[];
 }

@@ -23,6 +23,12 @@ export enum Role {
     ONLINE,
     OFFLINE,
   }
+
+  export enum ActivityStatus {
+    UNKNOWN,
+    INCOMPLETED,
+    COMPLETED,
+  }
   
   export enum Context {
     UNKNOWN,

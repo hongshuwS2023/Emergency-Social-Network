@@ -8,6 +8,7 @@ import UserRoute from '../../src/user/user.route';
 import RoomRoute from '../../src/room/room.route';
 import SearchRoute from '../../src/search/search.route';
 import MessageRoute from '../../src/message/message.route';
+import ActivityRoute from '../../src/activity/activity.route';
 import {errorHandler} from '../../src/middleware/error.middleware';
 import request from 'supertest';
 
@@ -23,6 +24,7 @@ beforeAll(async () => {
   app.use('/api/messages', new MessageRoute().getRouter());
   app.use('/api/rooms', new RoomRoute().getRouter());
   app.use('/api/search', new SearchRoute().getRouter());
+  app.use('/api/activities', new ActivityRoute().getRouter());
   app.use(errorHandler);
 });
 
@@ -210,5 +212,106 @@ describe('Can create a normal private chat room', () => {
     const room = getPostRes.body;
     expect(room.type).toBe(0);
     expect(room.id).toBe('test-user');
+  });
+});
+
+describe('Can create an activity', () => {
+  it('Create an activity using POST /api/activities', async () => {
+    const postUserRes = await request(httpServer)
+      .post('/api/auth/register')
+      .send(testUser);
+    const userId = postUserRes.body.user_id;
+    const activity = await request(httpServer)
+      .post('/api/activities')
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send({
+        id: userId,
+        name: 'test_activity',
+        victimName: testUser.username,
+        description: 'test_description',
+      });
+
+    expect(activity.status).toEqual(200);
+    expect(activity.id).not.toBeNull();
+  });
+});
+
+describe('Can update an activity', () => {
+  it('Update an activity using PUT /api/activities', async () => {
+    const postUserRes = await request(httpServer)
+      .post('/api/auth/register')
+      .send(testUser);
+    const userId = postUserRes.body.user_id;
+    const activity = await request(httpServer)
+      .post('/api/activities')
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send({
+        id: userId,
+        name: 'test_activity',
+        victimName: testUser.username,
+        description: 'test_description',
+      });
+
+    const updateActivityReq = await request(httpServer)
+      .put('/api/activities')
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send({
+        id: activity.id,
+        userId: userId,
+        name: 'test_activity_1',
+        description: 'test_description_1',
+      });
+
+    expect(updateActivityReq.status).toEqual(200);
+  });
+});
+
+describe('Can get all activities', () => {
+  it('Can get all activities using GET /api/activities', async () => {
+    const postUserRes = await request(httpServer)
+      .post('/api/auth/register')
+      .send(testUser);
+    const userId = postUserRes.body.user_id;
+    await request(httpServer)
+      .post('/api/activities')
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send({
+        id: userId,
+        name: 'test_activity',
+        victimName: testUser.username,
+        description: 'test_description',
+      });
+
+    const getActivityReq = await request(httpServer)
+      .get('/api/activities')
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send();
+
+    expect(getActivityReq.status).toEqual(200);
+  });
+});
+
+describe('Can get a specific activity', () => {
+  it('Can get a specific activity using GET /api/activity/id', async () => {
+    const postUserRes = await request(httpServer)
+      .post('/api/auth/register')
+      .send(testUser);
+    const userId = postUserRes.body.user_id;
+    const activity = await request(httpServer)
+      .post('/api/activities')
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send({
+        id: userId,
+        name: 'test_activity',
+        victimName: testUser.username,
+        description: 'test_description',
+      });
+
+    const getActivityReq = await request(httpServer)
+      .get(`/api/activities/${activity.body.id}`)
+      .set('authorization', 'Token ' + postUserRes.body.token)
+      .send();
+
+    expect(getActivityReq.status).toEqual(200);
   });
 });

@@ -98,7 +98,12 @@ module.exports = {
     'transition', 
     'ease-in-out',
     'max-h-[50vh]',
-    'pt-2'
+    'max-w-3/6',
+    'max-h-[70vh]',
+    'h-[65%]',
+    'pt-2',
+    'pl-2',
+    'text-bold'
   ],
   plugins: [],
 }
