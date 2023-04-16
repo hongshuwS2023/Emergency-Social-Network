@@ -148,9 +148,6 @@ export default class RoomController {
       relations: ['users'],
       where: {
         id: roomId,
-        users: {
-          accountStatus: AccountStatus.ACTIVE,
-        },
       },
     });
     if (room === null) {
