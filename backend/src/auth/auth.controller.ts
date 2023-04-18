@@ -45,6 +45,23 @@ export default class AuthController {
     this.expiresIn = process.env.EXPIRES_IN || '3600s';
   }
 
+  ensureAdmin() {
+    this.authRepository.findOneBy({username: 'ESNAdmin'}).then(res => {
+      if (!res) {
+        this.registerUser({username: 'ESNAdmin', password: 'admin'}).then(
+          () => {
+            this.authRepository
+              .findOneBy({username: 'ESNAdmin'})
+              .then(async user => {
+                user!.role = Role.ADMIN;
+                await this.authRepository.save(user!);
+              });
+          }
+        );
+      }
+    });
+  }
+
   /**
    * Registers user based on provided username and password
    * @param authUserInput
@@ -108,7 +125,7 @@ export default class AuthController {
 
     await this.socketServer.broadcastUsers();
 
-    return new TokenResponse(user.id, user.username, token, this.expiresIn);
+    return new TokenResponse(user.id, user.username, token, this.expiresIn, user.role);
   }
 
   /**
@@ -160,7 +177,7 @@ export default class AuthController {
 
     await this.socketServer.broadcastUsers();
 
-    return new TokenResponse(user.id, user.username, token, this.expiresIn);
+    return new TokenResponse(user.id, user.username, token, this.expiresIn, user.role);
   }
 
   /**
@@ -180,7 +197,7 @@ export default class AuthController {
 
     await this.socketServer.broadcastUsers();
 
-    return new TokenResponse('', '', '', '');
+    return new TokenResponse('', '', '', '', user.role);
   }
 
   private validateUsernameAndPassword(username: string, password: string) {

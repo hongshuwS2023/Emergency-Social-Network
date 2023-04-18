@@ -2,7 +2,7 @@ import AuthController from '../../src/auth/auth.controller';
 import {ApiException, ErrorMessage} from '../../src/responses/api.exception';
 import TokenResponse from '../../src/responses/token.response';
 import {Room} from '../../src/room/room.entity';
-import {User} from '../../src/user/user.entity';
+import {Role, User} from '../../src/user/user.entity';
 import ESNDataSource from '../../src/utils/datasource';
 
 const authController = new AuthController();
@@ -187,7 +187,7 @@ describe('logoutUser', () => {
 
     const tokenResponse = await authController.logoutUser(lougoutUserInput);
 
-    expect(tokenResponse).toEqual(new TokenResponse('', '', '', ''));
+    expect(tokenResponse).toEqual(new TokenResponse('', '', '', '', Role.CITIZEN));
   });
 
   it('Should fail to logout if the logout input is invalid', async () => {

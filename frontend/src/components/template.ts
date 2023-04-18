@@ -1,7 +1,7 @@
 import { api_base } from "../sdk/api";
 import { parseStatus } from "../../response/user.response";
 import { io, Socket } from "socket.io-client";
-import { Activity, LocalStorageInfo, Message, UpdateActivityInput } from "../utils/entity";
+import { Activity, LocalStorageInfo, Message } from "../utils/entity";
 import { messageBackgroundClass, messageContentClass, messageUsernameClass, templateHTML } from "../utils/constants";
 import { logout, updateActivity, updateStatus } from "../sdk/sdk";
 import { Status } from "../utils/enum";
@@ -21,7 +21,8 @@ const localStorageInfo: LocalStorageInfo = {
   id: localStorage.getItem("id") || "",
   username: localStorage.getItem("username") || "",
   token: localStorage.getItem("token") || "",
-  room: localStorage.getItem("room") || ""
+  room: localStorage.getItem("room") || "",
+  role: Number(localStorage.getItem("role"))
 }
 const formattedToken = ("Bearer " + localStorageInfo.token) as string;
 const setting =

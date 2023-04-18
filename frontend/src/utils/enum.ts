@@ -5,7 +5,6 @@ export enum Role {
   }
 
   export enum Status {
-    UNDEFINED,
     OK,
     HELP,
     EMERGENCY,

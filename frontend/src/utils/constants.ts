@@ -33,7 +33,7 @@ export const authformHTML = `<div class="mt-4">
 export const directoryHTML = `
 <div class="flex flex-col justify-center w-screen h-screen">
     <div class="grid justify-items-center text-4xl text-bold text-black dark:text-white">
-        <p class="font-extrabold">ESN Directory</p>
+        <p class="font-extrabold text-esn-red">ESN Directory</p>
     </div>
     <div class="grid justify-items-center w-screen h-4/6 mt-4">
         <div class="w-11/12">
@@ -43,7 +43,12 @@ export const directoryHTML = `
             </div>
         </div>
     </div>
-</div>`;
+</div>
+
+<div id="profile-modal" class="absolute modal hidden fixed">
+</div>
+
+`;
 
 export const chatListHTML = `
 <div class="flex flex-col justify-center w-screen h-screen">
@@ -205,7 +210,7 @@ export const templateHTML = `
 <div class="absolute w-screen h-[5%] bg-cover bottom-0 bg-[#C41230] flex justify-between">
     <div class="mt-auto mb-auto">
         <div class="w-8 h-8" id="directory-button">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="w-6 h-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="white">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
             </svg> 
         </div>

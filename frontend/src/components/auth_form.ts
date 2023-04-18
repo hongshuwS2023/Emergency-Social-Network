@@ -30,11 +30,13 @@ join!.onclick = async () => {
   const password = (document.getElementById('password') as HTMLInputElement).value || '';
   const res = await login(username, password);
   if (res.token) {
+    console.log(res.role);
     const localStorageInfo: LocalStorageInfo = {
       id: res.user_id,
       username: res.user_name,
       token: res.token,
-      room: ""
+      room: "",
+      role: res.role
     }
     saveTokenAndRedirect(localStorageInfo, "directory.html");
     const lastWords = await getLastWords(localStorageInfo);
@@ -61,7 +63,6 @@ confirmButton!.onclick = async () => {
   const password = (document.getElementById('password') as HTMLInputElement).value || '';
 
   const res = await register(username, password);
-
   if (res.token) {
     replaceConfirmButton();
     modal!.style.display = "block";
@@ -69,7 +70,8 @@ confirmButton!.onclick = async () => {
       id: res.user_id,
       username: res.user_name,
       token: res.token,
-      room: ""
+      room: "",
+      role: res.role
     }
     ack!.onclick = async function () {
       saveTokenAndRedirect(localStorageInfo, "directory.html");
@@ -84,6 +86,7 @@ export function saveTokenAndRedirect(localStorageInfo: LocalStorageInfo, href: s
   localStorage.setItem('id', localStorageInfo.id);
   localStorage.setItem('username', localStorageInfo.username);
   localStorage.setItem('token', localStorageInfo.token);
+  localStorage.setItem('role', String(localStorageInfo.role));
   window.location.href = href;
 }
 

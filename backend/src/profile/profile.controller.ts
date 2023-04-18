@@ -60,7 +60,7 @@ export default class ProfileController {
       user.accountStatus = adminChangeInput.accountStatus;
     }
 
-    if (adminChangeInput.role) {
+    if (adminChangeInput.role !== null) {
       if (
         user.role === Role.ADMIN &&
         <Role>adminChangeInput.role !== Role.ADMIN
@@ -74,7 +74,8 @@ export default class ProfileController {
           throw new BadRequestException(ErrorMessage.ATLEASTONEADMIN);
         }
       }
-      user.role = adminChangeInput.role;
+
+      user.role = adminChangeInput.role!;
     }
 
     if (adminChangeInput.username) {

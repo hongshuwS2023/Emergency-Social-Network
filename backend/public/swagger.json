@@ -6,6 +6,14 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"Role": {
+				"enum": [
+					0,
+					1,
+					2
+				],
+				"type": "number"
+			},
 			"TokenResponse": {
 				"properties": {
 					"user_id": {
@@ -19,13 +27,17 @@
 					},
 					"expires_in": {
 						"type": "string"
+					},
+					"role": {
+						"$ref": "#/components/schemas/Role"
 					}
 				},
 				"required": [
 					"user_id",
 					"user_name",
 					"token",
-					"expires_in"
+					"expires_in",
+					"role"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -58,20 +70,11 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"Role": {
-				"enum": [
-					0,
-					1,
-					2
-				],
-				"type": "number"
-			},
 			"Status": {
 				"enum": [
 					0,
 					1,
-					2,
-					3
+					2
 				],
 				"type": "number"
 			},

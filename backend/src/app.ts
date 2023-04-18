@@ -17,6 +17,7 @@ import ActivityRoute from './activity/activity.route';
 import {RedisServer} from './utils/redisServer';
 import EmergencyRoute from './emergency/emergency.route';
 import ProfileRoute from './profile/profile.route';
+import {ensureAdmin} from './utils/utils';
 
 export default class App {
   private app: express.Application;
@@ -67,12 +68,13 @@ export default class App {
     this.httpServer.listen(this.port, '0.0.0.0');
   }
 
-  static start(): void {
+  static async start(): Promise<void> {
     const appServer = new App();
     appServer.registerConfigs();
     appServer.registerRoutes();
     appServer.registerMiddlewares();
-    appServer.startServer();
+    await appServer.startServer();
     appServer.redisServer.startListening();
+    ensureAdmin();
   }
 }

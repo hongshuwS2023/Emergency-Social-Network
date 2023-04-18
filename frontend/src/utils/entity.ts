@@ -63,7 +63,7 @@ export interface LocalStorageInfo {
     username: string,
     token: string,
     room: string,
-    role?: number
+    role: number
     activityId?: string
 }
 
