@@ -1,5 +1,5 @@
 import { activity_endpoint, emergency_endpoint, login_endpoint, logout_endpoint, message_endpoint, register_endpoint, room_endpoint, search_endpoint, user_endpoint, profile_endpoint } from "./api";
-import { CreateChatGroupInput, CreateActivityInput, MessageBody, SearchInput, UpdateActivityInput, UpdateChatGroupInput} from "../utils/entity";
+import AdminChangeInput, { CreateChatGroupInput, CreateActivityInput, MessageBody, SearchInput, UpdateActivityInput, UpdateChatGroupInput} from "../utils/entity";
 import { Status } from "../utils/enum";
 
 export const login = async (username: string, password: string) => {
@@ -300,6 +300,19 @@ export const getActivity = async (token: string, activityUrl: string) => {
             authorization: token,
             "Content-Type": "application/json",
         },
+    });
+
+    return await res.json();
+}
+
+export const adminChange = async (token: string, adminChangeInput: AdminChangeInput) => {
+    const res = await fetch(profile_endpoint, {
+        method: "PUT",
+        headers: {
+            authorization: token,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(adminChangeInput),
     });
 
     return await res.json();

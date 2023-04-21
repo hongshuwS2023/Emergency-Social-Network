@@ -1,8 +1,9 @@
 import { io, Socket } from "socket.io-client";
-import { user_endpoint, api_base } from "../sdk/api";
+import { user_endpoint, api_base, room_endpoint } from "../sdk/api";
 import { getRoom, getUser } from "../sdk/sdk";
 import { chatListHTML } from "../utils/constants";
 import { LocalStorageInfo, Room } from "../utils/entity";
+import { RoomType } from "../utils/enum";
 
 class ChatList extends HTMLElement {
     constructor() {
@@ -21,7 +22,8 @@ const localStorageInfo: LocalStorageInfo = {
   id: localStorage.getItem("id") || "",
   username: localStorage.getItem("username") || "",
   token: ("Bearer " + localStorage.getItem("token")) as string,
-  room: localStorage.getItem("room") || ""
+  room: localStorage.getItem("room") || "",
+  role: Number(localStorage.getItem("role"))
 }
 const socket: Socket = io(api_base + `?userid=${localStorageInfo.id}`, {
   transports: ["websocket"],
@@ -34,17 +36,18 @@ async function getRooms() {
   const userUrl = new URL(user_endpoint + "/" + `${encodeURIComponent(localStorageInfo.id)}`);
   const res = await getUser(localStorageInfo.token, userUrl.toString());
   const rooms: Room[] = res.rooms || [];
+  console.log(rooms);
   
   displayRooms(rooms);
 }
 
-function displayRoomHTML(room: Room){
+async function displayRoomHTML(room: Room, roomName:string){
     const div = document.createElement("div");
     const html = `<div class="mt-4"></div>
                 <div class="flex justify-center mb-4">
-                    <span class="ml-[10%] mr-auto" id="chat-history-${room.id}">
-                        <div class="text-2xl" id="${room.id}">
-                        ${room.id}
+                    <span class="ml-[10%] mr-auto" id="chat-history-${roomName}">
+                        <div class="text-2xl" id="${roomName}">
+                        ${roomName}
                         </div>
                     </span>
                     <span class="mr-[10%] w-20 h-10 bg-[#C41230] rounded-lg ml-auto flex justify-center">
@@ -62,8 +65,13 @@ function joinRoomAndRedirect(room: Room){
 }
 
 function displayRooms(rooms: Room[]) {
-  rooms.forEach((room) => {
-   displayRoomHTML(room);
+  rooms.forEach(async (room) => {
+    let roomName = room.id;
+    const res = await getRoom(localStorageInfo.token, room.id);
+    if(res.type===RoomType.UNDEFINED&&room.id!=='public'){
+      roomName = res.users[0].username+'-'+res.users[1].username;
+    }
+   displayRoomHTML(room, roomName);
     const join = document.getElementById("join-"+room.id);
     if (join) {
       join.onclick = () => {

@@ -21,7 +21,8 @@ const localStorageInfo: LocalStorageInfo = {
     id: localStorage.getItem("id") || "",
     username: localStorage.getItem("username") || "",
     token: ("Bearer " + localStorage.getItem("token")) as string,
-    room: localStorage.getItem("room") || ""
+    room: localStorage.getItem("room") || "",
+    role: Number(localStorage.getItem("role"))
 }
 
 const create = document.getElementById("create-button");

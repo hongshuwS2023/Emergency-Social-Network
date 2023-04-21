@@ -187,7 +187,9 @@ describe('logoutUser', () => {
 
     const tokenResponse = await authController.logoutUser(lougoutUserInput);
 
-    expect(tokenResponse).toEqual(new TokenResponse('', '', '', '', Role.CITIZEN));
+    expect(tokenResponse).toEqual(
+      new TokenResponse('', '', '', '', Role.CITIZEN)
+    );
   });
 
   it('Should fail to logout if the logout input is invalid', async () => {

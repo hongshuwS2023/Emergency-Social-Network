@@ -56,7 +56,7 @@ export default class ProfileController {
       throw new NotFoundException(ErrorMessage.USERNOTFOUND);
     }
 
-    if (adminChangeInput.accountStatus) {
+    if (adminChangeInput.accountStatus !== undefined) {
       user.accountStatus = adminChangeInput.accountStatus;
     }
 

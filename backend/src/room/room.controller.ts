@@ -88,7 +88,7 @@ export default class RoomController {
         throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
       }
       users.push(user);
-      user_names.push(user.username);
+      user_names.push(user.id);
     }
     user_names.sort();
     const room_id = user_names.join('-');

@@ -26,6 +26,8 @@ export function parseError(errorMessage){
         return 'Empty message';
     case ErrorMessage.ROOMIDNOTFOUND:
         return 'Wrong room';
+    case ErrorMessage.INACTIVEUSER:
+        return 'You are Banned!';
     default:
         return '';
     }

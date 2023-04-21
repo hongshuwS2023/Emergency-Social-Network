@@ -125,7 +125,13 @@ export default class AuthController {
 
     await this.socketServer.broadcastUsers();
 
-    return new TokenResponse(user.id, user.username, token, this.expiresIn, user.role);
+    return new TokenResponse(
+      user.id,
+      user.username,
+      token,
+      this.expiresIn,
+      user.role
+    );
   }
 
   /**
@@ -177,7 +183,13 @@ export default class AuthController {
 
     await this.socketServer.broadcastUsers();
 
-    return new TokenResponse(user.id, user.username, token, this.expiresIn, user.role);
+    return new TokenResponse(
+      user.id,
+      user.username,
+      token,
+      this.expiresIn,
+      user.role
+    );
   }
 
   /**

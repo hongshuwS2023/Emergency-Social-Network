@@ -580,6 +580,7 @@ export const undefinedSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 
 </svg>`;
 
 export const selfButton = `<button class="justify-items-center text-2xl dark:text-white" id="button-me">Me</button>`;
+export const bannedButton = `<button class="justify-items-center text-2xl dark:text-white" id="button-ban">Ban</button>`;
 export const greenDot = `<div class="h-7 w-7 rounded-full bg-green-500"></div>`;
 export const greyDot = `<div class="h-7 w-7 rounded-full bg-gray-500"></div>`;
 

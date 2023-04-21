@@ -22,7 +22,8 @@ const localStorageInfo: LocalStorageInfo = {
   id: localStorage.getItem("id") || "",
   username: localStorage.getItem("username") || "",
   token: ("Bearer " + localStorage.getItem("token")) as string,
-  room: localStorage.getItem("room") || ""
+  room: localStorage.getItem("room") || "",
+  role: Number(localStorage.getItem("role"))
 }
 const socket: Socket = io(api_base + `?userid=${localStorageInfo.id}`, {
   transports: ["websocket"],

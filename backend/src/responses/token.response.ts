@@ -1,4 +1,4 @@
-import { Role } from "../user/user.entity";
+import {Role} from '../user/user.entity';
 
 export default class TokenResponse {
   user_id: string;

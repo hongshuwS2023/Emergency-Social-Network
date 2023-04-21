@@ -30,7 +30,8 @@ const localStorageInfo: LocalStorageInfo = {
     username: localStorage.getItem("username") || "",
     token: ("Bearer " + localStorage.getItem("token")) as string,
     room: localStorage.getItem("room") || "",
-    activityId: localStorage.getItem("activityId") || ""
+    activityId: localStorage.getItem("activityId") || "",
+    role: Number(localStorage.getItem("role"))
 }
 
 const socket: Socket = io(api_base + `/?userid=${localStorageInfo.id}`, {

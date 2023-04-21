@@ -5,7 +5,7 @@ import { api_base } from "../sdk/api";
 import { getRoom, sendMessage } from "../sdk/sdk";
 import { chatHTML, chatMessageBackgroundClass, messageContentClass, messageTimeClass, messageUsernameClass } from "../utils/constants";
 import { LocalStorageInfo, MessageBody, MessageContent, Room } from "../utils/entity";
-import { RoomType } from "../utils/enum";
+import { AccountStatus, RoomType } from "../utils/enum";
 
 class Chat extends HTMLElement {
     constructor() {
@@ -24,7 +24,8 @@ const localStorageInfo: LocalStorageInfo = {
     id: localStorage.getItem("id") || "",
     username: localStorage.getItem("username") || "",
     token: ("Bearer " + localStorage.getItem("token")) as string,
-    room: localStorage.getItem("room") || ""
+    room: localStorage.getItem("room") || "",
+    role: Number(localStorage.getItem("role")) 
 }
 const socket: Socket = io(api_base + `/?userid=${localStorageInfo.id}`, {
     transports: ["websocket"],
@@ -81,7 +82,8 @@ async function getHistory() {
     const res = await getRoom(localStorageInfo.token, localStorageInfo.room);
     checkGroup(res);
     res.messages.forEach((msg) => {
-        const messageContent: MessageContent = {
+        if(msg.sender.accountStatus === AccountStatus.ACTIVE){
+            const messageContent: MessageContent = {
             username: msg.sender.username,
             status: msg.status,
             message: msg.content,
@@ -90,6 +92,7 @@ async function getHistory() {
         displayMessage(
             messageContent
         );
+        }
     });
 }
 
@@ -111,9 +114,14 @@ function checkGroup(room: Room){
     }
 }
 
-function setRoomName() {
+async function setRoomName() {
     const roomNameDiv = document.createElement("div");
-    roomNameDiv.innerHTML = `<p class="text-black dark:text-white text-4xl">${localStorageInfo.room}</p>`;
+    let roomName = localStorageInfo.room
+    const res = await getRoom(localStorageInfo.token, localStorageInfo.room);
+    if(res.type===RoomType.UNDEFINED&&localStorageInfo.room!=='public'){
+      roomName = res.users[0].username+'-'+res.users[1].username;
+    }
+    roomNameDiv.innerHTML = `<p class="text-black dark:text-white text-4xl">${roomName}</p>`;
     document.querySelector("#room-name")?.appendChild(roomNameDiv);
 }
 

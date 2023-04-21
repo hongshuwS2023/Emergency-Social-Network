@@ -41,6 +41,7 @@ const localStorageInfo: LocalStorageInfo = {
   username: localStorage.getItem("username") || "",
   token: ("Bearer " + localStorage.getItem("token")) as string,
   room: localStorage.getItem("room") || "",
+  role: Number(localStorage.getItem("role"))
 };
 
 const dropdown = document.getElementById("dropdown");

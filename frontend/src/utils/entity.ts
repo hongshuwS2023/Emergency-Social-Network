@@ -1,4 +1,4 @@
-import { ActivityStatus, Context, ErrorMessage, OnlineStatus, Role, RoomType, Status, StatusCode } from "./enum";
+import { AccountStatus, ActivityStatus, Context, ErrorMessage, OnlineStatus, Role, RoomType, Status, StatusCode } from "./enum";
 
 
 export interface UserEntity {
@@ -42,11 +42,13 @@ export interface User {
     username: string;
     onlineStatus: OnlineStatus;
     status: Status;
+    accountStatus: AccountStatus;
 }
 
 export interface Room {
     id: string;
     type: RoomType;
+    users: UserEntity[];
 }
 
 export interface Message {
@@ -144,3 +146,11 @@ export interface CreateChatGroupInput {
     userId: string;
     type: RoomType;
 }
+
+export default interface AdminChangeInput {
+    id: string;
+    accountStatus?: AccountStatus;
+    role?: Role;
+    username?: string;
+    password?: string;
+  }

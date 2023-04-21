@@ -205,13 +205,14 @@ describe('Can create a normal private chat room', () => {
       });
     expect(postGroupChatRes.status).toEqual(200);
     expect(postGroupChatRes.body.type).toBe(0);
+    const id = postGroupChatRes.body.id;
     const getPostRes = await request(httpServer)
-      .get('/api/rooms/test-user')
+      .get('/api/rooms/'+id)
       .set('authorization', 'Token ' + postUserRes.body.token)
       .send();
     const room = getPostRes.body;
     expect(room.type).toBe(0);
-    expect(room.id).toBe('test-user');
+    expect(room.id).toBe(id);
   });
 });
 

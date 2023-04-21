@@ -58,6 +58,7 @@ async function getUsers() {
       username: user.username,
       onlineStatus: user.onlineStatus,
       status: user.status,
+      accountStatus: user.accountStatus
     })
   );
   displayUsers(userList);
@@ -72,6 +73,7 @@ socket.on("connect", () => {
         username: user.username,
         onlineStatus: user.onlineStatus,
         status: user.status,
+        accountStatus: user.accountStatus
       })
     );
     displayUsers(allUsers);

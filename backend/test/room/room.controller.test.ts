@@ -42,12 +42,12 @@ describe('joinRoom', () => {
     };
     const room = await roomController.joinRoom(joinRoomInput);
     expect(room.users).not.toBeNull();
-    expect(room.id).toBe(user.username);
+    expect(room.id).toBe('test_id');
   });
 
   it('Should not create a room when the room already exists', async () => {
     const room = roomRepository.create();
-    room.id = 'test_username';
+    room.id = 'test_id';
     await roomRepository.save(room);
     const user =
       (await userRepository.findOneBy({

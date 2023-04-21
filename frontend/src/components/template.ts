@@ -159,6 +159,9 @@ socket.on("connect", () => {
   socket.on("activity victim notification", (activity) => {
     createActivityNotification(activity);
 });
+socket.on("inactive-account", async () => {
+  await logout(localStorageInfo.id);
+});
 });
 
 if (!localStorageInfo.id || !localStorageInfo.token) {
