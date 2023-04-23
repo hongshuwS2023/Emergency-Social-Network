@@ -9,10 +9,6 @@ jobs:
 
     runs-on: self-hosted
     steps:
-      - name: Upgrade User Permission
-        uses: ./
-        with:
-          command: chown -R $USER:$USER /home/$USER/actions-runner/_work/s23-ESN-SB1/
       - uses: actions/checkout@v3
       -
         name: Set up Docker Buildx
