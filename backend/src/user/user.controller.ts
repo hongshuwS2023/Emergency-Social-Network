@@ -74,7 +74,8 @@ export default class UserController {
     if (!user) {
       throw new NotFoundException(ErrorMessage.WRONGUSERNAME);
     }
-    user.role = updateUserInput.role ? updateUserInput.role : user.role;
+    user.role =
+      updateUserInput.role !== undefined ? updateUserInput.role : user.role;
     user.status = updateUserInput.status ? updateUserInput.status : user.status;
     if (updateUserInput.status) {
       const newStatus = this.statusRepository.create();
