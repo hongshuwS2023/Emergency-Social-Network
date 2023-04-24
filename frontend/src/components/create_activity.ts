@@ -1,5 +1,5 @@
 import { createActivity } from "../sdk/sdk";
-import { createActivityHTML } from "../utils/constants";
+import { createActivityHTML } from "../utils/activity_constants";
 import { CreateActivityInput, LocalStorageInfo } from "../utils/entity";
 import { ErrorMessage } from "../utils/enum";
 

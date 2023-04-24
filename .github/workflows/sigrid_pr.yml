@@ -12,4 +12,4 @@ jobs:
       - name: "Run Sigrid CI" 
         env:
           SIGRID_CI_TOKEN: "${{ secrets.SIGRID }}"
-        run: "./sigridci/sigridci/sigridci.py --customer Cmusvfse --system S23-esn-sb1 --source . --exclude backend/.yarn --exclude frontend/.yarn"
+        run: "./sigridci/sigridci/sigridci.py --customer Cmusvfse --system S23-esn-sb1 --source . --exclude backend/.yarn --exclude frontend/.yarn --publish"

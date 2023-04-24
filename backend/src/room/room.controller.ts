@@ -125,12 +125,19 @@ export default class RoomController {
     }
     users.push(user);
     const room_id = createChatGroupInput.roomId;
+    const room = await this.roomRepository.findOneBy({
+      id: room_id,
+    });
+    if (room_id.trim() === '' || room) {
+      throw new BadRequestException(ErrorMessage.BADROOMNAME);
+    }
     // connect sockets to room
     this.socketServer.joinRoom(createChatGroupInput.userId, room_id);
     const newRoom = this.roomRepository.create();
     newRoom.id = room_id;
     newRoom.users = users;
     newRoom.type = createChatGroupInput.type;
+    this.socketServer.broadcastCreateGroup(newRoom);
     return await this.roomRepository.save(newRoom);
   }
 

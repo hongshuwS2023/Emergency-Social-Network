@@ -10,7 +10,6 @@ import {
   messageTimeClass,
   messageUsernameClass,
   okSvg,
-  searchHTML,
   undefinedSvg,
 } from "../utils/constants";
 import {
@@ -24,6 +23,7 @@ import {
   UserEntity,
 } from "../utils/entity";
 import { Context, OnlineStatus, Status } from "../utils/enum";
+import { searchHTML } from "../utils/search_constants";
 
 class Search extends HTMLElement {
   constructor() {

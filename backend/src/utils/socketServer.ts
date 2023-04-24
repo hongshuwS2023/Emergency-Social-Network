@@ -133,6 +133,10 @@ export class SocketServer {
     this.io.to(roomName).emit('join room', room);
   }
 
+  async broadcastCreateGroup(room: Room): Promise<void> {
+    this.io.emit('create group', room);
+  }
+
   async joinRoom(user_id: string, room_id: string): Promise<void> {
     const socketId = this.userSocketMap.get(user_id);
     if (socketId) {

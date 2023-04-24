@@ -1,9 +1,9 @@
 import { io, Socket } from "socket.io-client";
 import { user_endpoint, api_base, room_endpoint } from "../sdk/api";
 import { getRoom, getUser } from "../sdk/sdk";
-import { chatListHTML } from "../utils/constants";
 import { LocalStorageInfo, Room } from "../utils/entity";
 import { RoomType } from "../utils/enum";
+import { chatListHTML } from "../utils/list_constants";
 
 class ChatList extends HTMLElement {
     constructor() {
@@ -78,47 +78,9 @@ function displayRooms(rooms: Room[]) {
         joinRoomAndRedirect(room);
       };
     }
-    getLatestHistory("chat-history-" + room.id);
   });
 }
 
-socket.on("connect", () => {
-  socket.on("chat message", (msg) => {
-    if (history) {
-      history.innerHTML = header;
-      document
-        .querySelector("#chat-history")
-        ?.append(displayMessage(msg.sender.username, msg.content));
-    }
-  });
-});
 
-async function getLatestHistory(room_id: string) {
-    const res = await getRoom(localStorageInfo.token, room_id);
-    if (res.messages) {
-      const msg = res.messages.slice(-1)[0];    
-      document
-        .querySelector("#chat-history-"+room_id)
-        ?.append(displayMessage(msg.sender.username, msg.content));
-    }
-  }
-
-function formatHistory(username: string, content: string) {
-  const history = `${username}: ${content}`;
-  if (history.length >= 20) {
-    return `${history.substring(0, 20)}...`;
-  } else {
-    return history;
-  }
-}
-
-function displayMessage(username: string, content: string) {
-  const div = document.createElement("div");
-  div.innerHTML = `
-        <div class="text-xs">
-            ${formatHistory(username, content)}
-        </div>`;
-  return div;
-}
 
 getRooms();

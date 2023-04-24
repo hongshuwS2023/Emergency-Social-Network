@@ -1,9 +1,9 @@
 import { io, Socket } from "socket.io-client";
 import { activity_endpoint, api_base } from "../sdk/api";
 import { getActivity, updateActivity } from "../sdk/sdk";
-import { activityDetailHTML } from "../utils/constants";
 import { LocalStorageInfo, UpdateActivityInput, UserEntity } from "../utils/entity";
 import { ActivityStatus } from "../utils/enum";
+import { activityDetailHTML } from "../utils/activity_constants";
 
 class ActivityDetail extends HTMLElement {
     constructor() {

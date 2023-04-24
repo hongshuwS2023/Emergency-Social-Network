@@ -28,6 +28,8 @@ export function parseError(errorMessage){
         return 'Wrong room';
     case ErrorMessage.INACTIVEUSER:
         return 'You are Banned!';
+    case ErrorMessage.BADROOMNAME:
+        return 'Room name duplicated or format wrong!';
     default:
         return '';
     }

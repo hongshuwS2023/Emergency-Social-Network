@@ -1,4 +1,4 @@
-import { loginBannerHTML } from "../utils/constants";
+import { loginBannerHTML } from "../utils/login_constants";
 
 class LoginBanner extends HTMLElement {
     constructor() {

@@ -1,8 +1,8 @@
 import { io, Socket } from "socket.io-client";
 import { api_base } from "../sdk/api";
-import { lastWordsHTML } from "../utils/constants";
 import { LocalStorageInfo, Room } from "../utils/entity";
 import { dismissLastWords, getLastWords, postLastWords, updateLastWords } from "../sdk/sdk";
+import { lastWordsHTML } from "../utils/lastWord_constants";
 
 class LastWords extends HTMLElement {
   constructor() {
@@ -22,7 +22,8 @@ const localStorageInfo: LocalStorageInfo = {
   id: localStorage.getItem("id") || "",
   username: localStorage.getItem("username") || "",
   token: ("Bearer " + localStorage.getItem("token")) as string,
-  room: localStorage.getItem("room") || ""
+  room: localStorage.getItem("room") || "",
+  role: Number(localStorage.getItem("role"))
 }
 const socket: Socket = io(api_base + `?userid=${localStorageInfo.id}`, {
   transports: ["websocket"],

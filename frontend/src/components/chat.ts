@@ -3,9 +3,10 @@ import { getFormattedDate} from "../../response/user.response";
 import { parseStatus } from "../../response/user.response";
 import { api_base } from "../sdk/api";
 import { getRoom, sendMessage } from "../sdk/sdk";
-import { chatHTML, chatMessageBackgroundClass, messageContentClass, messageTimeClass, messageUsernameClass } from "../utils/constants";
+import { chatMessageBackgroundClass, messageContentClass, messageTimeClass, messageUsernameClass } from "../utils/constants";
 import { LocalStorageInfo, MessageBody, MessageContent, Room } from "../utils/entity";
 import { AccountStatus, RoomType } from "../utils/enum";
+import { chatHTML } from "../utils/chat_constants";
 
 class Chat extends HTMLElement {
     constructor() {

@@ -4,9 +4,8 @@ import { api_base, user_endpoint } from "../sdk/api";
 import { defaultLogoutTime, emergencySvg, greenDot, greyDot, selfButton, helpSvg, messageBackgroundClass, messageContentClass, messageUsernameClass, okSvg, undefinedSvg, bannedButton } from "../utils/constants";
 import AdminChangeInput, { User, Message, Room, LocalStorageInfo } from "../utils/entity";
 import { adminChange, allUsers, getRoom, getUser, getUserProfile, newRoom, updateUser } from "../sdk/sdk";
-
-import { directoryHTML } from "../utils/constants";
 import { AccountStatus, OnlineStatus, Role, Status } from '../utils/enum';
+import { directoryHTML } from "../utils/list_constants";
 
 class Directory extends HTMLElement {
   constructor() {
@@ -109,7 +108,6 @@ function displayButton(user: User){
             : selfButton
         }
      </span>`
-        //return createChatButton(user.id);
     }
     else{
         return `<span class="mr-5 w-16 h-8 bg-[#D9D9D9] rounded-lg ml-auto flex justify-center">
@@ -140,9 +138,7 @@ async function displayUsers(users: User[]) {
     const profile = document.getElementById("profile-" + user.id);
 
     if (profile) {
-      profile!.onclick = () => {
-        renderProfileModal(user.id);
-      };
+      profile!.onclick = () => {renderProfileModal(user.id);};
     }
 }
   });
@@ -159,12 +155,10 @@ const renderProfileModal = async (userId: string) => {
                     <div class="text-esn-red">Username</div>
                     <input id="profile-username" class="w-5/6" placeholder=${userProfile.username} />
                 </div>
-
                 <div class="ml-5 mt-auto">
                     <div class="text-esn-red">New Password</div>
                     <input id="profile-password" class="w-5/6" placeholder="password" />
                 </div>
-
                 <div class="ml-5 mt-auto">
                     <div class="text-esn-red">Role</div>
                     <div class="w-5/6 mt-2 flex flex-col">
@@ -182,7 +176,6 @@ const renderProfileModal = async (userId: string) => {
                   </label>
                     </div>
                 </div>
-
                 <div class="ml-5 mt-auto">
                 <div class="text-esn-red">AccountStatus</div>
                 <div class="w-5/6 mt-2 flex justify-between">
@@ -196,7 +189,6 @@ const renderProfileModal = async (userId: string) => {
               </label>
                 </div>
                 </div>
-
                 <div class="ml-5 w-5/6 mt-auto flex justify-between">
                     <div id="profile-save-button" class="w-24 h-8 bg-esn-red rounded-lg flex justify-center text-white">Save</div>
                     <div id="profile-cancel-button" class="w-24 h-8 bg-opacity-0 border-2 border-esn-red rounded-lg flex justify-center text-black">Cancel</div>
@@ -206,9 +198,7 @@ const renderProfileModal = async (userId: string) => {
     </div>
 </div>`;
 
-    const adminChangeInput: AdminChangeInput = {
-        id: userId
-    }
+    const adminChangeInput: AdminChangeInput = {id: userId};
     const saveButton = document.getElementById("profile-save-button");
     const cancelButton = document.getElementById("profile-cancel-button");
     const admin = document.getElementById("change-role-admin");
@@ -216,33 +206,19 @@ const renderProfileModal = async (userId: string) => {
     const citizen = document.getElementById("change-role-citizen");
     const active = document.getElementById("change-account-active");
     const inactive = document.getElementById("change-account-inactive");
-    admin!.onclick = () => {
-        adminChangeInput.role = Role.ADMIN;
-    }
-    coordinator!.onclick = () => {
-        adminChangeInput.role = Role.COORDINATOR;
-    }
-    citizen!.onclick = () => {
-        adminChangeInput.role = Role.CITIZEN;
-    }
-    active!.onclick = () => {
-        adminChangeInput.accountStatus = AccountStatus.ACTIVE;
-    }
-    inactive!.onclick = () => {
-        adminChangeInput.accountStatus = AccountStatus.INACTIVE;
-    }
-
+    admin!.onclick = () => {adminChangeInput.role = Role.ADMIN;}
+    coordinator!.onclick = () => {adminChangeInput.role = Role.COORDINATOR;}
+    citizen!.onclick = () => {adminChangeInput.role = Role.CITIZEN;}
+    active!.onclick = () => {adminChangeInput.accountStatus = AccountStatus.ACTIVE;}
+    inactive!.onclick = () => {adminChangeInput.accountStatus = AccountStatus.INACTIVE;}
     saveButton!.onclick = async () => {
         const username = (document.getElementById('profile-username') as HTMLInputElement).value || '';
         const password = (document.getElementById('profile-password') as HTMLInputElement).value || '';
         adminChangeInput.username = username;
         adminChangeInput.password = password;
-        const updatedProfile = await adminChange(localStorageInfo.token, adminChangeInput);
+        await adminChange(localStorageInfo.token, adminChangeInput);
         profileModal!.classList.add("hidden");
-        console.log(updatedProfile);
     }
-
-
   cancelButton!.onclick = () => {
     profileModal!.classList.add("hidden");
   };

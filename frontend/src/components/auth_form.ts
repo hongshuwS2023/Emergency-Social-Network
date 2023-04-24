@@ -1,8 +1,8 @@
 import { parseError } from "../../response/exception.response";
-import { authformHTML } from "../utils/constants";
 import { getLastWords, login, register, updateLastWords } from "../sdk/sdk";
 import { LocalStorageInfo } from "../utils/entity";
 import { ErrorMessage } from "../utils/enum";
+import { authformHTML } from "../utils/login_constants";
 
 class AuthForm extends HTMLElement {
   constructor() {

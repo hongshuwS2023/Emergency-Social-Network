@@ -1,29 +1,21 @@
 import { io, Socket } from "socket.io-client";
 import { api_base, user_endpoint } from "../sdk/api";
 import {
-  defaultLogoutTime,
   emergencySvg,
   greenDot,
   greyDot,
-  selfButton,
   helpSvg,
-  messageBackgroundClass,
-  messageContentClass,
-  messageUsernameClass,
   okSvg,
   undefinedSvg,
 } from "../utils/constants";
 import {
   User,
-  Message,
-  Room,
   LocalStorageInfo,
   UpdateChatGroupInput,
 } from "../utils/entity";
 import { getRoomUsers, joinChatGroup } from "../sdk/sdk";
-
-import { directoryHTML } from "../utils/constants";
 import { OnlineStatus, Status } from "../utils/enum";
+import { directoryHTML } from "../utils/list_constants";
 
 class PeopleList extends HTMLElement {
   constructor() {
@@ -42,6 +34,7 @@ const localStorageInfo: LocalStorageInfo = {
   username: localStorage.getItem("username") || "",
   token: ("Bearer " + localStorage.getItem("token")) as string,
   room: localStorage.getItem("room") || "",
+  role: Number(localStorage.getItem("role"))
 };
 
 const socket: Socket = io(api_base + `/?userid=${localStorageInfo.id}`, {
@@ -50,7 +43,7 @@ const socket: Socket = io(api_base + `/?userid=${localStorageInfo.id}`, {
 
 async function getUsers() {
   const res = await getRoomUsers(localStorageInfo.token, localStorageInfo.room);
-  console.log(res);
+  //console.log(res);
   const userList: User[] = [];
   res.users.forEach((user) =>
     userList.push({
@@ -66,17 +59,7 @@ async function getUsers() {
 
 socket.on("connect", () => {
   socket.on("all users", (users) => {
-    const allUsers: User[] = [];
-    users.forEach((user) =>
-      allUsers.push({
-        id: user.id,
-        username: user.username,
-        onlineStatus: user.onlineStatus,
-        status: user.status,
-        accountStatus: user.accountStatus
-      })
-    );
-    displayUsers(allUsers);
+    getUsers();
   });
 });
 
@@ -137,12 +120,12 @@ function setLeave() {
   template?.appendChild(leaveElement);
   const leave = document.getElementById("leave-group");
   if (leave) {
-    leave.onclick = () => {
+    leave.onclick = async () => {
       const updateInput: UpdateChatGroupInput = {
         userId: localStorageInfo.id,
         isJoin: false,
       };
-      joinChatGroup(localStorageInfo.token, updateInput, localStorageInfo.room);
+      await joinChatGroup(localStorageInfo.token, updateInput, localStorageInfo.room);
       window.location.href = "group.html";
     };
   }

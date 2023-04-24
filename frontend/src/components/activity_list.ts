@@ -1,9 +1,10 @@
 import { io, Socket } from "socket.io-client";
 import { api_base } from "../sdk/api";
 import { allActivities, createActivity, updateActivity } from "../sdk/sdk";
-import { activityListHTML, greenDot, greyDot } from "../utils/constants";
+import { greenDot, greyDot } from "../utils/constants";
 import { Activity, CreateActivityInput, LocalStorageInfo } from "../utils/entity";
 import { ActivityStatus } from "../utils/enum";
+import { activityListHTML } from "../utils/list_constants";
 
 class ActivityList extends HTMLElement {
     constructor() {

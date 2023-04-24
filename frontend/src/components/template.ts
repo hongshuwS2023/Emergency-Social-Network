@@ -2,9 +2,10 @@ import { api_base } from "../sdk/api";
 import { parseStatus } from "../../response/user.response";
 import { io, Socket } from "socket.io-client";
 import { Activity, LocalStorageInfo, Message } from "../utils/entity";
-import { messageBackgroundClass, messageContentClass, messageUsernameClass, templateHTML } from "../utils/constants";
+import { messageBackgroundClass, messageContentClass, messageUsernameClass } from "../utils/constants";
 import { logout, updateActivity, updateStatus } from "../sdk/sdk";
 import { Status } from "../utils/enum";
+import { templateHTML } from "../utils/template_constants";
 
 class TemplateElement extends HTMLElement {
   constructor() {
@@ -14,9 +15,7 @@ class TemplateElement extends HTMLElement {
     this.innerHTML = templateHTML;
   }
 }
-
 customElements.define("menu-template", TemplateElement);
-
 const localStorageInfo: LocalStorageInfo = {
   id: localStorage.getItem("id") || "",
   username: localStorage.getItem("username") || "",
@@ -25,40 +24,28 @@ const localStorageInfo: LocalStorageInfo = {
   role: Number(localStorage.getItem("role"))
 }
 const formattedToken = ("Bearer " + localStorageInfo.token) as string;
-const setting =
-  document.getElementById("setting-button") || new HTMLDivElement();
-const menuModal =
-  document.getElementById("setting-modal");
-const statusModal =
-  document.getElementById("status-modal");
+const setting = document.getElementById("setting-button") || new HTMLDivElement();
+const menuModal = document.getElementById("setting-modal");
+const statusModal = document.getElementById("status-modal");
 const back = document.getElementById("back-button");
 const search = document.getElementById("search-icon");
-const changeStatus =
-  document.getElementById("change-status");
+const changeStatus = document.getElementById("change-status");
 const logoutButton = document.getElementById("logout-button");
 const chatList = document.getElementById("chat-button");
 const lastword = document.getElementById("emergency-button");
-const directory =
-  document.getElementById("directory-button");
+const directory = document.getElementById("directory-button");
 const group =document.getElementById("group-button");
 const statusOK = document.getElementById("status-ok");
-const statusEmergency =
-  document.getElementById("status-emergency");
-const statusHelp =
-  document.getElementById("status-help");
+const statusEmergency = document.getElementById("status-emergency");
+const statusHelp = document.getElementById("status-help");
 const options = document.getElementById("options");
 const activity = document.getElementById("activity-button");
-
-const socket: Socket = io(api_base + `?userid=${localStorageInfo.id}`, {
-  transports: ["websocket"],
-});
-
+const socket: Socket = io(api_base + `?userid=${localStorageInfo.id}`, {transports: ["websocket"],});
 function clickNotification(msg: Message, div: HTMLElement) {
   localStorage.setItem("room", msg.room.id);
   document.querySelector("#banner")?.removeChild(div);
   window.location.href = "chat.html";
 }
-
 function displaySearchButton(){
   const url = window.location.href.split('/');
   const href = url[url.length-1]
@@ -71,7 +58,6 @@ function displaySearchButton(){
   }
 }
 displaySearchButton();
-
 export function createNotification(msg: Message) {
   const div = document.createElement("div");
   div.id = "notification";
@@ -86,12 +72,9 @@ export function createNotification(msg: Message) {
   const banner = document.getElementById("banner") || new HTMLDivElement();
   banner.innerHTML = "";
   document.querySelector("#banner")?.appendChild(div);
-  div.onclick = async () => {
-    clickNotification(msg, div);
-  };
+  div.onclick = async () => {clickNotification(msg, div);};
   displayNotification();
 }
-
 function displayNotification() {
   const notification = document.getElementById("notification");
   if (notification) {
@@ -136,9 +119,7 @@ async function createActivityNotification(activity: Activity){
 function joinActivityAndRedirect(activityId: string){
   localStorage.setItem("activity", activityId);
   window.location.href = "activity_detail.html";
-
 }
-
 socket.on("connect", () => {
   socket.on("chat message", (msg) => {
     const user_list = msg.room.users;
@@ -189,18 +170,12 @@ function clickBack() {
   back!.classList.add("hidden");
 }
 
-setting!.onclick = async () => {
-  displayMenu();
-};
+setting!.onclick = async () => {displayMenu();};
 
 
-changeStatus!.onclick = async () => {
-  selectStatus();
-};
+changeStatus!.onclick = async () => {selectStatus();};
 
-back!.onclick = () => {
-  clickBack();
-};
+back!.onclick = () => {clickBack();};
 
 search!.onclick = () => {
   const url = window.location.href.split('/');
@@ -209,38 +184,13 @@ search!.onclick = () => {
   window.location.href = "search.html";
 }
 
-logoutButton!.onclick = async () => {
-  await logout(localStorageInfo.id);
-};
+logoutButton!.onclick = async () => {await logout(localStorageInfo.id);};
 
-activity!.onclick = () => {
-  window.location.href = "activity_list.html";
-};
-
-chatList!.onclick = () => {
-  window.location.href = "chat_list.html";
-};
-
-lastword!.onclick = () => {
-  window.location.href = "last_words.html";
-}
-
-directory!.onclick = () => {
-  window.location.href = "directory.html";
-};
-
-group!.onclick = () => {
-  window.location.href = "group.html";
-};
-
-statusOK!.onclick = async () => {
-  updateStatus(formattedToken,localStorageInfo.id, Status.OK);
-};
-
-statusHelp!.onclick = async () => {
-  updateStatus(formattedToken,localStorageInfo.id, Status.HELP);
-};
-
-statusEmergency!.onclick = async () => {
-  updateStatus(formattedToken,localStorageInfo.id, Status.EMERGENCY);
-};
+activity!.onclick = () => {window.location.href = "activity_list.html";};
+chatList!.onclick = () => {window.location.href = "chat_list.html";};
+lastword!.onclick = () => {window.location.href = "last_words.html";}
+directory!.onclick = () => {window.location.href = "directory.html";};
+group!.onclick = () => {window.location.href = "group.html";};
+statusOK!.onclick = async () => {updateStatus(formattedToken,localStorageInfo.id, Status.OK);};
+statusHelp!.onclick = async () => {updateStatus(formattedToken,localStorageInfo.id, Status.HELP);};
+statusEmergency!.onclick = async () => {updateStatus(formattedToken,localStorageInfo.id, Status.EMERGENCY);};

@@ -1,30 +1,11 @@
-import { getFormattedDate, parseStatus } from "../../response/user.response";
 import { createChatGroup, searchInformation } from "../sdk/sdk";
 import {
-  chatMessageBackgroundClass,
-  emergencySvg,
-  greenDot,
-  greyDot,
-  helpSvg,
-  messageContentClass,
-  messageTimeClass,
-  messageUsernameClass,
-  okSvg,
-  undefinedSvg,
-} from "../utils/constants";
-import {
-  StatusHistoryContent,
-  HistoryStatus,
   LocalStorageInfo,
-  MessageContent,
-  MessageEntity,
-  SearchInput,
-  User,
-  UserEntity,
   CreateChatGroupInput,
 } from "../utils/entity";
-import { Context, OnlineStatus, RoomType, Status } from "../utils/enum";
-import { createGroupHTML } from '../utils/constants';
+import { RoomType } from "../utils/enum";
+import { parseError } from "../../response/exception.response";
+import { createGroupHTML } from "../utils/group_constants";
 
 class CreateGroup extends HTMLElement {
     constructor() {
@@ -44,14 +25,17 @@ const localStorageInfo: LocalStorageInfo = {
   username: localStorage.getItem("username") || "",
   token: ("Bearer " + localStorage.getItem("token")) as string,
   room: localStorage.getItem("room") || "",
+  role: Number(localStorage.getItem("role"))
 };
 
 const dropdown = document.getElementById("dropdown");
 const options = document.querySelector("#options");
 const create = document.getElementById("create-button");
-const searchTitle = document.querySelector("#search-title");
 
-
+export function createErrorMessage(message: string) {
+  const err = document.getElementById('error-message') as HTMLElement;
+  err!.innerHTML = `<div class="grid w-screen h-1/12 mt-3 justify-items-center dark:text-white" id="error-message">${parseError(message)}</div>`;
+}
 
 function displayOptions() {
   options!.innerHTML = "";
@@ -75,23 +59,18 @@ function displayOptions() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  const dropdownItems = document.getElementsByClassName("dropdown-item");
+  const dropdownBox = document.getElementsByClassName("dropdown-item");
 
-  for (var i = 0; i < dropdownItems.length; i++) {
-    dropdownItems[i].addEventListener("click", function () {
+  for (var i = 0; i < dropdownBox.length; i++) {
+    dropdownBox[i].addEventListener("click", function () {
       dropdown!.getElementsByTagName("span")[0].innerText = this.innerText;
       options!.classList.add("hidden");
-      const selected = document.getElementById("selected-option")!.innerHTML;
-      console.log(selected);
     });
 
     dropdown!.onclick = () => {
       options!.classList.toggle("hidden");
     };
   }
-
-  const selected = document.getElementById("selected-option");
-  //console.log(selected!.innerHTML);
 });
 
 function parseCreateType(type: string | null) {
@@ -111,24 +90,22 @@ function parseCreateType(type: string | null) {
 
 create!.onclick = async () => {
   const createType = document.getElementById("selected-option")!.innerHTML;
-  console.log((document.getElementById("create-group-input") as HTMLInputElement).value);
   const createGroupInput: CreateChatGroupInput = {
     roomId: (document.getElementById("create-group-input") as HTMLInputElement).value || "",
     userId: localStorageInfo.id,
     type: parseCreateType(createType),
   };
-  console.log(createGroupInput);
 
   const res = await createChatGroup(
     localStorageInfo.token,
     createGroupInput
   );
-  console.log(res);
-  //need check error
 
   if(res.id){
     localStorage.setItem("room", res.id);
     window.location.href = "chat.html";
+  }else{
+    createErrorMessage(res.message);
   }
   
 };

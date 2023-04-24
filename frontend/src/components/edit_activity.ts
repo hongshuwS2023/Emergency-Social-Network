@@ -1,5 +1,5 @@
 import { updateActivity } from "../sdk/sdk";
-import { editActivityHTML } from "../utils/constants";
+import { editActivityHTML } from "../utils/activity_constants";
 import { LocalStorageInfo, UpdateActivityInput } from "../utils/entity";
 
 class EditActivity extends HTMLElement {
